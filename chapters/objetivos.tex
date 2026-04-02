@@ -1,0 +1,146 @@
+\section*{2. Objetivos}
+
+\subsection*{2.1 Objetivo general}
+
+El objetivo general de este Trabajo de Fin de Grado es el diseño e implementación de una 
+plataforma web orientada al análisis predictivo y a la gestión de activos en el ámbito del 
+Fantasy Football, con el fin de apoyar la toma de decisiones de los mánagers en un entorno 
+caracterizado por la elevada complejidad y volumen de información.
+
+Para ello, la plataforma se apoya en modelos de machine learning capaces de procesar datos 
+históricos y actuales con el objetivo de generar predicciones sobre el rendimiento futuro de 
+los jugadores y recomendaciones que contribuyan a optimizar la gestión de las plantillas, 
+tanto en la selección de alineaciones como en la planificación de fichajes y ventas.
+
+Un aspecto fundamental del objetivo general es la incorporación de técnicas de Explainable 
+Artificial Intelligence (XAI), orientadas a dotar de transparencia a los modelos predictivos 
+y a permitir que los usuarios comprendan los factores que influyen en cada recomendación, 
+favoreciendo así la confianza y la validación de las decisiones propuestas por el sistema.
+
+Asimismo, la plataforma se concibe con un enfoque de accesibilidad progresiva, combinando 
+el acceso abierto a funcionalidades básicas sin necesidad de registro con un conjunto de 
+funcionalidades avanzadas personalizadas para usuarios autenticados.
+
+Finalmente, el sistema integra el análisis del contexto competitivo, incluyendo variables 
+relacionadas con el próximo rival, con el objetivo de ofrecer predicciones y recomendaciones 
+contextualizadas y alineadas con la realidad competitiva del Fantasy Football.
+
+\subsection*{2.2 Objetivos}
+
+Para la consecución del objetivo general, se definen los siguientes objetivos que describen 
+las capacidades del sistema, y serán detallados más adelante en el apéndice IV 
+(Requistios):
+
+\begin{description}
+\item[OBJ-F1:] Permitir la visualización de clasificación LaLiga y de los equipos de Fantasy 
+Football sin necesidad de registro previo. Esta funcionalidad está orientada a ofrecer un 
+acceso abierto a información relevante, facilitando que cualquier usuario pueda consultar 
+datos básicos, estadísticas y análisis generales sin comprometer información personal. Esta 
+decisión contribuye a mejorar la accesibilidad y a aumentar el alcance potencial de la 
+plataforma.
+
+\item[OBJ-F2:] Generación de predicciones sobre el rendimiento de los jugadores. Estas predicciones 
+se basan en el análisis de datos históricos, estadísticas actuales y otros factores 
+contextuales relevantes. El sistema debe ser capaz de transformar grandes volúmenes de 
+información en estimaciones comprensibles que ayuden a los usuarios a anticipar el 
+comportamiento futuro de los jugadores en las próximas jornadas.
+
+\item[OBJ-F3:] Generar recomendaciones automáticas para la gestión de la plantilla de los usuarios 
+registrados. Dichas recomendaciones abarcan aspectos clave del Fantasy Football, como la 
+selección de alineaciones óptimas, la identificación de oportunidades de fichaje, la venta 
+de jugadores con bajo rendimiento esperado o la sustitución estratégica de determinados 
+activos. Este enfoque permite apoyar la toma de decisiones del usuario sin sustituir su 
+criterio personal.
+
+\item[OBJ-F4:] Análisis del próximo rival constituye otro objetivo funcional relevante del sistema. 
+El rendimiento de un jugador no depende únicamente de sus estadísticas individuales, sino 
+también del contexto del enfrentamiento. Por ello, la plataforma incorpora factores como la 
+dificultad del partido, el estado de forma del rival o el rendimiento defensivo del equipo 
+contrario, enriqueciendo así la calidad de las recomendaciones ofrecidas.
+
+\item[OBJ-F5:] Para los usuarios autenticados, la plataforma ofrece funcionalidades avanzadas 
+orientadas a la personalización de la experiencia. Entre ellas se incluye la gestión 
+individualizada de equipos, permitiendo al usuario adaptar el sistema a su situación concreta 
+dentro de la liga Fantasy.
+
+\item[OBJ-F6:] Presentación de explicaciones claras y comprensibles sobre las recomendaciones 
+generadas. El sistema no solo debe indicar qué acción se recomienda, sino también por qué se 
+propone dicha acción, destacando los factores más influyentes en la decisión. Este enfoque 
+refuerza la confianza del usuario y favorece un uso crítico de las recomendaciones 
+automáticas.
+
+\item[OBJ-F7:] Asegurar una interfaz web intuitiva y accesible, diseñada para ser utilizada tanto 
+por usuarios con experiencia en Fantasy Football como por usuarios principiantes. La claridad 
+visual, la organización de la información y la facilidad de navegación son aspectos clave para 
+asegurar una experiencia de usuario satisfactoria.
+
+\item[OBJ-F8:] Evaluar los modelos predictivos asegurando que superen un umbral mínimo de rendimiento 
+según la métrica seleccionada (por ejemplo, MAE, RMSE o precisión). Esta evaluación garantiza 
+que las predicciones sean confiables y útiles para la toma de decisiones, evitando incorporar 
+modelos con resultados insuficientes o inconsistentes que puedan comprometer la validez de las 
+recomendaciones. Se profundizará más en estos aspectos en el apéndice V 
+(Implementación).
+
+\item[OBJ-F9:] Ofrecer vistas detalladas de equipos y jugadores, incluyendo estadísticas históricas, 
+rendimiento reciente, predicciones futuras y contexto competitivo, permitiendo al usuario 
+profundizar en el análisis de cada activo.
+
+\item[OBJ-F10:] Incorporar un apartado social que permita a los usuarios registrados añadir amigos, 
+consultar sus plantillas y comparar estrategias, fomentando la interacción, la competitividad 
+y el aprendizaje colaborativo entre mánagers.
+\end{description}
+
+\subsection*{2.3 Objetivos técnicos}
+
+El objetivo técnico principal es la implementación de modelos de machine learning orientados a 
+la predicción del rendimiento de los jugadores y a la generación de recomendaciones. Estos 
+modelos deben ser capaces de procesar datos deportivos reales procedentes de distintas fuentes, 
+adaptarse a la evolución temporal de la competición y ofrecer resultados consistentes y 
+actualizados que sirvan de apoyo a la toma de decisiones de los usuarios.
+
+La obtención de los datos necesarios para alimentar estos modelos constituye en sí misma un 
+objetivo técnico relevante. Para ello, el sistema debe incorporar mecanismos de web scraping 
+sobre fuentes deportivas fiables y contrastadas, permitiendo la recopilación automática de 
+estadísticas, información de jugadores y contexto competitivo. Este proceso conlleva una 
+complejidad adicional, ya que cada fuente presenta su propia estructura, formato y criterios 
+de nomenclatura.
+
+En particular, uno de los principales retos técnicos asociados al uso de múltiples fuentes de 
+información es la unificación de los datos relativos a los jugadores. Diferentes sitios web 
+pueden emplear nombres distintos para un mismo jugador, abreviaturas, variaciones ortográficas 
+o incluso identificadores propios. Por este motivo, el proyecto contempla el diseño e 
+implementación de un mecanismo de matching y normalización de entidades que permita identificar 
+de forma inequívoca a cada jugador y poner en común la información procedente de diversas 
+fuentes. Este proceso resulta fundamental para garantizar la coherencia de los datos y evitar 
+inconsistencias que puedan afectar al rendimiento de los modelos predictivos.
+
+La integración de técnicas de Explainable Artificial Intelligence (XAI) constituye otro 
+objetivo técnico clave del proyecto. Se busca incorporar métodos que permitan analizar la 
+relevancia de las características utilizadas por los modelos y ofrecer explicaciones 
+interpretables para los usuarios finales. Esta integración supone un reto adicional, ya que 
+combina aspectos avanzados de inteligencia artificial con requisitos de usabilidad y 
+comunicación de resultados, además de tratarse de una tecnología que no había sido utilizada 
+previamente.
+
+Asimismo, se plantea como objetivo la implementación de un sistema de autenticación y 
+autorización que permita diferenciar entre usuarios anónimos y usuarios registrados, 
+garantizando un acceso controlado a las funcionalidades avanzadas y protegiendo la información 
+personal de los usuarios.
+
+La gestión y el procesamiento de datos deportivos reales representan otro objetivo técnico 
+relevante. El sistema debe asegurar la correcta limpieza, consistencia y actualización de los 
+datos, ya que la calidad de la información de entrada influye directamente en la fiabilidad de 
+las predicciones generadas y en la validez de las recomendaciones ofrecidas.
+
+Se establece como objetivo técnico la validación y evaluación del sistema desarrollado, 
+definiendo métricas adecuadas que permitan medir la calidad de las predicciones y analizar el 
+comportamiento de los modelos en distintos escenarios. Este proceso de evaluación resulta 
+esencial para justificar las decisiones técnicas adoptadas y para identificar las fortalezas y 
+limitaciones del sistema.
+
+Por último, se establecen como objetivos técnicos la optimización del rendimiento del sistema y 
+la garantía de la seguridad de los datos. Esto incluye la reducción de tiempos de respuesta, la 
+gestión eficiente de recursos y la protección de la información almacenada, aspectos 
+fundamentales garantizando la viabilidad y la calidad del sistema desarrollado, asumiendo la 
+existencia de incertidumbre inherente a los datos deportivos y a los eventos impredecibles 
+propios del dominio.

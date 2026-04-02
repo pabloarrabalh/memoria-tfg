@@ -1,9 +1,56 @@
 \documentclass[12pt]{article}
 
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[a4paper,margin=2.8cm]{geometry}
 \usepackage{graphicx}
 \usepackage{lipsum}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{fvextra}
+\usepackage{xcolor}
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    frame=lines,
+    rulecolor=\color{black},
+    tabsize=4
+}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{
+    fontsize=\small,
+    frame=single,
+    rulecolor=\color{black},
+    framesep=2mm,
+    baselinestretch=1
+}
+\setlength{\emergencystretch}{1em}
+
+\onehalfspacing%
+\setlist[itemize]{topsep=4pt,itemsep=3pt,leftmargin=1.5em}
+\setlist[description]{topsep=6pt,itemsep=8pt,leftmargin=2.2cm,style=nextline}
+\captionsetup{font=small,labelfont=bf}
+\hypersetup{hidelinks}
+
+\titleformat{\section}{\normalfont\Large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
 
 \title{LigaMaster}
 \author{Pablo Arrabal Hermoso}
@@ -11,8 +58,78 @@
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+\includegraphics[width=0.38\textwidth]{images/logo-us.png}\par
+\vspace{2cm}
+{\LARGE \textbf{LigaMaster}}\par
+\vspace{1cm}
+{\Large Trabajo de Fin de Grado}\par
+\vfill
+{\large Pablo Arrabal Hermoso}\par
+\vspace{0.5cm}
+{\large \today}\par
+\end{titlepage}
 
+\clearpage
+\section*{Agradecimientos}
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+
+\clearpage
+\section*{Resumen}
+\textit{[Escribe aquí el resumen en español.]}
+
+\vspace{1.2cm}
+\section*{Abstract}
+\textit{[Write the abstract in English here.]}
+
+\clearpage
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\clearpage
+\addcontentsline{toc}{section}{1. Introducción}
 \input{chapters/introduction}
+
+\clearpage
+\addcontentsline{toc}{section}{2. Objetivos}
+\input{chapters/objetivos}
+
+\clearpage
+\addcontentsline{toc}{section}{3. Análisis similares}
+\input{chapters/analisis-similares}
+\input{chapters/enlaces}
+
+\clearpage
+\addcontentsline{toc}{section}{4. Metodología}
+\input{chapters/metodologia}
+
+\clearpage
+\addcontentsline{toc}{section}{5. Tecnologías}
+\input{chapters/tecnologias}
+
+\clearpage
+\addcontentsline{toc}{section}{6. Identificación de requisitos}
+\input{chapters/requisitos}
+
+\clearpage
+\addcontentsline{toc}{section}{7. Diseño del Sistema}
+\input{chapters/disenyo}
+
+\clearpage
+\addcontentsline{toc}{section}{8. Implementación y desarrollo}
+\input{chapters/implementacion}
 
 \end{document}

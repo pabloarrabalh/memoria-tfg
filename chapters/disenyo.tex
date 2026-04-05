@@ -46,7 +46,7 @@ adecuada para la memoria de un TFG.
 \subsubsection*{Bloque de cliente: frontend}
 
 A diferencia de una arquitectura monolítica tradicional, el cliente actúa como
-un nodo independiente que se ejecuta en el Navegador del usuario.
+un nodo independiente que se ejecuta en el navegador del usuario.
 
 El frontend es la capa de presentación encargada de renderizar la interfaz de
 usuario. Aunque consume recursos de forma dinámica, su función principal es
@@ -70,7 +70,7 @@ centralizando la gestión de políticas de seguridad, como la configuración de 
 en un único punto.
 
 
-\subsubsection*{Núcleo del sistema: backend (API)}
+\subsubsection*{Núcleo del sistema: backend}
 El backend constituye la capa de aplicación desarrollada en Django y actúa como el núcleo que
  conecta y coordina el resto de servicios del sistema. En él se implementa la lógica de negocio,
  encargándose del procesamiento de las peticiones, la gestión de la autenticación
@@ -185,10 +185,7 @@ Channels), utilizando Redis como backend.
 \end{itemize}
 
 Este patrón desacopla la lógica de persistencia de las acciones derivadas
-(indexación y notificaciones), mejorando la extensibilidad. La incorporación de
-Redis en la capa de mensajería refuerza la escalabilidad horizontal, ya que los
-eventos pueden propagarse de forma consistente entre procesos y nodos backend
-sin acoplamiento directo.
+(indexación y notificaciones), mejorando la posible escalada del sistema.
 
 \subsubsection*{Template method}
 
@@ -238,24 +235,31 @@ reutilizable.
 
 \subsubsection*{Hooks}
 
-Los hooks permiten encapsular y reutilizar lógica de estado y ciclo de vida en
-componentes funcionales.
-
-\textbf{Aplicación en el sistema:}
+Los Hooks son funciones especializadas que permiten guardar el estado y otras funcionalidades 
+del ciclo de vida del framework dentro de componentes funcionales. A continuación, se describen 
+los tipos de Hooks integrados en el sistema y su propósito específico:
 \begin{itemize}
 \item \texttt{AuthContext.jsx} (useState, useEffect, useCallback, useContext).
 \item \texttt{JornadaContext.jsx}.
 \item \texttt{useTourWithManualExit.js}.
 \end{itemize}
 
-Favorecen la reutilización de lógica y una mayor claridad en los componentes,
-alineándose con las buenas prácticas del desarrollo moderno en React.
+Más allá de los hooks nativos, el sistema implementa Custom Hooks, como useTourWithManualExit.js. 
+Estos son ganchos personalizados que encapsulan lógica compleja y específica del dominio para ser 
+reutilizada en diferentes pantallas de la aplicación. En lugar de duplicar el código del tour guiado 
+en cada página, el Custom Hook extrae esa lógica, manteniendo los componentes de la interfaz limpios 
+y centrados exclusivamente en la representación visual.
 
+Esta arquitectura basada en Hooks no solo mejora la legibilidad del código, sino que asegura que el 
+frontend sea reactivo y eficiente, alineándose con los estándares actuales de la industria y 
+garantizando una experiencia de usuario fluida.
 
 \subsubsection*{Context API}
 
-Mecanismo para gestionar estado global sin necesidad de prop drilling.
-
+Context API es un sistema nativo de React diseñado para compartir datos de forma global entre componentes,
+ eliminando la necesidad de pasar propiedades manualmente a través de niveles intermedios. 
+ Este enfoque resuelve eficazmente el prop drilling, práctica ineficiente en la que los datos deben atravesar 
+ componentes que no los requieren funcionalmente solo para alcanzar a un nodo inferior en la jerarquía.
 \textbf{Aplicación en el sistema:}
 \begin{itemize}
 \item \textbf{AuthContext}: autenticación.
@@ -330,7 +334,7 @@ partido, ya que su aporte estadístico no es representativo.
 Esta fase es la más determinante para la precisión del sistema. No se entrena el
 modelo con datos brutos, sino con variables elaboradas que capturan tendencias.
 
-\subsubsection*{7.2.4.1. Enriquecimiento de roles (FBRef)}
+\subsubsection*{7.2.4.1. Enriquecimiento con roles}
 Se procesan los JSON de roles de FBRef para calcular un score de importancia por
 posición. La decisión de diseño clave aquí es la aplicación de un factor de
 posición exponencial. Si un jugador está en el top 1 de una métrica, su peso es
@@ -338,9 +342,7 @@ mucho mayor que si está en el top 10. La fórmula aplicada es:
 $$Score = \sum (Valor \times Peso \times \frac{1}{\sqrt{Posicion}})$$
 
 
-
-
-\subsubsection*{7.2.4.2 Variables temporales (rolling y EWMA)}
+\subsubsection*{7.2.4.2 Variables temporales}
 Para capturar el estado de forma, se generan dos tipos de métricas sobre las
 estadísticas base (puntos, paradas, entradas, etc.):
 
@@ -359,14 +361,18 @@ N, el sistema utiliza información de la jornada anterior (N-1), incorporando ta
 clasificación del equipo como la de su rival. De este modo, se introduce un contexto 
 temporal que permite reflejar mejor el estado reciente de ambos conjuntos.
 
-Además, se integran las cuotas de mercado, transformadas en probabilidades implícitas 
-de victoria y de goles en contra. Esto aporta una estimación del “sentimiento del mercado” 
-previa al partido, enriqueciendo el modelo con información externa relevante. Estos datos se
-descargan desde: \href{https://www.football-data.co.uk/spainm.php}{https://\linebreak www.football-data.co.uk/spainm.php}
-
+La integración de las cuotas de mercado resultó ser una decisión de diseño fundamental; 
+en las fases iniciales del proyecto, cuando no se incluían estas variables, los resultados
+ predictivos eran significativamente más pobres.
+ 
+ Estas cuotas, transformadas en probabilidades 
+ implícitas de victoria y de goles en contra, aportan una estimación del «sentimiento del mercado»
+  previa al partido, enriqueciendo el modelo con información externa de alto valor que los datos
+   puramente históricos no lograban capturar por sí solos. Estos datos se descargan desde: \
+   href{https://www.football-data.co.uk/spainm.php}{https://\linebreak www.football-data.co.uk/spainm.php}
 \subsection*{7.2.5 Prevención del data leakage}
-En predicción deportiva, es común cometer el error de usar datos del ``futuro''
-para predecir el ``pasado''. Para evitarlo, el sistema implementa tres
+En predicción deportiva, es común cometer el error de usar datos del futuro
+para predecir el pasado y dicho error ocurrió al inicio del proyecto. Para evitarlo, el sistema implementa tres
 salvaguardas:
 
 \begin{itemize}
@@ -377,8 +383,6 @@ Jornada 19.
 \item \textbf{Validación temporal}: En lugar de una validación aleatoria
 (K-Fold), se utiliza un corte temporal: se entrena con el pasado y se testea
 con el futuro más reciente.
-\item \textbf{Posiciones desplazadas}: La posición en la tabla que ve el modelo es la
-que el equipo tenía antes de empezar el partido, no la resultante tras jugar.
 \end{itemize}
 
 
@@ -492,12 +496,20 @@ recomendación estratégica.
 Para determinar si un modelo predictivo es útil en un entorno tan volátil como
 el fútbol, no es suficiente con obtener un error bajo; es imperativo establecer
 qué constituye un "buen resultado" para cada posición. Antes de la fase de
-entrenamiento, se ha realizado un estudio de referencia (benchmarking) basado en
+entrenamiento, se ha realizado un estudio de referencia basado en
 la distribución real de puntos.
 
 Un error absoluto medio (MAE) de 3 puntos no significa lo mismo para un Portero
 que para un Centrocampista. Como se observa en el estudio previo, la naturaleza
 de la puntuación varía drásticamente:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/normal.png}
+\caption{Distribución de puntos por posición comparada con distribución normal.}
+\label{fig:distribucion-puntos}
+\end{figure}
+
 
 \begin{itemize}
 \item \textbf{Porteros (PT)}: Tienen una media de puntos más alta ($\approx 6.1$),
@@ -509,11 +521,11 @@ desviación sobre su media, siendo mucho más crítico reducir el error en estas
 posiciones.
 \end{itemize}
 Para evitar los sesgos de los valores atípicos (jugadores con puntuaciones
-extremas de 15 o 20 puntos), se ha descartado el uso de la desviación estándar
+extremas de 35 o 40 puntos), se ha descartado el uso de la desviación estándar
 en favor de los percentiles de error. 
 
 Este enfoque garantiza que los umbrales de
-validez se ajusten a la "forma" real de la distribución de cada posición.
+validez se ajusten a la forma real de la distribución de cada posición.
 A continuación, se presentan los objetivos de rendimiento que los modelos de
 Machine Learning deben alcanzar para ser considerados válidos:
 
@@ -632,14 +644,6 @@ roles muy específicos.
 Se observan diferencias significativas en la distribución de puntos según la
 posición, por lo que se considera esta opción lo mejor para aportar un valor y
 abordar el problema de la forma más realista posible.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.8\textwidth]{images/normal.png}
-\caption{Distribución de puntos por posición comparada con distribución normal.}
-\label{fig:distribucion-puntos}
-\end{figure}
-
 
 
 \subsection*{7.5 Modelado de datos}
@@ -790,7 +794,7 @@ Django:
 \subsection*{7.6 Infraestructura de datos y búsqueda}
 Con el fin de cumplir los requisitos de rendimiento y escalabilidad, el sistema
 se apoya en una infraestructura de datos compuesta por múltiples tecnologías
-especializadas. Cada una de ellas desempeña un papel fundamental en la gestión,
+especializadas ya explicada en el apéndice de Stack Tecnológico. Cada una de ellas desempeña un papel fundamental en la gestión,
 consulta y optimización de la información.
 
 En esta sección se describen los distintos sistemas utilizados, así como su
@@ -815,11 +819,6 @@ la carga de PostgreSQL y estabiliza la latencia en operaciones repetitivas, a la
 vez que garantiza coordinación entre instancias backend.
 \end{itemize}
 
-Dentro del diseño del sistema se ha incorporado un motor de búsqueda
-especializado con el objetivo de complementar la base de datos relacional y
-mejorar la eficiencia en la explotación de la información. Para ello, se ha
-optado por el uso de OpenSearch como solución de indexación y consulta.
-
 Inicialmente, se consideró el uso de Elasticsearch como motor de búsqueda. Sin
 embargo, debido a las limitaciones de licencia y a la necesidad de utilizar una
 solución completamente abierta y sin costes asociados, se decidió sustituirlo
@@ -827,32 +826,6 @@ por OpenSearch. Esta alternativa, desarrollada como un fork open source de
 Elasticsearch, mantiene una alta compatibilidad a nivel conceptual y funcional,
 permitiendo implementar las mismas estrategias de indexación y consulta sin
 dependencia de licencias propietarias.
-
-Desde el punto de vista del diseño, OpenSearch no reemplaza la base de datos
-relacional, sino que actúa como un sistema complementario con un propósito
-claramente diferenciado:
-
-La base de datos relacional se encarga del
-almacenamiento estructurado y la integridad de los datos.OpenSearch se utiliza 
-para la indexación y consulta eficiente de
-información, especialmente en escenarios de búsqueda avanzada, autocompletado y
-análisis.
-
-La decisión de incorporar OpenSearch responde a varias necesidades del sistema:
-\begin{itemize}
-\item \textbf{Optimización de consultas complejas}: determinadas operaciones, como
-búsquedas por texto o filtrados múltiples, resultan costosas en bases de datos
-relacionales.
-\item \textbf{Escalabilidad en lectura}: el sistema está orientado a la consulta
-intensiva de datos (estadísticas, rankings, comparativas), lo que hace
-recomendable el uso de un motor especializado.
-\item \textbf{Flexibilidad en la indexación}: permite almacenar documentos con
-estructuras más flexibles, adaptadas a las necesidades de visualización y
-análisis.
-\item \textbf{Independencia tecnológica}: al tratarse de una solución open source,
- se evita la dependencia de licencias de pago.
-\end{itemize}
-
 
 
 \subsection*{7.8 Diseño de la interfaz}
@@ -904,14 +877,14 @@ identificadores correspondientes (por ejemplo, vía parámetros en la URL o prop
 en el enrutador):
 
 \begin{itemize}
-\item \textbf{Flujo de entidades deportivas}: Tanto la vista de Clasificación
+\item \textbf{Flujo de entidades deportivas}: tanto la vista de Clasificación
 como el directorio general de Equipos convergen en un nodo común: el Detalle de
 Equipo. A su vez, el Detalle de Equipo actúa como contenedor de una plantilla,
 permitiendo navegar hacia la Vista Jugador específica al seleccionar un
 integrante del club.
-\item \textbf{Flujo analítico}: La vista de Estadísticas permite el salto directo
+\item \textbf{Flujo analítico}: la vista de Estadísticas permite el salto directo
 hacia la Vista Jugador para consultar métricas detalladas de un perfil concreto.
-\item \textbf{Flujo social}: La vista de Amigos permite ramificar la navegación
+\item \textbf{Flujo social}: la vista de Amigos permite ramificar la navegación
 hacia el Detalle de Amigo. 
 
 Por otro lado, la vista de Mi Plantilla no contiene
@@ -958,36 +931,6 @@ El diseño de la paleta de colores responde a criterios de simplicidad, contrast
 \item \textbf{Body}: Noto Sans, sans-serif (textos corridos y descripciones)
 \end{itemize}
 
-\paragraph*{Jerarquía visual}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|l|c|c|l|}
-\hline
-\textbf{Elemento} & \textbf{Tamaño} & \textbf{Peso} & \textbf{Uso asignado} \\
-\hline
-h1 & 32px & Bold & Título de página principal \\
-\hline
-h2 & 24px & SemiBold & Título de sección \\
-\hline
-h3 & 20px & Medium & Subtítulo, encabezados secundarios \\
-\hline
-body & 16px & Regular & Texto principal, párrafos \\
-\hline
-body small & 14px & Regular & Ayudas, notas, etiquetas \\
-\hline
-caption/meta & 12px & Regular & Fechas, detalles secundarios \\
-\hline
-\end{tabular}
-\caption{Jerarquía visual de tipografía.}
-\label{tab:tipografia}
-\end{table}
-
-
-
-
-
 \subsection*{7.9 Diseño de seguridad y autenticación}
 El sistema implementa la seguridad utilizando las capacidades nativas de Django,
 lo que incluye autenticación basada en sesiones, protección frente a ataques
@@ -1004,7 +947,7 @@ containerización basada en Docker y Docker Compose. Esta decisión permite aisl
 las dependencias de cada componente, asegurando que el software se comporte de
 manera idéntica en desarrollo, preproducción y producción.
 
-\subsubsection*{7.10.1 Ecosistema de Contenedores y Responsabilidades}
+\subsubsection*{7.10.1 Ecosistema de contenedores y rsponsabilidades}
 
 El sistema se descompone en cinco servicios principales orquestados mediante una
 red virtual privada:
@@ -1034,7 +977,7 @@ al sistema.
 \caption{Diagrama de despliegue del sistema.}
 \label{fig:despliegue}
 \end{figure}
-\subsubsection*{7.10.2 Estrategia de Construcción}
+\subsubsection*{7.10.2 Estrategia de costrucción}
 
 Para optimizar el rendimiento y la seguridad, se han diseñado Dockerfiles
 multi-etapa:
@@ -1052,18 +995,14 @@ de Nginx Alpine, que actúa como servidor de alto rendimiento para archivos
 estáticos.
 \end{itemize}
 
-Se han definido tres entornos diferenciados para cubrir todas las fases del
+Se han definido dos entornos diferenciados para cubrir del
 desarrollo:
 
 \begin{itemize}
-\item \textbf{Entorno de Desarrollo (Local)}: ejecución mediante docker-compose
+\item \textbf{Entorno de desarrollo (Local)}: ejecución mediante docker-compose
 up en la máquina local del desarrollador. Permite una depuración rápida
 manteniendo la paridad con el entorno final.
-\item \textbf{Entorno de Preproducción (Render)}: se utiliza la plataforma
-Render para despliegues continuos de prueba. Este entorno sirve para validar la
-integración de los modelos de Machine Learning en un contexto de red real y
-realizar pruebas de QA.
-\item \textbf{Entorno de Producción (Azure)}: el despliegue final se realiza en
+\item \textbf{Entorno de producción (Azure)}: el despliegue final se realiza en
 Azure Web App for Containers. Esta elección permite escalar vertical y
 horizontalmente el sistema según la carga de usuarios. Se aprovecha el crédito
 ofrecido por la Universidad de Sevilla a través del programa Azure for Students,
@@ -1072,7 +1011,8 @@ para el proyecto.
 \end{itemize}
 
 En definitiva, la estrategia de despliegue se ha regido por un principio de
-optimización crítica de recursos sin sacrificio de funcionalidad. La selección
+optimización crítica de recursos sin sacrificio de funcionalidad.
+ La selección
  sistemática de versiones slim y alpine para las imágenes base, junto con una
 configuración de contenedores de baja demanda, permite ofrecer la experiencia de
 usuario completa y el rendimiento analítico requerido manteniendo una huella

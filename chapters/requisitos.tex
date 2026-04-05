@@ -1,7 +1,7 @@
 ﻿% chktex-file 44
-\section*{4. Requisitos}
+\section*{6. Requisitos}
 
-\subsection*{4.1 Alcance detallado}
+\subsection*{6.1 Alcance detallado}
 
 El sistema a desarrollar es una plataforma web para Fantasy Football orientada al análisis predictivo 
 del rendimiento de jugadores y a la recomendación de decisiones de gestión, accesible desde navegador y 
@@ -21,7 +21,7 @@ autenticados). En concreto, el alcance incluye:
   vs resultado en jornadas pasadas.
 \end{itemize}
 
-\subsection*{4.2 Fuera de alcance}
+\subsection*{6.2 Fuera de alcance}
 
 Para acotar la complejidad, se consideran fuera de alcance en esta versión del proyecto:
 
@@ -35,7 +35,7 @@ Para acotar la complejidad, se consideran fuera de alcance en esta versión del 
   \item Notificaciones push móviles y apps móvil dedicada.
 \end{itemize}
 
-\subsection*{4.3 Suposiciones, dependencias y restricciones}
+\subsection*{6.3 Suposiciones, dependencias y restricciones}
 
 \begin{itemize}
   \item Dependencia de disponibilidad y estabilidad de fuentes externas (APIs/HTML/CSV); cambios de 
@@ -46,13 +46,13 @@ Para acotar la complejidad, se consideran fuera de alcance en esta versión del 
   \item Se considerará que todos los jugadores están disponibles y en forma durante toda la temporada.
 \end{itemize}
 
-\subsection*{4.4 Actores}
+\subsection*{6.4 Actores}
 
 En el modelo de casos de uso de la plataforma se consideran únicamente actores humanos, diferenciando 
 entre actores primarios (persiguen un objetivo directo con el sistema) y actores de soporte (interactúan 
 para administración/supervisión).
 
-\subsubsection*{4.4.1 Usuario anónimo (Visitante)}
+\subsubsection*{6.4.1 Usuario anónimo}
 
 \textbf{Objetivo:} Consultar información pública y explorar jugadores y equipos sin crear una cuenta.
 
@@ -63,7 +63,7 @@ para administración/supervisión).
   \item Consultar fichas y paneles informativos accesibles sin autenticación (RF5).
 \end{itemize}
 
-\subsubsection*{4.4.2 Usuario registrado (Mánager)}
+\subsubsection*{6.4.2 Usuario registrado (Mánager)}
 
 \textbf{Objetivo:} Gestionar su plantilla y tomar decisiones apoyadas por predicciones, recomendaciones 
 y explicaciones.
@@ -79,11 +79,11 @@ y explicaciones.
   \item Recibir notificaciones/alertas (RF15).
 \end{itemize}
 
-\subsection*{4.5 Requisitos Funcionales}
+\subsection*{6.5 Requisitos funcionales}
 
 Para la priorización de los requisitos del sistema se utilizará el método \textit{MoSCoW}, una técnica ampliamente 
 empleada en la gestión de proyectos que permite clasificar los requisitos en función de su importancia y 
-necesidad. Las historias de usuario se presentan en tablas de 3 columnas: ID (10\%), Descripción (45\%) e Historia/Criterios (45\%), con el ID ocupando toda la altura de la tabla.
+necesidad. 
 
 \newcommand{\RFTable}[5]{%
 \begin{table}[H]
@@ -156,7 +156,7 @@ necesidad. Las historias de usuario se presentan en tablas de 3 columnas: ID (10
 {Predicción de puntos de cada jugador}
 {\textbf{Como:} Usuario registrado\\ \textbf{Quiero:} Ver los puntos predichos de mi plantilla\\ \textbf{Para:} Decidir mi alineación óptima}
 {\textbf{Actor:} Usuario registrado\\ \textbf{Auth:} Sí\\ \textbf{Prioridad:} Must Have}
-{CA9.1. Muestra puntos predichos con margen de incertidumbre.\\ CA9.2. Permite seleccionar jornada desde la interfaz.\\ CA9.3. Informa motivo si no hay predicción.\\ CA9.4. Muestra proyección total de plantilla.}
+{CA9.1. Muestra puntos predichos en Mi Plantilla.\\ CA9.2. Permite seleccionar jornada desde la interfaz.\\ CA9.3. Informa motivo si no hay predicción.\\ CA9.4. Muestra proyección total de plantilla.}
 
 \RFTable{RF10}
 {Explicabilidad de las predicciones}
@@ -218,12 +218,12 @@ necesidad. Las historias de usuario se presentan en tablas de 3 columnas: ID (10
 {\textbf{Actor:} Usuario registrado\\ \textbf{Auth:} Sí\\ \textbf{Prioridad:} Could Have}
 {CA19.1. Permite seleccionar múltiples jugadores.\\ CA19.2. Permite elegir temporadas a comparar.\\ CA19.3. Muestra estadísticas normalizadas por 90 minutos.}
 
-\subsection*{4.6 Requisitos no funcionales}
+\subsection*{6.6 Requisitos no funcionales}
 
 \paragraph*{RNF1. Rendimiento y tiempos de respuesta}
 ~\\
-RNF1.1: Consultas estándar en $<$ 500 ms (95\% de las peticiones). \\
-RNF1.2: Predicción/XAI en $<$ 2 s con modelo precargado (95\%).
+RNF1.1: Consultas estándar en $<$ 500 ms. \\
+RNF1.2: Predicción/XAI en $<$ 2 s con modelo precargado.
 
 \paragraph*{RNF2. Usabilidad e idioma}
 ~\\
@@ -245,7 +245,7 @@ RNF5.1: Contraseñas con hash seguro + salt (mecanismo del framework). \\
 RNF5.2: Sesión cerrada sin acceso a recursos privados sin reautenticación. \\
 RNF5.3: Minimización de datos personales (solo username como identificador público).
 
-\subsection*{4.7 Casos de uso}
+\subsection*{6.7 Casos de uso}
 
 Los casos de uso se modelan considerando dos perfiles: usuario anónimo y usuario registrado. Se presentan mediante diagramas que ilustran las interacciones entre actores y sistema.
 
@@ -332,7 +332,7 @@ Los casos de uso se modelan considerando dos perfiles: usuario anónimo y usuari
 \end{figure}
 
 
-\subsection*{4.8 Prototipado de UI}
+\subsection*{6.8 Prototipado de UI}
 
 
 Para la elaboración de los mockups y la versión inicial de las vistas de la aplicación se utilizó la herramienta de inteligencia artificial Stitch (https://stitch.withgoogle.com/). 

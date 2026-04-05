@@ -2,7 +2,7 @@
 
 \subsection*{2.1 Objetivo general}
 
-El objetivo general de este Trabajo de Fin de Grado es el diseño e implementación de una 
+El objetivo general de este trabajo de fin de grado es el diseño e implementación de una 
 plataforma web orientada al análisis predictivo y a la gestión de activos en el ámbito del 
 Fantasy Football, con el fin de apoyar la toma de decisiones de los mánagers en un entorno 
 caracterizado por la elevada complejidad y volumen de información.
@@ -28,8 +28,7 @@ contextualizadas y alineadas con la realidad competitiva del Fantasy Football.
 \subsection*{2.2 Objetivos}
 
 Para la consecución del objetivo general, se definen los siguientes objetivos que describen 
-las capacidades del sistema, y serán detallados más adelante en el apéndice IV 
-(Requistios):
+las capacidades del sistema, y serán detallados más adelante en el apéndice 4 Requistios:
 
 \begin{description}
 \item[OBJ-F1:] Permitir la visualización de clasificación LaLiga y de los equipos de Fantasy 
@@ -78,8 +77,7 @@ asegurar una experiencia de usuario satisfactoria.
 según la métrica seleccionada (por ejemplo, MAE, RMSE o precisión). Esta evaluación garantiza 
 que las predicciones sean confiables y útiles para la toma de decisiones, evitando incorporar 
 modelos con resultados insuficientes o inconsistentes que puedan comprometer la validez de las 
-recomendaciones. Se profundizará más en estos aspectos en el apéndice V 
-(Implementación).
+recomendaciones. Se profundizará más en estos aspectos en apéndices posteriores del proyecto.
 
 \item[OBJ-F9:] Ofrecer vistas detalladas de equipos y jugadores, incluyendo estadísticas históricas, 
 rendimiento reciente, predicciones futuras y contexto competitivo, permitiendo al usuario 
@@ -92,55 +90,38 @@ y el aprendizaje colaborativo entre mánagers.
 
 \subsection*{2.3 Objetivos técnicos}
 
-El objetivo técnico principal es la implementación de modelos de machine learning orientados a 
-la predicción del rendimiento de los jugadores y a la generación de recomendaciones. Estos 
-modelos deben ser capaces de procesar datos deportivos reales procedentes de distintas fuentes, 
-adaptarse a la evolución temporal de la competición y ofrecer resultados consistentes y 
-actualizados que sirvan de apoyo a la toma de decisiones de los usuarios.
+El eje técnico fundamental del proyecto radica en la implementación de modelos de machine learning orientados
+ a la predicción del rendimiento de los jugadores y a la generación de recomendaciones. Estos modelos deben 
+ ser capaces de procesar datos deportivos reales procedentes de distintas fuentes, adaptarse a la evolución 
+ temporal de la competición y ofrecer resultados consistentes que sirvan de apoyo a la toma de decisiones.
 
-La obtención de los datos necesarios para alimentar estos modelos constituye en sí misma un 
-objetivo técnico relevante. Para ello, el sistema debe incorporar mecanismos de web scraping 
-sobre fuentes deportivas fiables y contrastadas, permitiendo la recopilación automática de 
-estadísticas, información de jugadores y contexto competitivo. Este proceso conlleva una 
-complejidad adicional, ya que cada fuente presenta su propia estructura, formato y criterios 
-de nomenclatura.
+La obtención de los datos necesarios para alimentar estos modelos representa, por sí misma, un desafío 
+tecnológico de primer orden. Para ello, el sistema incorpora mecanismos de web scraping sobre fuentes fiables,
+ permitiendo la recopilación automática de estadísticas y contexto competitivo. Este proceso conlleva una
+  complejidad añadida, ya que exige armonizar la heterogeneidad de estructuras y formatos de cada fuente 
+  externa.
 
-En particular, uno de los principales retos técnicos asociados al uso de múltiples fuentes de 
-información es la unificación de los datos relativos a los jugadores. Diferentes sitios web 
-pueden emplear nombres distintos para un mismo jugador, abreviaturas, variaciones ortográficas 
-o incluso identificadores propios. Por este motivo, el proyecto contempla el diseño e 
-implementación de un mecanismo de matching y normalización de entidades que permita identificar 
-de forma inequívoca a cada jugador y poner en común la información procedente de diversas 
-fuentes. Este proceso resulta fundamental para garantizar la coherencia de los datos y evitar 
-inconsistencias que puedan afectar al rendimiento de los modelos predictivos.
+En particular, uno de los principales retos asociados al uso de múltiples orígenes de información es la
+unificación de los datos relativos a los jugadores. Dado que diferentes sitios web emplean nomenclaturas
+ o variaciones ortográficas distintas, el proyecto contempla el diseño de un mecanismo de matching y 
+ normalización de entidades. Esta funcionalidad resulta imprescindible para garantizar la coherencia
+  de la información y evitar inconsistencias que afecten a la precisión predictiva.
 
-La integración de técnicas de Explainable Artificial Intelligence (XAI) constituye otro 
-objetivo técnico clave del proyecto. Se busca incorporar métodos que permitan analizar la 
-relevancia de las características utilizadas por los modelos y ofrecer explicaciones 
-interpretables para los usuarios finales. Esta integración supone un reto adicional, ya que 
-combina aspectos avanzados de inteligencia artificial con requisitos de usabilidad y 
-comunicación de resultados, además de tratarse de una tecnología que no había sido utilizada 
-previamente.
+La integración de técnicas de Explainable Artificial Intelligence (XAI) constituye otro pilar del proyecto. Se busca incorporar métodos que permitan analizar la relevancia de las variables y ofrecer
+  explicaciones interpretables para los usuarios. Esta ambición combina aspectos avanzados de IA con requisitos
+   de usabilidad, suponiendo además un hito innovador al tratarse de una tecnología no explorada previamente
+    por el autor.
 
-Asimismo, se plantea como objetivo la implementación de un sistema de autenticación y 
-autorización que permita diferenciar entre usuarios anónimos y usuarios registrados, 
-garantizando un acceso controlado a las funcionalidades avanzadas y protegiendo la información 
-personal de los usuarios.
+Asimismo, se propone el desarrollo de un sistema de autenticación y autorización que permita diferenciar 
+entre usuarios anónimos y registrados, garantizando un acceso controlado a las funciones avanzadas y 
+protegiendo la información personal.
 
-La gestión y el procesamiento de datos deportivos reales representan otro objetivo técnico 
-relevante. El sistema debe asegurar la correcta limpieza, consistencia y actualización de los 
-datos, ya que la calidad de la información de entrada influye directamente en la fiabilidad de 
-las predicciones generadas y en la validez de las recomendaciones ofrecidas.
+Por otro lado, la gestión y el procesamiento de datos deportivos reales se asumen como parte fundamental
+del trabajo. El sistema debe asegurar la limpieza y actualización constante de la base de datos,
+ ya que la calidad de la información de entrada influye directamente en la validez de las recomendaciones 
+ ofrecidas.
 
-Se establece como objetivo técnico la validación y evaluación del sistema desarrollado, 
-definiendo métricas adecuadas que permitan medir la calidad de las predicciones y analizar el 
-comportamiento de los modelos en distintos escenarios. Este proceso de evaluación resulta 
-esencial para justificar las decisiones técnicas adoptadas y para identificar las fortalezas y 
-limitaciones del sistema.
-
-Por último, se establecen como objetivos técnicos la optimización del rendimiento del sistema y 
-la garantía de la seguridad de los datos. Esto incluye la reducción de tiempos de respuesta, la 
-gestión eficiente de recursos y la protección de la información almacenada, aspectos 
-fundamentales garantizando la viabilidad y la calidad del sistema desarrollado, asumiendo la 
-existencia de incertidumbre inherente a los datos deportivos y a los eventos impredecibles 
-propios del dominio.
+Como fase esencial del desarrollo, se establece la validación y evaluación del sistema mediante métricas 
+adecuadas que permitan medir la calidad de las predicciones en distintos escenarios. Este procedimiento 
+permite justificar las decisiones técnicas adoptadas e identificar con rigor las fortalezas y 
+ del software.

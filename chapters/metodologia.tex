@@ -1,4 +1,4 @@
-\section{4. Metodología}
+\section*{4. Metodología}
 
 Para el desarrollo de este proyecto se evaluaron diferentes metodologías ágiles, siendo las principales candidatas Scrum y Kanban. A continuación se presenta el análisis comparativo que justifica la elección final.
 
@@ -25,17 +25,17 @@ Para el desarrollo de este proyecto se evaluaron diferentes metodologías ágile
 
 La naturaleza individual del proyecto y la ausencia de entregas incrementales intermedias hacen que Scrum introduzca complejidad innecesaria sin aportar beneficios reales. Adaptar artificialmente los roles y ceremonias no representa fielmente cómo se desarrolló el proyecto.
 
-\subsection{4.2 Metodología Seleccionada: Kanban}
+\subsection{4.2 Metodología seleccionada: Kanban}
 
 Kanban es una metodología ágil basada en flujo continuo de trabajo que visualiza el proceso mediante un tablero dividido en columnas que representan estados de las tareas. No utiliza iteraciones de tiempo fijo ni roles predefinidos.
 
 \subsubsection{Estructura del tablero Kanban implementado:}
 
 \begin{itemize}
-    \item \textbf{Backlog:} Tareas pendientes de iniciar
-    \item \textbf{To Do:} Tareas priorizadas para desarrollo inmediato
-    \item \textbf{In Progress:} Tareas en desarrollo activo (límite Work In Progress: 3 tareas)
-    \item \textbf{Done:} Tareas completadas y validadas
+    \item \textbf{Backlog:} tareas pendientes de iniciar
+    \item \textbf{To Do:} tareas priorizadas para desarrollo inmediato
+    \item \textbf{In Progress:} tareas en desarrollo activo (límite Work In Progress: 3 tareas)
+    \item \textbf{Done:} tareas completadas y validadas
 \end{itemize}
 
 \subsubsection{Ventajas para este proyecto:}
@@ -43,7 +43,6 @@ Kanban es una metodología ágil basada en flujo continuo de trabajo que visuali
 \begin{itemize}
     \item \textbf{Flexibilidad adaptativa:} Permite reordenar prioridades según descubrimientos técnicos o cambios en requisitos sin violar reglas metodológicas.
     \item \textbf{Flujo natural:} Se adapta al ritmo real de trabajo individual sin imposiciones de tiempo o plazos de entrega intermedios.
-    \item \textbf{Límites WIP (Work In Progress):} Control del número de tareas simultáneas para mantener foco y evitar dispersión.
     \item \textbf{Visualización clara:} El tablero proporciona instantáneamente el estado del proyecto.
 \end{itemize}
 
@@ -54,7 +53,13 @@ Kanban es una metodología ágil basada en flujo continuo de trabajo que visuali
     \item Requiere disciplina personal para mantener límites WIP y actualizar el tablero.
 \end{itemize}
 
-Kanban resulta más apropiado para el contexto de este TFG al tratarse de un proyecto de desarrollo individual sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a las necesidades reales del proyecto manteniendo trazabilidad completa del proceso. Además, al no estar sujeto a sprints de tiempo fijo, Kanban facilita la gestión temporal del proyecto en coordinación con otras asignaturas del grado, permitiendo ajustar la carga de trabajo según períodos de exámenes, entregas de otras materias y disponibilidad personal, algo que la rigidez de los sprints de Scrum dificultaría considerablemente.
+Kanban resulta más apropiado para el contexto de este TFG al tratarse de un proyecto de desarrollo individual 
+sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a las
+ necesidades reales del proyecto manteniendo trazabilidad completa del proceso. Además, 
+ al no estar sujeto a sprints de tiempo fijo, se facilita la gestión temporal del
+  proyecto en coordinación con otras asignaturas del grado, permitiendo ajustar la carga de
+   trabajo según períodos de exámenes, entregas de otras materias y disponibilidad personal, 
+   algo que la rigidez de los sprints de Scrum dificultaría considerablemente.
 
 \subsubsection{Implementación de Kanban}
 
@@ -78,11 +83,11 @@ Kanban resulta más apropiado para el contexto de este TFG al tratarse de un pro
     \item Duración total estimada: 19 semanas
 \end{itemize}
 
-El diagrama de Gantt generado (ver Figura \ref{fig:gantt}) muestra la distribución temporal de las diferentes fases del proyecto: análisis y diseño inicial, desarrollo de módulos principales, integración, pruebas y documentación final.
+El diagrama de Gantt generado (ver Figura 5) muestra la distribución temporal de las diferentes fases del proyecto: análisis y diseño inicial, desarrollo de módulos principales, integración, pruebas y documentación final.
 
 A pesar de que el estándar habitual de una jornada de trabajo se establece en 8 horas diarias, en la planificación de este proyecto se ha considerado cada día como equivalente a 4 horas de trabajo efectivo. Esta decisión se debe a que no resulta realista asumir una dedicación diaria de 8 horas completas al TFG, dado que este se desarrolla en paralelo con otras asignaturas del grado que también requieren una inversión significativa de tiempo y esfuerzo.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/gantt.png}
 \label{fig:gantt}
@@ -91,6 +96,7 @@ A pesar de que el estándar habitual de una jornada de trabajo se establece en 8
 
 \subsection{4.4 EDT (Estructura Desglose de Trabajo)}
 
+A continuación, se presenta la Estructura de Desglose de Trabajo (EDT), que organiza el trabajo en paquetes manejables y define la base lógica sobre la que se asientan las actividades y recursos detallados en el diccionario de la EDT posterior.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/edt.png}
@@ -219,15 +225,19 @@ A17 - Investigación e implementación XAI & 6 días & VS Code, Python, Chrome \
 \textbf{Actividades}
 
 \begin{center}
-\begin{tabular}{lcc}
-\toprule
+\small
+\begin{tabular}{|p{0.45\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
 \textbf{Actividad} & \textbf{Duración} & \textbf{Recurso} \\
-\midrule
+\hline
 A18 - Configuración inicial del proyecto & 1 día & VS Code, Django \\
+\hline
 A19 - Diseño de la arquitectura final & 2 días & Mermaid \\
+\hline
 A20 - Modelado de la BD & 4 días & Mermaid \\
+\hline
 A21 - Desarrollo vistas y templates & 10 días & VS Code, Python, Django \\
-\bottomrule
+\hline
 \end{tabular}
 \end{center}
 
@@ -242,14 +252,17 @@ A21 - Desarrollo vistas y templates & 10 días & VS Code, Python, Django \\
 \textbf{Actividades}
 
 \begin{center}
-\begin{tabular}{lcc}
-\toprule
+\small
+\begin{tabular}{|p{0.45\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
 \textbf{Actividad} & \textbf{Duración} & \textbf{Recurso} \\
-\midrule
+\hline
 A22 - Pruebas unitarias de funcionalidades clave & 6 días & VS Code, pytest \\
+\hline
 A23 - Pruebas de consistencia de los datos & 2 días & VS Code, Python \\
+\hline
 A24 - Corrección de errores & 4 días & VS Code, Python \\
-\bottomrule
+\hline
 \end{tabular}
 \end{center}
 
@@ -264,13 +277,15 @@ A24 - Corrección de errores & 4 días & VS Code, Python \\
 \textbf{Actividades}
 
 \begin{center}
-\begin{tabular}{lcc}
-\toprule
+\small
+\begin{tabular}{|p{0.45\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
 \textbf{Actividad} & \textbf{Duración} & \textbf{Recurso} \\
-\midrule
+\hline
 A25 - Configuración del entorno de producción & 2 días & Docker, DockerHub \\
+\hline
 A26 - Despliegue & 1 día & Microsoft Azure \\
-\bottomrule
+\hline
 \end{tabular}
 \end{center}
 
@@ -403,7 +418,7 @@ R7 & Coste temporal en el matching y procesamiento de datos & Muy Alta & Muy alt
 \hline
 \multicolumn{4}{|p{0.9\textwidth}|}{\textbf{Descripción:} Dificultad para cruzar datos de diferentes fuentes (por ejemplo, discrepancias en la nomenclatura de los nombres de los jugadores o equipos), lo que puede consumir gran parte de la fase de preparación.} \\
 \hline
-\multicolumn{4}{|p{0.9\textwidth}|}{\textbf{Plan de mitigación:} En lugar de hacer cruces manuales o exactos, se programarán mecanismos de Fuzzy Matching (búsqueda aproximada de cadenas) utilizando librerías específicas como FuzzyWuzzy o TheFuzz, complementados con diccionarios manuales únicamente para los casos extremos.} \\
+\multicolumn{4}{|p{0.9\textwidth}|}{\textbf{Plan de mitigación:} En lugar de hacer cruces manuales o exactos, se programarán mecanismos utilizando librerías específicas como FuzzyWuzzy o TheFuzz, complementados con diccionarios manuales únicamente para los casos extremos.} \\
 \hline
 \end{tabular}
 \end{center}
@@ -448,12 +463,16 @@ Para garantizar que el software desarrollado sea mantenible, escalable y libre d
 
 \begin{itemize}
     \item \textbf{Análisis estático de código:} Se integrará SonarQube para evaluar continuamente la calidad del código. Esta herramienta detectará vulnerabilidades (security hotspots), code smells y código duplicado, asegurando que se cumplen los estándares de la industria.
-    \item \textbf{Estándares de estilo:} Dado que el stack principal se basa en Python (tanto para ML como para Django), se utilizará un linter (Flake8 o Black) para forzar el cumplimiento estricto de la guía de estilo PEP 8.
 \end{itemize}
 
 \subsection{4.7 Análisis de tiempos, costes y desviaciones}
 
-Tal y como se estableció en la planificación temporal, la jornada de trabajo estándar para este proyecto se fijó en 4 horas diarias, adaptándose a la realidad de la carga lectiva del grado. Durante el desarrollo, esta premisa se ha cumplido de forma general, con la excepción del periodo vacacional de Navidad (del 24 de diciembre al 30 de enero). La mayor disponibilidad de tiempo en esas fechas permitió acelerar el ritmo de trabajo, logrando completar tareas en una menor cantidad de días calendario, aunque el volumen de horas de trabajo invertidas se mantuvo acorde a las estimaciones.
+Tal y como se estableció en la planificación temporal, la jornada de trabajo estándar para 
+este proyecto se fijó en 4 horas diarias, adaptándose a la realidad de la carga lectiva 
+ grado. 
+ 
+ Durante el desarrollo, esta premisa se ha cumplido de forma general, con la excepción
+  del periodo vacacional de Navidad (del 24 de diciembre al 30 de enero). La mayor disponibilidad de tiempo en esas fechas permitió acelerar el ritmo de trabajo, logrando completar tareas en una menor cantidad de días calendario, aunque el volumen de horas de trabajo invertidas se mantuvo acorde a las estimaciones.
 
 Para garantizar el éxito del proyecto y mitigar posibles solapamientos con entregas o exámenes de otras asignaturas, la estrategia principal de planificación consistió en concentrar el desarrollo para finalizar a finales de febrero. Esto proporcionó un amplio margen de holgura temporal en caso de no poder cumplir el primer plazo establecido.
 
@@ -475,9 +494,9 @@ Días de trabajo efectivo (4h/día) & 91 días & 96 días & + 5 días efectivos 
 \end{tabularx}
 \end{center}
 
-Como se observa en los datos, el esfuerzo total del proyecto solo sufrió un incremento de 20 horas netas (equivalentes a 5 jornadas de trabajo de 4 horas). A nivel de calendario, la finalización se desplazó hasta el 7 de abril. Gracias al gran margen de holgura planificado desde el principio, este desplazamiento temporal fue absorbido íntegramente sin poner en riesgo la entrega ni la defensa del Trabajo de Fin de Grado.
+Como se observa en los datos, el esfuerzo total del proyecto solo sufrió un incremento de 20 horas (equivalentes a 5 jornadas de trabajo de 4 horas). A nivel de calendario, la finalización se desplazó hasta el 7 de abril. Gracias al gran margen de holgura planificado desde el principio, este desplazamiento temporal fue absorbido íntegramente sin poner en riesgo la entrega ni la defensa del proyecto.
 
-\subsubsection{Comparativa de esfuerzo por paquetes de trabajo (EDT)}
+\subsubsection{Comparativa de esfuerzo por paquetes de trabajo}
 
 En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura de Desglose de Trabajo (EDT), evidenciando dónde se produjeron las desviaciones:
 
@@ -485,7 +504,7 @@ En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura 
 \small
 \begin{tabularx}{\textwidth}{cXccc}
 \toprule
-\textbf{ID} & \textbf{Paquete de Trabajo (EDT)} & \textbf{Horas Previstas} & \textbf{Horas Reales} & \textbf{Desviación} \\
+\textbf{ID} & \textbf{Paquete de Trabajo} & \textbf{Horas Previstas} & \textbf{Horas Reales} & \textbf{Desviación} \\
 \midrule
 1 & Análisis e investigación inicial & 48 h & 48 h & 0 h \\
 2 & Planificación del proyecto & 80 h & 48 h & -32 h \\
@@ -502,21 +521,21 @@ En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura 
 
 \subsubsection{Análisis de desviaciones}
 
-Al comparar la planificación inicial con el tiempo real invertido, se observan variaciones inherentes a la naturaleza de un proyecto que combina ingeniería de software y Machine Learning. Las diferencias más significativas se concentraron en las siguientes áreas:
+Al comparar la planificación inicial con el tiempo real invertido, se observan variaciones inherentes a la naturaleza de un proyecto que combina ingeniería de software y machine learning. Las diferencias más significativas se concentraron en las siguientes áreas:
 
 \begin{itemize}
-    \item \textbf{Fase de entrenamiento y optimización (Machine Learning):} Las tareas relacionadas con el ajuste de features, hiperparámetros, validación cruzada y evaluación requirieron 48 horas frente a las 32 estimadas. Esto refleja la dificultad de acotar temporalmente las fases de experimentación, donde los resultados obligan a realizar múltiples iteraciones, pruebas y refinamientos hasta alcanzar la precisión deseada en el modelo.
+    \item \textbf{Fase de entrenamiento y optimización:} las tareas relacionadas con el ajuste de features, hiperparámetros, validación cruzada y evaluación requirieron 48 horas frente a las 32 estimadas. Esto refleja la dificultad de acotar temporalmente las fases de experimentación, donde los resultados obligan a realizar múltiples iteraciones, pruebas y refinamientos hasta alcanzar la precisión deseada en el modelo.
     \item \textbf{Desarrollo de vistas y templates (Frontend/Backend):} Su implementación alcanzó un total de 60 horas (frente a las 40 iniciales) debido al desarrollo iterativo necesario para integrar correctamente la lógica de los modelos predictivos en la interfaz visual.
     \item \textbf{Compensación de tiempos:} Por el contrario, fases como la planificación del proyecto (estimada de forma muy conservadora en 80 h) o el testing requirieron menos dedicación de la prevista inicialmente, lo que ayudó a equilibrar el balance global de horas.
 \end{itemize}
 
 \subsubsection{Estimación Económica y Desglose de Costes}
 
-Para calcular el coste del desarrollo, se ha tomado como referencia el salario medio de un perfil profesional de Analista programador J2EE / Web, considerado representativo del perfil estándar de desarrollo software.
+Para calcular el coste del desarrollo, se ha tomado como referencia la tarifa de un perfil profesional de Analista programador J2EE / Web, representativo del estándar de la industria de software. Los datos provienen del "Informe final sobre la consulta preliminar del mercado" de la Junta de Andalucía y disponible en la web de TFG de la ETSII US. En dicho documento, la media acotada para este perfil oscila entre los 28,37 €/hora para perfiles Junior y los 33,43 €/hora para perfiles Senior, por lo que se ha establecido un valor medio de 31 €/hora para este proyecto.
 
-Los datos salariales provienen de un informe de precios y perfiles informáticos disponible en la plataforma de ETSII Universidad de Sevilla. En dicho documento, elaborado a partir de una consulta preliminar de mercado de la Junta de Andalucía, se establece para este perfil un rango de precios/hora que sitúa la media en torno a los 30–33 €/hora, siendo el valor medio aproximado utilizado en este proyecto de 31 €/hora.
+A diferencia de las estimaciones basadas únicamente en salarios brutos, este valor de 31 €/hora representa el precio/hora sin IVA que las empresas del sector facturan habitualmente a la Administración Pública. Al tratarse de una tarifa de licitación para la prestación de servicios profesionales, este importe ya integra de forma intrínseca todos los costes laborales asociados, incluyendo la Seguridad Social a cargo de la empresa, así como los gastos de estructura, herramientas, licencias y el beneficio industrial.
 
-A diferencia de estimaciones basadas en salarios brutos anuales, este valor ya incorpora una aproximación realista del coste de mercado (incluyendo costes indirectos, variabilidad entre empresas y experiencia profesional), por lo que no es necesario aplicar factores correctores adicionales.
+Por este motivo, la cifra empleada constituye una aproximación realista del coste total de mercado. Al cubrir ya todas las cargas sociales y costes indirectos dentro de la propia tarifa horaria de facturación, resulta innecesario aplicar factores correctores o porcentajes adicionales sobre el cálculo final.
 
 Además del coste de personal, se han contemplado los siguientes gastos operativos y de capital:
 

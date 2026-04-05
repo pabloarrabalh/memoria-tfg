@@ -42,9 +42,9 @@ Los jugadores son tratados como activos digitales con valor de mercado.
 Existen dos métodos principales para formar la plantilla inicial:
 
 \begin{itemize}
-\item \textbf{Equipo Aleatorio:} Los mánagers reciben un equipo predefinido y aleatorio, debiendo 
+\item \textbf{Equipo Aleatorio:} los mánagers reciben un equipo predefinido y aleatorio, debiendo 
 vender y comprar jugadores para adecuar su plantilla y presupuesto.
-\item \textbf{Presupuesto Completo:} Los mánagers reciben el presupuesto completo en efectivo y 
+\item \textbf{Presupuesto Completo:} los mánagers reciben el presupuesto completo en efectivo y 
 comienzan a construir su equipo desde cero a través del mercado.
 \end{itemize}
 
@@ -101,7 +101,7 @@ del mánager impacta directamente en la estrategia de juego y la complejidad del
 
 \paragraph*{A. Sistemas de puntuación subjetivos}
 
-Este es el sistema más tradicional, utilizado como opción principal por la plataforma líder 
+este es el sistema más tradicional, utilizado como opción principal por la plataforma líder 
 \textbf{LALIGA FANTASY} (ligado a las puntuaciones de Marca).
 Las puntuaciones se asignan basándose en una calificación subjetiva otorgada por un cronista o 
 periodista tras el final de cada encuentro.
@@ -127,12 +127,12 @@ SC (Sin Calificar) & 0 puntos \\
 
 Además de la valoración base, las acciones clave impactan directamente la puntuación final.
 Estas acciones pueden sumar o restar puntos en función de su naturaleza.
-Entre las más comunes se encuentran: Goles (a favor o en propia puerta), Asistencias, Penaltis 
-(marcados, fallados o parados), Tarjetas (amarillas o rojas) y Portería a Cero.
+Entre las más comunes se encuentran: goles (a favor o en propia puerta), asistencias, penaltis 
+(marcados, fallados o parados), tarjetas (amarillas o rojas) y portería a cero.
 
 \paragraph*{B. Sistemas de puntuación objetivos}
 
-Sistemas como el algoritmo SofaScore calculan la puntuación en tiempo real a partir de acciones 
+sistemas como el algoritmo SofaScore calculan la puntuación en tiempo real a partir de acciones 
 cuantificables y estadísticas en vivo.
 La evaluación del rendimiento comienza con una puntuación base de 6.5 y se ajusta dinámicamente: 
 las acciones positivas del jugador (pases exitosos, recuperaciones, entradas completadas) elevan su 
@@ -192,12 +192,12 @@ Sin embargo, el uso exclusivo de estas métricas presenta limitaciones severas e
 rendimiento futuro:
 
 \begin{itemize}
-\item \textbf{Pobreza de frecuencia e irregularidad:} Muchas acciones clave, como los goles o las 
+\item \textbf{Pobreza de frecuencia e irregularidad:} muchas acciones clave, como los goles o las 
 asistencias, son eventos de baja frecuencia.
 Un jugador puede haber tenido un excelente rendimiento en varios partidos sin acumular estas 
 estadísticas, lo que invisibiliza su valor real y dificulta predecir su rendimiento semanal con 
 precisión.
-\item \textbf{Falta de contexto:} Una métrica simple (ej.\@ un disparo a puerta) no informa sobre la 
+\item \textbf{Falta de contexto:} una métrica simple (ej.\@ un disparo a puerta) no informa sobre la 
 calidad ni la posición del pase o del tiro.
 Esta falta de matiz impide una valoración objetiva del riesgo y la oportunidad.
 \end{itemize}
@@ -211,19 +211,18 @@ integral de prácticamente todos los cuerpos técnicos profesionales.
 Estos equipos están dedicados a transformar Big Data en información útil para la estrategia, lo que 
 ha elevado el estándar de análisis en el deporte.
 
-El Big Data en el fútbol se basa en datos de seguimiento (tracking data) y datos de eventos 
-(event data), lo que permite calcular métricas avanzadas que reflejan la calidad, la probabilidad y 
-el impacto real de las acciones en el campo.
-Algunos ejemplos de Advanced Data son:
+El Big Data en el fútbol se basa en datos de seguimiento y datos de eventos, lo que permite calcular 
+métricas avanzadas que reflejan la calidad, la probabilidad y el impacto real de las acciones en el campo.
+Algunos ejemplos son:
 
 \begin{itemize}
-\item \textbf{Goles esperados (Expected Goals o xG):} Mide la probabilidad de que un tiro a puerta 
+\item \textbf{Goles esperados (Expected Goals o xG):} mide la probabilidad de que un tiro a puerta 
 resulte en gol, basándose en miles de disparos históricos con características similares (distancia, 
 ángulo, tipo de asistencia, etc.).
 El xG actúa como un indicador adelantado del potencial ofensivo, proporcionando una medida del 
 rendimiento ofensivo subyacente de un jugador, lo que permite pronosticar un aumento en sus goles 
 futuros si registra un alto xG con baja conversión real.
-\item \textbf{Asistencias esperadas (Expected Assists o xA):} Mide la probabilidad de que un pase 
+\item \textbf{Asistencias esperadas (Expected Assists o xA):} mide la probabilidad de que un pase 
 clave resulte en una asistencia.
 El xA valora la calidad del pase que precede a un disparo, independientemente de si el compañero 
 consigue marcar o no.
@@ -239,21 +238,21 @@ La tarea de predicción es extremadamente difícil, y además, las dos alternati
 puntuación presentan fallos fundamentales:
 
 \begin{itemize}
-\item \textbf{Sesgo e inconsistencia humana en los sistemas subjetivos:} El sistema de puntuación 
+\item \textbf{Sesgo e inconsistencia humana en los sistemas subjetivos:} el sistema de puntuación 
 por crónicas es altamente susceptible al sesgo humano.
 El periodista puede mostrar predilección personal por ciertos equipos o jugadores, puede dejarse 
 influir por el resultado final del partido, o ser inconsistente en su criterio semana a semana.
 Modelar esta aleatoriedad es extremadamente difícil para cualquier algoritmo y constituye el 
 principal riesgo de la predicción subjetiva.
 
-\item \textbf{Opacidad de los algoritmos de los sistemas objetivos:} Aunque los sistemas objetivos 
+\item \textbf{Opacidad de los algoritmos de los sistemas objetivos:} aunque los sistemas objetivos 
 como SofaScore prometen objetividad y exactitud, los pesos exactos que el algoritmo otorga a cada 
 acción (pases, duelos ganados, etc.) y la fórmula final utilizada para combinar miles de datos son 
 completamente opacos.
 Esta falta de acceso a la función de puntuación exacta obliga a tratar el algoritmo como una 
 ``caja negra''.
 
-\item \textbf{Eventos impredecibles:} Ambos sistemas son igualmente vulnerables a los eventos 
+\item \textbf{Eventos impredecibles:} ambos sistemas son igualmente vulnerables a los eventos 
 impredecibles, una limitación intrínseca a la propia naturaleza de los datos y del deporte: 
 cualquier pronóstico basado en datos históricos es vulnerable a eventos futuros no anticipados y 
 poco probables, como lesiones, cambios tácticos, goles en propia puerta o rotaciones de la 
@@ -266,7 +265,7 @@ predictivo.
 El presente proyecto nace de la necesidad de profesionalizar y sistematizar la toma de decisiones 
 en el ecosistema del Fantasy.
 En la actualidad, el mánager toma decisiones de forma puramente intuitiva o sesgada.
-Esto genera una oportunidad tecnológica: la creación de un Sistema de Información que transforme 
+Esto genera una oportunidad tecnológica: la creación de un sistema de información que transforme 
 los datos históricos y forma reciente en inteligencia estratégica aplicable.
 
 La propuesta no se limita a una mera visualización de estadísticas; se trata de una plataforma web 
@@ -284,8 +283,8 @@ Este enfoque de XAI cumple un doble propósito:
 
 \begin{sloppypar}
 \begin{itemize}
-\item \textbf{Transparencia:} El usuario comprende los factores críticos de éxito de su plantilla.
-\item \textbf{Validación de Hipótesis:} Permite al mánager confrontar su conocimiento futbolístico 
+\item \textbf{Transparencia:} el usuario comprende los factores críticos de éxito de su plantilla.
+\item \textbf{Validación de Hipótesis:} permite al mánager confrontar su conocimiento futbolístico 
 con los pesos reales que el modelo asigna a cada métrica, facilitando un aprendizaje continuo y una 
 toma de decisiones mucho más robusta.
 \end{itemize}

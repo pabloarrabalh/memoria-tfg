@@ -20,9 +20,9 @@ etc.). Este modelo actúa como fuente principal de datos tanto para el análisis
  para los modelos de Machine Learning.
 
 Se incorporaron restricciones como \texttt{unique\_together} para garantizar la 
-integridad (por ejemplo, evitar duplicar estadísticas de un jugador en un mismo partido), 
+integridad (evitar duplicar estadísticas de un jugador en un mismo partido), 
 así como validadores en múltiples campos. Además, se utilizaron campos JSON en varios modelos
- (como percentiles o datos de notificaciones) para permitir mayor flexibilidad sin necesidad de 
+ (roles, percentiles,etc.) para permitir mayor flexibilidad sin necesidad de 
  modificar el esquema constantemente.
 
 Un aspecto especialmente relevante en el modelado de los datos fue la gestión de las posiciones
@@ -39,7 +39,7 @@ y pueden desempeñar diferentes roles a lo largo de la temporada. Para abordar
 esta situación, se implementó un método que calcula la posición más frecuente de
 cada jugador en función de sus apariciones reales en partidos:
 
-\begin{lstlisting}[language=Python,caption={Calcular posición más frecuente de un jugador}]
+\begin{lstlisting}[language=Python,caption={Función para calcular posición más frecuente de un jugador}]
 def get_posicion_mas_frecuente(self):
    posiciones = (
        self.estadisticas_partidos
@@ -64,14 +64,14 @@ Este enfoque permite asignar de forma dinámica una posición representativa bas
 La construcción de una API REST desde cero es una tarea compleja. Sin un framework especializado,
  habría que implementar manualmente:
 
-\begin{description}
-\item[Serialización:] Convertir objetos Python/ORM a JSON y validar datos entrantes.
-\item[Autenticación y permisos:] Verificar quién es el usuario y qué puede hacer.
-\item[Negociación de contenido:] Servir JSON, XML, etc. según lo que pida el cliente.
-\item[Paginación:] Fragmentar resultados de 10.000 registros en bloques.
-\item[Filtrado y búsqueda:] Aplicar criterios a consultas sin duplicar SQL.
-\item[Estándares HTTP:] Retornar códigos de estado correctos (200, 400, 404, 500, etc).
-\end{description}
+\begin{itemize}
+\item \textbf{Serialización:} Convertir objetos Python/ORM a JSON y validar datos entrantes.
+\item \textbf{Autenticación y permisos:} Verificar quién es el usuario y qué puede hacer.
+\item \textbf{Negociación de contenido:} Servir JSON, XML, etc. según lo que pida el cliente.
+\item \textbf{Paginación:} Fragmentar resultados de 10.000 registros en bloques.
+\item \textbf{Filtrado y búsqueda:} Aplicar criterios a consultas sin duplicar SQL.
+\item \textbf{Estándares HTTP:} Retornar códigos de estado correctos (200, 400, 404, 500, etc).
+\end{itemize}
 
 Django REST Framework (DRF) abstrae toda esta complejidad mediante abstracciones de alto nivel
  que permiten construir APIs robustas en pocas líneas de código, siguiendo patrones estándar
@@ -79,18 +79,11 @@ Django REST Framework (DRF) abstrae toda esta complejidad mediante abstracciones
 
 La API del proyecto se divide en dos versiones paralelas:
 
-\begin{description}
-\item[API v1:] Endpoints desarrollados incrementalmente durante las primeras fases del
- proyecto. Conviven endpoints dispares como \texttt{/api/predecir-portero/}, 
- \texttt{/api/cambiar-jornada/}, \texttt{/api/plantilla/}, cada uno con su propia
-  lógica de validación y respuesta. Aunque heterogénea, esta versión sigue activa 
-  porque ciertas funcionalidades depende de ella.
+\begin{itemize}
+\item \textbf{API v1:} Endpoints desarrollados incrementalmente durante las primeras fases del proyecto. Conviven endpoints dispares como \texttt{/api/predecir-portero/}, \texttt{/api/cambiar-jornada/}, \texttt{/api/plantilla/}, cada uno con su propia lógica de validación y respuesta. Aunque heterogénea, esta versión sigue activa porque ciertas funcionalidades depende de ella.
 
-\item[API v2 (RESTful):] Una arquitectura más sistemática usando ViewSets de DRF,
- con endpoints jerárquicos como \texttt{/api/v2/jugadores/}, \texttt{/api/v2/equipos/},
-  \texttt{/api/v2/clasificacion/}. Sigue principios REST: operaciones CRUD sobre recursos
-   claramente definidos, códigos HTTP semánticos, y paginación estándar.
-\end{description}
+\item \textbf{API v2 (RESTful):} Una arquitectura más sistemática usando ViewSets de DRF, con endpoints jerárquicos como \texttt{/api/v2/jugadores/}, \texttt{/api/v2/equipos/}, \texttt{/api/v2/clasificacion/}. Sigue principios REST: operaciones CRUD sobre recursos claramente definidos, códigos HTTP semánticos, y paginación estándar.
+\end{itemize}
 
 Decisión de diseño: Mantener ambas en paralelo tiene un coste de mantenimiento,
  pero refleja más fielmente el proceso iterativo de desarrollo de un proyecto software.
@@ -99,9 +92,10 @@ Decisión de diseño: Mantener ambas en paralelo tiene un coste de mantenimiento
 
 Un serializer en DRF es una clase que define cómo se transforma un objeto de Python
  (en este caso, un modelo Django) en una representación serializable (JSON) y 
- viceversa. Es el punto donde se establece el ``contrato'' entre el servidor y el cliente:
-  ``los datos que espero recibir/enviar tienen esta estructura exacta, con estos tipos,
-   y cumplen estas validaciones''.
+ viceversa. Además de esta transformación, define explícitamente la estructura de
+  los datos que se intercambian entre cliente y servidor, incluyendo sus tipos y 
+  las reglas de validación que deben cumplirse. De este modo, el serializer actúa
+   como el punto donde se formaliza el contrato de datos de la API.
 
 A continuación se detalla la organización y funcionalidad algunos serializadores del proyecto:
 
@@ -184,9 +178,9 @@ La arquitectura del backend se ha diseñado siguiendo un principio de modularida
   sino que permite optimizar de forma aislada componentes críticos como la inferencia de Machine Learning, la búsqueda avanzada o el procesamiento estadístico masivo.
 
 A continuación, se detallan las soluciones técnicas implementadas, agrupadas por su funcionalidad dentro del ecosistema de la aplicación:
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.1\textwidth]{./images/api.png}
+\includegraphics[width=0.3\textwidth]{./images/api.png}
 \caption{Captura real de la organización del módulo de api/.}
 \end{figure}
 
@@ -290,7 +284,7 @@ top_3_minutos = sorted(jugadores, key=lambda x: x['total_minutos'], reverse=True
 \texttt{jugador.py} gestiona el perfil detallado y el histórico de carrera (\texttt{jugador\_partidos.py}). El mayor reto aquí es la integridad de
  los datos; los cálculos de percentiles y xG generan a menudo valores compatibles con la lógica matemática pero incompatibles con JSON (NaN o Inf).
   Se desarrolló el \texttt{NaNInfEncoder}, un codificador personalizado que 
-sanitiza proactivamente la salida para evitar errores de parsing en el cliente.
+sanitiza la salida para evitar errores de parsing en el cliente cuando aparecen estos valores críticos.
 
 \begin{lstlisting}[language=Python,caption={Codificador JSON personalizado}]
 class NaNInfEncoder(json.JSONEncoder):
@@ -300,9 +294,6 @@ class NaNInfEncoder(json.JSONEncoder):
             chunk = chunk.replace('NaN', '0').replace('Infinity', '0').replace('-Infinity', '0')
             yield chunk
 \end{lstlisting}
-
-Además, el módulo \texttt{estadisticas.py} implementa un motor de filtrado de outliers estadísticos, sustituyendo puntos anómalos (>40) por la moda
- del conjunto y calculando percentiles relativos por posición para asegurar comparativas justas.
 
 \subsubsection*{8.1.2.5 Generación y explicación de predicciones}
 
@@ -324,10 +315,9 @@ Se añade además una capa de IA Explicable (XAI) mediante SHAP, permitiendo que
 
 \subsubsection*{8.1.2.6 Gestión de alineaciones}
 
-Este pack gestiona la lógica de juego y el seguimiento en tiempo real. \texttt{plantilla.py} actúa como el motor de construcción de alineaciones, 
-validando formaciones tácticas (ej. 4-3-3) y calculando puntos en tiempo real. Se apoya en \texttt{plantilla\_notificaciones.py}, un monitor reactivo 
-que detecta eventos en vivo (goles, tarjetas o asistencias) de los jugadores alineados por el usuario mediante un sistema de claves únicas 
-para evitar redundancias:
+Este pack gestiona la lógica de juego y el seguimiento en tiempo real.  \texttt{plantilla.py} actúa como el motor de construcción de alineaciones, 
+validando formaciones (ej. 4-3-3, 4-4-2, etc.) y calculando puntos en tiempo real. Se apoya en \texttt{plantilla\_notificaciones.py}, un monitor reactivo 
+que detecta eventos en vivo (goles, tarjetas o asistencias) de los jugadores alineados por el usuario.
 
 \begin{lstlisting}[language=Python,caption={Detección de eventos en 
 vivo con sistema de claves únicas para evitar redundancias}]
@@ -339,7 +329,7 @@ for stat in stats:
             seen.add(key)
 \end{lstlisting}
 
-Finalmente, como medida de seguridad deportiva, la API rastrea la participación 
+Finalmente, como medida aviso, la API rastrea la participación 
 reciente e inyecta alertas si un jugador suma menos de 60 minutos en los 
 últimos 4 partidos, protegiendo al usuario ante posibles suplencias:
 
@@ -354,7 +344,7 @@ pocos_minutos_set = {
 
 \subsubsection*{8.1.2.7 Orquestación}
 
-El archivo \texttt{menu.py} actúa como el orquestador principal de la vista de inicio. Aunque se implementó una
+El archivo \texttt{menu.py} actúa como el coordinador de la vista de inicio. Aunque se implementó una
  función \texttt{\_bg\_compute\_predictions} para procesamiento paralelo, el flujo actual del \texttt{MenuView} 
  devuelve las predicciones síncronamente desde el caché a través del decorador \texttt{@cache\_api\_response}, que almacena 
  resultados durante 120 segundos. Las predicciones se pre-generan al arranque del sistema mediante el pipeline de \texttt{apps.py} (paso 5), 
@@ -374,9 +364,9 @@ Para mantener el desacoplamiento del código, se utilizó el patrón Observer me
 eventos en la base de datos sin necesidad de ensuciar las vistas con lógica adicional. Se implementaron tres flujos críticos:
 
 \begin{itemize}
-\item Indexación en OpenSearch: Cada vez que un Jugador o Equipo es creado o actualizado, una señal \texttt{post\_save} actualiza automáticamente el índice en el motor de búsqueda, garantizando que los resultados de búsqueda estén siempre sincronizados.
-\item Auto-predicción en segundo plano: Al recibir nuevas estadísticas de un partido, el sistema dispara automáticamente el cálculo de la predicción para la siguiente jornada.
-\item Gestión de perfiles: Creación automática de la entidad UserProfile al registrar un nuevo usuario en el sistema auth.
+\item Indexación en OpenSearch: cada vez que un Jugador o Equipo es creado o actualizado, una señal \texttt{post\_save} actualiza automáticamente el índice en el motor de búsqueda, garantizando que los resultados de búsqueda estén siempre sincronizados.
+\item Auto-predicción en segundo plano: al recibir nuevas estadísticas de un partido, el sistema dispara automáticamente el cálculo de la predicción para la siguiente jornada.
+\item Gestión de perfiles: creación automática de la entidad UserProfile al registrar un nuevo usuario en el sistema auth.
 \end{itemize}
 
 \subsubsection*{8.1.3.2 Comunicación en tiempo real con WebSockets}
@@ -425,11 +415,11 @@ Uno de los retos técnicos resueltos fue evitar el bloqueo del servidor durante 
 
 Para solventarlo, se implementó un sistema de inicialización en segundo plano 
 mediante \texttt{threading.Thread}. Al arrancar Django, el método \texttt{ready()} 
-dispara un hilo demonio que ejecuta una tubería (pipeline) de 5 pasos críticos 
+dispara un hilo que ejecuta un pipeline de 5 pasos  
 sin impedir que el servidor comience a escuchar peticiones.
 
 \begin{lstlisting}[language=Python,caption={Inicialización 
-asíncrona en hilo demonio durante startup de Django}]
+asíncrona en hilo durante startup de Django}]
 def ready(self):
     if 'runserver' in sys.argv:
         init_thread = threading.Thread(target=self._initialize_data, daemon=True)
@@ -464,11 +454,11 @@ La construcción del dataset maestro ha sido uno de los retos de ingeniería má
 
 Se han integrado tres fuentes principales para cubrir todas las dimensiones del sistema:
 
-\begin{description}
-\item[FBRef:] Fuente principal de métricas avanzadas (xG, PSxG, progresiones, estadísticas defensivas y de portería).
-\item[FutbolFantasy:] Utilizada exclusivamente para la obtención de la ``verdad'' del juego: los puntos obtenidos por cada jugador en la plataforma oficial.
-\item[Transfermarkt:] Fuente de contexto competitivo, empleada para extraer las rachas de los equipos, datos de estadios y nacionalidades.
-\end{description}
+\begin{itemize}
+\item \textbf{FBRef:} fuente principal de métricas avanzadas (xG, PSxG, progresiones, estadísticas defensivas y de portería).
+\item \textbf{FutbolFantasy:} utilizada exclusivamente para la obtención de  los puntos obtenidos por cada jugador en la plataforma oficial.
+\item \textbf{Transfermarkt:} fuente de contexto competitivo, empleada para extraer las rachas de los equipos, datos de estadios, calendario y nacionalidades.
+\end{itemize}
 
 \subsubsection*{8.2.2 Gestión de barreras técnicas y bloqueos}
 
@@ -480,7 +470,7 @@ automatizado sin ser baneado, se tomó una decisión de diseño basada en la ges
 de forma secuencial los HTML de los partidos de las últimas tres temporadas (23/24, 24/25 y la actual 25/26), asegurando la persistencia de los datos sin comprometer 
 la disponibilidad del sistema.
 
-\item Bypass de Cloudflare en FutbolFantasy: el sitio bloquea agentes no humanos. Se implementó el módulo \texttt{descargar\_puntos.py} utilizando la librería \texttt{cloudscraper}, que permite simular una huella de navegador real, gestionando automáticamente los desafíos de JavaScript y cabeceras User-Agent.
+\item Evasión de Cloudflare en FutbolFantasy: el sitio bloquea agentes no humanos. Se implementó el módulo \texttt{descargar\_puntos.py} utilizando la librería \texttt{cloudscraper}, que permite simular una huella de navegador real, gestionando automáticamente los desafíos de JavaScript y cabeceras User-Agent.
 \end{itemize}
 
 \subsubsection*{8.2.3 Algoritmo de reintentos}
@@ -491,7 +481,7 @@ identifique patrones de automatización y permite recuperarse de errores
 temporales de red.
 
 \begin{lstlisting}[language=Python,caption={Algoritmo de 
-reintentos con backoff exponencial para descargas robustas}]
+reintentos para descargas robustas}]
 def descargar_html_con_reintentos(url, max_intentos=5):
     intento = 0
     while intento < max_intentos:
@@ -516,14 +506,14 @@ Este módulo representa el punto de entrada del pipeline, encargado de la descar
  de sistemas de seguridad perimetral comunes en portales de alta demanda.
 
 \begin{itemize}
-\item Gestión de Sesiones: implementa la librería \texttt{cloudscraper} para mitigar los bloqueos por desafíos de JavaScript de Cloudflare, simulando un entorno de navegación real (User-Agent dinámico, cabeceras de conexión persistente).
+\item Gestión de sesiones: implementa la librería \texttt{cloudscraper} para mitigar los bloqueos por desafíos de JavaScript de Cloudflare, simulando un entorno de navegación real (User-Agent dinámico, cabeceras de conexión persistente).
 
-\item Estrategia de Reintentos: utiliza un algoritmo de backoff exponencial con varianza aleatoria. Esto evita la saturación del servidor y reduce la detección de patrones de tráfico automatizado.
+\item Estrategia de reintentos: utiliza un algoritmo de backoff exponencial con varianza aleatoria. Esto evita la saturación del servidor y reduce la detección de patrones de tráfico automatizado.
 
-\item Idempotencia: el sistema verifica la integridad y existencia de archivos locales antes de iniciar la descarga, permitiendo reanudar procesos interrumpidos sin redundancia de red.
+\item Comprobaciones: el sistema verifica la integridad y existencia de archivos locales antes de iniciar la descarga.
 \end{itemize}
 
-\begin{lstlisting}[language=Python,caption={Backoff exponencial con varianza aleatoria para mitigación de detección de bots}]
+\begin{lstlisting}[language=Python,caption={Reintento con espera aleatoria para mitigación de detección de bots}]
 delay_base = min(backoff_inicial * (2 ** (intento - 1)), backoff_max)
 delay = delay_base + random.uniform(0, 1.5)
 time.sleep(delay)
@@ -549,31 +539,30 @@ Este es el script más complejo a nivel de lógica de negocio, ya que debe unifi
 los datos con atributos derivados. Su arquitectura está centrada en la integración de datos heterogéneos y la verificación de integridad por partido.
 
 \begin{itemize}
-\item Unificación Multimodal de Tablas: FBRef estructura los datos por encuentro en múltiples tablas HTML con identificadores específicos (tabla ID contiene ``\_home\_'' o ``\_away\_'' según del equipo). La función \texttt{parsear\_tabla\_fbref()} emplea BeautifulSoup para localizar tables dinámicamente, normalizar nombres de columnas y combinar filas de múltiples tablas usando el nombre normalizado del jugador como clave de unión (inner join en memoria).
+\item Procesado de tablas: FBRef estructura los datos por encuentro en múltiples tablas HTML con identificadores específicos (tabla ID contiene ``\_home\_'' o ``\_away\_'' según del equipo). La función \texttt{parsear\_tabla\_fbref()} emplea BeautifulSoup para localizar tables dinámicamente, normalizar nombres de columnas y combinar filas de múltiples tablas usando el nombre normalizado del jugador como clave de unión (inner join en memoria).
 
-\item Manejo Especializado de Porteros: dado que los porteros comparten tablas parcialmente distintas con métricas específicas (PSxG, Save\%, GA90), la función \texttt{buscar\_estadisticas\_portero()} implementa una estrategia jerárquica: búsqueda por nombre exacto $\rightarrow$ búsqueda por apellido. Esto garantiza que el 100\% de porteros sean asociados correctamente incluso cuando existen inconsistencias menores en los datos de FBRef.
+\item Manejo especializado para porteros: dado que los porteros comparten tablas parcialmente distintas con métricas específicas (PSxG, Save\%, GA90), la función \texttt{buscar\_estadisticas\_portero()} implementa una estrategia jerárquica: búsqueda por nombre exacto $\rightarrow$ búsqueda por apellido. Esto garantiza que el 100\% de porteros sean asociados correctamente incluso cuando existen inconsistencias menores en los datos de FBRef.
 
-\item Extracción de Calendario: además de las métricas, parsea los resultados históricos y las fechas de los encuentros para construir la base del calendario de la competición.
+\item Extracción de calendario: además de las métricas, parsea los resultados históricos y las fechas de los encuentros para construir la base del calendario de la competición.
 \end{itemize}
 
 \paragraph*{D. transfermarkt.py}
 
-Mientras FBRef aporta datos intrínsecos del jugador, este módulo recupera variables extrínsecas del equipo. Implementa la función \texttt{parse\_tabla\_jornada\_transfermarkt()} que
- extrae de forma confiable:
+Mientras FBRef aporta datos intrínsecos del jugador, este módulo recupera variables extrínsecas mediante \texttt{parse\_tabla\_jornada\_transfermarkt()}, extrayendo de forma confiable:
 
 \begin{itemize}
-\item Posición en clasificación (PJ, PG, PE, PP, GF-GC, puntos)
-\item Diferencia de goles (DG) y ratio de eficiencia
+\item Posición en clasificación (PJ, PG, PE, PP, puntos)
+\item Diferencia de goles (GF, GC, DF, etc.)
 \end{itemize}
 
 \paragraph*{E. roles.py}
 
-Módulo avanzado diseñado para detectar ``jugadores élite'' en categorías estadísticas específicas.
+Módulo avanzado diseñado para detectar jugadores que destacan especialmente en categorías estadísticas específicas(córners, asistencias, etc.).
 
 \begin{itemize}
-\item Parseo de elementos Ocultos: muchos datos de liderazgo en FBRef se cargan de forma asíncrona o residen dentro de nodos de comentario HTML para optimizar el renderizado del navegador. \texttt{roles.py} implementa una técnica de extracción de comentarios mediante BeautifulSoup para acceder a esta información.
+\item Parseo de elementos ocultos: los datos de rankings en FBRef se cargan de forma asíncrona o se encuentran dentro de comentario HTML . \texttt{roles.py} implementa una técnica de extracción de comentarios mediante BeautifulSoup para acceder a esta información.
 
-\item Mapeo Semántico: transforma ránkings numéricos en descripciones 
+\item Mapeo semántico: transforma ránkings numéricos en descripciones 
 narrativas (insights), permitiendo que el sistema genere automáticamente 
 conclusiones para la interfaz de usuario.
 \end{itemize}
@@ -593,7 +582,7 @@ Este proceso es vital para el enriquecimiento del dataset. El sistema localiza a
 que, independientemente de sus puntos brutos, demuestran una importancia táctica superior en la liga.
 
 Los roles se almacenan en un objeto JSON donde la clave principal es el nombre normalizado del jugador, facilitando un acceso rápido durante el entrenamiento.
- Cada registro contiene una lista de los ránkings donde el jugador es protagonista, almacenando la posición (rank) y el valor absoluto de la métrica.
+ Cada registro contiene una lista de los ránkings donde el jugador es protagonista, almacenando la posición y el valor absoluto de la métrica.
 
 Ejemplo de formato JSON generado:
 
@@ -611,7 +600,7 @@ Ejemplo de formato JSON generado:
 }
 \end{lstlisting}
 
-\subsubsection*{8.2.6 Orquestación de la canalización de scraping}
+\subsubsection*{8.2.6 Orquestación del scraping}
 
 El paso final de scraping es el script \texttt{popularDB.py}, que representa la fase de consolidación de datos. Este script ejecuta secuencialmente:
 
@@ -635,7 +624,7 @@ El primer paso es reducir el ``ruido'' textual. Antes de cualquier comparación,
 \item Conversión a minúsculas y eliminación de tildes.
 \item Eliminación de caracteres especiales (guiones, puntos).
 \item Limpieza de minutos: FBRef a veces incluye el minuto del evento en el 
-nombre del jugador en el HTML; el sistema lo detecta y limpia mediante Regex.
+nombre del jugador en el HTML; el sistema lo detecta y limpia mediante expresiones regulares a través del módulo commons.py.
 \end{itemize}
 
 \begin{lstlisting}[language=Python,caption={Normalización de 
@@ -663,8 +652,8 @@ Existen casos donde la normalización no es suficiente (ej. ``Pepelu'' no se par
 Ejemplos de flujo:
 
 \begin{itemize}
-\item Isaac Palazón Camacho $\rightarrow$ Isi (Rayo Vallecano)
-\item Alexander Sørloth $\rightarrow$ Sorloth (Villarreal/Atlético)
+\item (Alias) Isaac Palazón Camacho $\rightarrow$ Isi (Rayo Vallecano)
+\item (Normalización) Alexander Sørloth $\rightarrow$ Sorloth (Villarreal/Atlético)
 \end{itemize}
 
 \subsubsection*{8.3.3 Generación de propuestas de matching}
@@ -690,9 +679,9 @@ mejor_norm, mejor_score = obten_coincidencia_nombre(
 La función \texttt{obten\_coincidencia\_nombre} es el corazón del módulo. Utiliza un enfoque híbrido:
 
 \begin{itemize}
-\item Regla de Apellidos Críticos: Si el apellido es muy común (ej. ``García'', ``González''), el sistema bloquea los matches parciales para evitar confusiones entre compañeros de equipo (como los hermanos Williams en el Athletic).
+\item Regla de apellidos críticos: Si el apellido es muy común (ej. ``García'', ``González''), el sistema bloquea los matches parciales para evitar confusiones entre compañeros de equipo (como los hermanos Williams en el Athletic).
 
-\item Match por Prefijo/Sufijo: Si el nombre es un solo token y no es crítico, se busca si coincide con el inicio o fin de un nombre en la base de datos.
+\item Match por prefijo/sufijo: Si el nombre es un solo token y no es crítico, se busca si coincide con el inicio o fin de un nombre en la base de datos.
 
 \item Algoritmo WRatio (RapidFuzz): Si las reglas anteriores fallan, se recurre a \texttt{fuzz.WRatio}.
 \end{itemize}
@@ -788,7 +777,7 @@ class BaseTrainer(ABC):
         raise NotImplementedError
 \end{lstlisting}
 
-\subsubsection*{8.4.2 Estrategia de Validación y Grid Search}
+\subsubsection*{8.4.2 Estrategia de validación y Grid Search}
 
 El mayor reto técnico fue evitar la fuga de información. En datos deportivos, el rendimiento de un jugador está ligado a su racha actual;
  por ello, se prohibió el uso de \texttt{train\_test\_split} aleatorio, utilizando en su lugar un corte temporal estricto (80\% pasado para entrenar, 20\% futuro para testar).
@@ -846,29 +835,28 @@ el proceso exigió una alta carga de cómputo. Al multiplicar las 1.790 combinac
 Este despliegue supuso un tiempo aproximado de 3 horas por posición, totalizando unas 12 horas de computación intensiva. 
 Para mitigar este coste, se empleó procesamiento paralelo (\texttt{n\_jobs=-1}), distribuyendo la carga de trabajo entre todos los núcleos de la CPU disponibles.
 
-\subsubsection*{8.4.3 Robustez y Persistencia}
+\subsubsection*{8.4.3 Robustez y persistencia}
 
 Durante el entrenamiento de modelos lineales como ElasticNet, se gestionaron problemas de convergencia habituales en datasets con alta
  dimensionalidad mediante \texttt{warnings.catch\_warnings}, evitando que el flujo se detuviera por iteraciones no completadas.
 
 La persistencia de los artefactos se resolvió mediante la serialización en archivos .pkl (pickle). Se tomó la decisión estratégica de conservar
- siempre una versión de Random Forest como arquitectura de respaldo (fallback), incluso en escenarios donde modelos lineales como Ridge presentaran
-  un MAE ligeramente inferior. Esta elección responde a la capacidad intrínseca de los modelos basados en árboles para manejar mejor la varianza y
-   los datos ruidosos en entornos de producción en tiempo real.
+ siempre los cuatros modelos entrenados, incluso en escenarios donde modelos lineales como Ridge presentaran
+  un MAE ligeramente inferior.
 
-\subsubsection*{8.4.4 Criterios de Evaluación y Selección de Métricas}
+\subsubsection*{8.4.4 Criterios de evaluación y selección de métricas}
 
 Para determinar la eficacia de los modelos y seleccionar el algoritmo definitivo para cada posición, se estableció un marco de evaluación dual. 
 Este enfoque combina métricas dimensionales (que miden la magnitud del error en puntos reales) y métricas adimensionales (que miden la capacidad
  del modelo para ordenar a los jugadores por calidad), permitiendo una visión holística del rendimiento predictivo.
 
-\paragraph*{1. Métricas Dimensionales: MAE y RMSE}
+\paragraph*{1. Métricas dimensionales: MAE y RMSE}
 
-Se seleccionaron el Error Absoluto Medio (MAE) y la Raíz del Error Cuadrático Medio (RMSE) para auditar la precisión de las predicciones en la unidad de medida del problema: los puntos Fantasy.
+Se seleccionaron el Error Absoluto Medio (MAE) y la Raíz del Error Cuadrático Medio (RMSE) para medir la precisión de las predicciones en la unidad de medida del problema: los puntos Fantasy.
 
 \begin{itemize}
 \item MAE (Mean Absolute Error): se estableció como la métrica principal de decisión. Su valor es directamente interpretable para el usuario final:
- representa cuántos puntos ``arriba o abajo'' suele equivocarse el modelo por cada jugador. Al no elevar los errores al cuadrado, el MAE es más robusto 
+ representa cuántos puntos arriba o abajo suele equivocarse el modelo por cada jugador. Al no elevar los errores al cuadrado, el MAE es más robusto 
  frente a eventos imprevisibles del fútbol (como una expulsión inesperada o una lesión en el minuto 5), evitando que un solo registro anómalo penalice 
  injustamente la validez global del modelo.
 
@@ -876,7 +864,7 @@ Se seleccionaron el Error Absoluto Medio (MAE) y la Raíz del Error Cuadrático 
 elevado que el MAE indicaría que el modelo comete fallos muy abultados en ciertos perfiles de jugadores, lo que permitió refinar el filtrado de outliers antes de la producción.
 \end{itemize}
 
-\paragraph*{2. Métrica Adimensional: Coeficiente de Spearman}
+\paragraph*{2. Métrica adimensional: Coeficiente de Spearman}
 
 En el ámbito de los juegos Fantasy, la utilidad de un modelo no reside únicamente en su precisión numérica, sino en su capacidad para establecer una 
 jerarquía correcta. Para un usuario, es más valioso identificar qué jugadores ocuparán los primeros puestos de rendimiento en la jornada que conocer la cifra exacta de sus puntos.
@@ -885,7 +873,7 @@ Para evaluar esta capacidad de ordenación, se utilizó el Coeficiente de Correl
  los valores brutos, sino que los transforma en rangos o posiciones (1º, 2º, 3º...). Técnicamente, evalúa la relación monótona entre las predicciones y los resultados reales:
 
 \begin{itemize}
-\item Funcionamiento: a diferencia de Pearson, que evalúa relaciones lineales, Spearman realiza un mapeo de los valores brutos a sus correspondientes rangos o posiciones. El coeficiente cuantifica la disparidad entre el ranking predicho y el ranking real; una coincidencia exacta en la jerarquía de los jugadores resulta en una correlación de $+1$, validando la naturaleza monótona de la predicción.
+\item Funcionamiento:el coeficiente cuantifica la disparidad entre el ranking predicho y el ranking real, una coincidencia exacta en la jerarquía de los jugadores resulta en una correlación de $+1$, validando la naturaleza monótona de la predicción.
 
 \item Utilidad real: permite validar el sistema como un motor de recomendación. Un modelo puede tener un error de puntos elevado (por ejemplo, predecir 15 puntos cuando el jugador suma 8), pero si mantiene a ese jugador en el primer puesto de la lista de recomendados y efectivamente es el mejor de la jornada, el valor de decisión para el usuario es máximo.
 
@@ -895,9 +883,9 @@ Para evaluar esta capacidad de ordenación, se utilizó el Coeficiente de Correl
 Esta métrica adimensional (con rango de $-1$ a $1$) fue determinante para confirmar que los modelos son capaces de orientar al usuario en la confección 
 de su alineación, garantizando que los jugadores con mayor probabilidad de éxito aparezcan sistemáticamente en las posiciones superiores del ranking.
 
-\paragraph*{3. Justificación del rechazo del Coeficiente de Determinación ($R^2$)}
+\paragraph*{3. Justificación del rechazo del coeficiente de determinación ($R^2$)}
 
-Durante la fase de validación, se descartó el uso del coeficiente $R^2$ como criterio de selección. El motivo principal es la alta estocasticidad (azar) intrínseca del fútbol.
+Durante la fase de validación, se descartó el uso del coeficiente $R^2$ como criterio de selección. El motivo principal es la alta aleatoriedad intrínseca del fútbol.
 
 Debido a que el rendimiento deportivo está sujeto a una volatilidad extrema que ninguna variable estadística puede capturar por completo (rebotes, 
 decisiones arbitrales, estado anímico), los valores de $R^2$ en este dominio suelen ser sistemáticamente bajos, situándose habitualmente por debajo de 0.2. 
@@ -908,7 +896,9 @@ Basar el éxito del proyecto en el $R^2$ habría llevado al rechazo erróneo de 
 
 El éxito de los modelos predictivos no reside únicamente en la elección del algoritmo, sino en la capacidad de transformar datos brutos de partidos en 
 señales informativas de alto valor. El feature engineering se diseñó como una capa de transformación intermedia que combina la ingeniería de series temporales
- con la creación de variables sintéticas de dominio específico. Mediante la síntesis de métricas base, se han generado indicadores complejos de eficiencia y 
+ con la creación de variables sintéticas de dominio específico.
+ 
+ Mediante la síntesis de métricas base, se han generado indicadores complejos de eficiencia y 
  ratio que permiten capturar la calidad técnica de un jugador más allá del volumen estadístico. La implementación técnica se apoya en el procesamiento vectorial
   con pandas y numpy, priorizando la eficiencia computacional y la eliminación de sesgos estadísticos.
 
@@ -979,7 +969,7 @@ en la Correlación de Spearman. A diferencia de Pearson, Spearman detecta relaci
 
 \subsection*{8.6 Implementación de IA Explicable (XAI)}
 
-Uno de los mayores retos al trabajar con modelos de Machine Learning complejos (como Ensembles o modelos con alta dimensionalidad) es su opacidad, 
+Uno de los mayores retos al trabajar con modelos de Machine Learning complejoses su opacidad, 
 conocida comúnmente como el problema de la ``caja negra''. Para un usuario de la plataforma, recibir una predicción de ``8.5 puntos'' sin contexto
  no genera confianza y dificulta la toma de decisiones.
 
@@ -988,7 +978,7 @@ desglosa de forma determinista qué factores han influido y en qué medida en ca
 
 \subsubsection*{8.6.1 Fundamentos de la metodología SHAP}
 
-El sistema utiliza la librería SHAP, fundamentada técnicamente en la Teoría de Juegos Cooperativos. Bajo este enfoque, la predicción final del modelo se
+El sistema utiliza la librería SHAP. Bajo este enfoque, la predicción final del modelo se
  considera un ``premio'' y las variables estadísticas del jugador (goles, minutos, precisión de pases, etc.) se consideran los ``jugadores'' que cooperan 
  para obtener dicho premio.
 
@@ -1015,10 +1005,10 @@ Para gestionar la heterogeneidad de los modelos (árboles y lineales) y las dife
  como una capa de abstracción entre los valores matemáticos de SHAP y el lenguaje natural deportivo.
 
 \begin{itemize}
-\item Polimorfismo de Modelos: el sistema detecta automáticamente la arquitectura del modelo cargado. Si es un bosque de decisión (Random Forest o XGBoost), 
+\item Polimorfismo de modelos: el sistema detecta automáticamente la arquitectura del modelo cargado. Si es un bosque de decisión (Random Forest o XGBoost), 
 instancía un \texttt{TreeExplainer}; si es un modelo lineal (Ridge o ElasticNet), utiliza un \texttt{LinearExplainer}.
 
-\item Mapeo Semántico: se implementó un diccionario exhaustivo (\texttt{EXPLICACIONES\_FEATURES}) que asocia cada variable técnica con una narrativa de 
+\item Mapeo semántico: se implementó un diccionario exhaustivo (\texttt{EXPLICACIONES\_FEATURES}) que asocia cada variable técnica con una narrativa de 
 impacto positivo y negativo, permitiendo que el usuario final comprenda la lógica deportiva detrás del dato.
 \end{itemize}
 
@@ -1034,11 +1024,6 @@ EXPLICACIONES_FEATURES = {
     }
 }
 \end{lstlisting}
-
-Mecanismo de Robustez (Fallback): en escenarios donde SHAP no puede inicializarse (por ejemplo, por falta de datos de fondo suficientes o incompatibilidad 
-de versiones en los artefactos serializados), el sistema activa un fallback basado en la importancia intrínseca del modelo (\texttt{feature\_importances\_}) 
-o en los coeficientes de regresión, asegurando que la API nunca devuelva una predicción sin su correspondiente justificación.
-
 \subsubsection*{8.6.3 Integración en el Flujo de la API}
 
 La capa XAI está integrada de forma síncrona en el contrato de respuesta de los endpoints de predicción. Cuando se invoca a \texttt{PredecirPorteroView} o
@@ -1091,7 +1076,7 @@ Las vistas principales del frontend son las siguientes:
 
 \item MenuPage: panel principal del sistema. Resume la información más relevante: clasificación, próximos partidos, jugadores destacados y predicciones generadas por los modelos.
 
-\item ClasificacionPage: muestra la tabla clasificatoria y permite consultar el estado de la liga por jornadas.
+\item ClasificacionPage: muestra la tabla clasificatoria y partidos de cada jornada.
 
 \item EquiposPage: listado general de equipos con acceso a sus fichas individuales.
 
@@ -1198,7 +1183,7 @@ tiempo de preparación de minutos a escasos segundos.
 El proceso de unificar datos procedentes de tres fuentes heterogéneas (FBRef, FutbolFantasy y Transfermarkt) supuso un reto de limpieza de datos superior al previsto. La principal 
 dificultad residió en la inconsistencia de los nombres de los futbolistas.
 
-Casos como los de los hermanos Williams (Iñaki y Nico, I. Williams y N. Williams) en el Athletic Club, o porteros con nombres extremadamente comunes como Eric García y Joan García, generaban colisiones en los algoritmos de búsqueda. 
+Casos como los de los hermanos Williams (Iñaki y Nico, I. Williams y N. Williams) en el Athletic Club, o jugadores con nombres extremadamente comunes como Eric García y Joan García, generaban colisiones en los algoritmos de búsqueda. 
 A esto se sumó la política restrictiva de bloqueos por IP de los portales de origen, que identificaban las ráfagas de peticiones como tráfico malicioso.
 
 \textbf{Solución:} Se abandonó la comparación simple por cadenas de texto en favor de la lógica difusa y el matching por contexto de partido (detallado en el punto 8.3). Además, para evadir los bloqueos, se diseñó 
@@ -1208,7 +1193,7 @@ la estrategia de backoff exponencial y la gestión de descargas locales controla
 Originalmente, el frontend se concibió utilizando el sistema de vistas y plantillas nativo de Django. Sin embargo, a medida que los requisitos de interactividad crecieron (especialmente con el sistema de drag and drop
  y los gráficos en tiempo real), se hizo evidente que una arquitectura monolítica no era suficiente.
 
-Se decidió migrar toda la capa de presentación a React. En un intento inicial por optimizar tiempos, se recurrió a herramientas de Inteligencia Artificial para automatizar la conversión de código Python/HTML a
+Se decidió migrar toda la capa de presentación a React. En un intento inicial por optimizar tiempos, se recurrió a herramientas de inteligencia artificial para automatizar la conversión de código Python/HTML a
  componentes JavaScript. No obstante, el resultado fue insatisfactorio: el código generado presentaba una deuda técnica inasumible, con errores de lógica en el manejo de hooks y una integración deficiente con la API.
 
 \textbf{Lección aprendida:} La migración tuvo que realizarse de forma manual e íntegra. Aunque esto supuso una inversión de tiempo considerable y un retraso en el cronograma original, garantizó la calidad del código, 

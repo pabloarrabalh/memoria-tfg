@@ -1,10 +1,22 @@
 \section*{3. Análisis de aplicaciones similares}
 
+Para contextualizar el desarrollo de la plataforma propuesta, resulta imprescindible realizar un 
+estudio del estado del arte que identifique las soluciones actuales, sus fortalezas y sus carencias
+ tecnológicas. En este apartado se lleva a cabo un análisis comparativo de las herramientas más 
+ representativas del ecosistema \textit{Fantasy} en España, evaluando tanto plataformas comerciales
+  consolidadas como proyectos de código abierto.
+  
+  El objetivo de este examen es definir un marco de
+   referencia funcional, detectar oportunidades de innovación y justificar las decisiones de diseño que 
+   permitirán dotar a este proyecto de un valor añadido diferencial. El estudio comienza con el análisis
+    de AnalíticaFantasy.com, uno de los referentes actuales en la gestión de datos estadísticos aplicados
+     al juego.
+
 \subsection*{3.1 AnalíticaFantasy.com}
 
 \subsubsection*{3.1.1 Descripción general de la plataforma}
 
-La plataforma web analizada proporciona un entorno completo para el seguimiento del fútbol y el 
+La web analizada proporciona un entorno completo para el seguimiento del fútbol y el 
 Fantasy Football. En su página principal, la aplicación muestra noticias destacadas y un componente 
 de actualización en tiempo real sobre el estado de forma de los jugadores, indicando cambios 
 relevantes como ``duda leve'' a ``disponible''. Además, ofrece información sobre los partidos de las 
@@ -15,7 +27,7 @@ equipo gane, ofreciendo así una visión integral del rendimiento y contexto com
 
 \subsubsection*{3.1.2 Detalles de equipos}
 
-En la vista de cada equipo, la plataforma ofrece información completa sobre el próximo partido, 
+En la vista de cada equipo, se ofrece información completa sobre el próximo partido, 
 incluyendo el rival y el horario del encuentro, así como la alineación probable con estimaciones de 
 titularidad para cada jugador. Además, incorpora información contextual como las condiciones 
 meteorológicas durante el partido, el registro de encuentros recientes del equipo y estadísticas de 
@@ -42,7 +54,7 @@ dificultad, pero en ningún momento se detalla en base a qué se toma esa decisi
 La aplicación permite la visualización de partidos pasados con un alto nivel de detalle. Para cada 
 encuentro, se muestran el resultado final, los goleadores, las tarjetas recibidas y los minutos 
 jugados por cada jugador. Sobre las alineaciones se representan gráficamente los puntos obtenidos en 
-cada plataforma Fantasy, pudiendo cambiar la referencia mediante botones interactivos.
+cada modelo Fantasy, pudiendo cambiar la referencia mediante botones interactivos.
 
 Al hacer clic sobre un jugador, se despliega un modal con toda la información individual. La 
 plataforma también muestra los resultados de las encuestas relacionadas con el partido y gráficas 
@@ -138,7 +150,7 @@ disponibles por sanción o lesión, así información especialmente relevante co
 habituales de faltas, penaltis y córners.
 
 Además, se presentan actuaciones recientes de los jugadores, incluyendo los puntos obtenidos en los 
-partidos y su posición, así como el valor de mercado dentro de la plataforma Biwenger.
+partidos y su posición, así como el valor de mercado dentro de la aplicación de Biwenger.
 
 \subsubsection*{3.2.4 Noticias y recomendaciones}
 
@@ -155,8 +167,8 @@ comunidad.
 
 \subsubsection*{3.2.5 Mercado}
 
-La plataforma incluye un apartado donde el usuario puede ver el valor de mercado de cada jugador, 
-cuenta con diferentes filtros donde se puede elegir entre otros: plataforma fantasy, equipo, 
+Se incluye un apartado donde el usuario puede ver el valor de mercado de cada jugador, 
+cuenta con diferentes filtros donde se puede elegir entre otros: modelo de puntuación fantasy, equipo, 
 posiciones\ldots Adicionalmente muestra el listado de jugadores con información histórica del precio de 
 cada jugador.
 
@@ -212,11 +224,6 @@ los partidos en sí, sino de los jugadores que participan en cada partido. Esto 
 complejidad significativa, ya que la obtención de los datos será más extensa y requerirá un mayor 
 preprocesamiento para unificar y limpiar la información.
 
-Otra dificultad adicional identificada es el matching de nombres entre las dos plataformas, ya que se 
-han observado discrepancias en la nomenclatura de algunos jugadores (por ejemplo, ``Pepelu'' en una 
-plataforma frente a ``José Luis García Vayá'' en otra), lo que implica diseñar un sistema para 
-resolver estas inconsistencias y garantizar que los datos de cada jugador se integren correctamente.
-
 \subsubsection*{3.3.2 Repositorios sin mantenimiento}
 
 Se han encontrado otros repositorios, entre ellos ``laliga-fantasy-bot'', 
@@ -249,7 +256,7 @@ encuentros disputados, incluyendo resultado final, goleadores, alineaciones titu
 puntuaciones Fantasy por jugador, minutos jugados y eventos relevantes como tarjetas y cambios, así 
 como estadísticas generales del partido (tiros, córners, pases, etc.).
 
-Cada plataforma integra vistas detalladas de jugadores con información esencial: posición y dorsal, 
+Cada web integra vistas detalladas de jugadores con información esencial: posición y dorsal, 
 valor de mercado actual, histórico de puntuaciones por jornada, comparativas de rendimiento en casa 
 versus fuera, y estado del jugador (disponible, lesionado o sancionado). Asimismo, todas implementan 
 un seguimiento completo de la disponibilidad de jugadores, incluyendo lesiones con tiempo estimado de 

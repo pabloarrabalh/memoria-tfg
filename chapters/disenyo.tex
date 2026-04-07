@@ -1,4 +1,4 @@
-﻿\section*{7. Diseño del sistema}
+\section*{7. Diseño del sistema}
 El presente capítulo describe el diseño integral del sistema desarrollado,
 abordando de forma estructurada tanto la arquitectura software como la
 organización de los datos y la experiencia de usuario. Se parte de una visión
@@ -12,7 +12,7 @@ servicios web, procesamiento de datos y modelos de Machine Learning. Para ello,
 se ha seguido un enfoque basado en buenas prácticas de ingeniería del software,
 priorizando la separación de responsabilidades, la modularidad y la
 reutilización de componentes.
-\subsection*{7.1 Arquitectura global del sistema}
+\subsection{7.1 Arquitectura global del sistema}
 La arquitectura del sistema define la organización de sus componentes
 principales, así como las relaciones e interacciones entre ellos, estableciendo
 las bases para su correcto funcionamiento y evolución futura. En este proyecto,
@@ -43,7 +43,7 @@ adecuada para la memoria de un TFG.
 
 
 
-\subsubsection*{Bloque de cliente: frontend}
+\subsubsection{Bloque de cliente: frontend}
 
 A diferencia de una arquitectura monolítica tradicional, el cliente actúa como
 un nodo independiente que se ejecuta en el navegador del usuario.
@@ -56,7 +56,7 @@ navegador descarga los activos del frontend y establece una conexión de red con
 el servidor a través de protocolos estándar.
 
 
-\subsubsection*{Punto de entrada: Nginx}
+\subsubsection{Punto de entrada: Nginx}
 
 Nginx se configura como el punto de entrada principal al servidor, actuando como intermediario 
 entre el cliente y los servicios internos. Su incorporación responde a decisiones de diseño 
@@ -70,7 +70,7 @@ centralizando la gestión de políticas de seguridad, como la configuración de 
 en un único punto.
 
 
-\subsubsection*{Núcleo del sistema: backend}
+\subsubsection{Núcleo del sistema: backend}
 El backend constituye la capa de aplicación desarrollada en Django y actúa como el núcleo que
  conecta y coordina el resto de servicios del sistema. En él se implementa la lógica de negocio,
  encargándose del procesamiento de las peticiones, la gestión de la autenticación
@@ -87,7 +87,7 @@ persistencia se encuentran claramente separadas. Este enfoque permite garantizar
 propiedades clave como la escalabilidad, mantenibilidad y extensibilidad,
 aspectos críticos en sistemas que integran componentes web y modelos de Machine
 Learning.
-\subsection*{7.1.2 Patrones empleados}
+\subsubsection{7.1.2 Patrones empleados}
 Con el objetivo de estructurar el sistema de forma clara, mantenible y
 escalable, se han aplicado diversos patrones de diseño arquitectónicos
 ampliamente utilizados en la ingeniería del software. Estos patrones permiten
@@ -98,7 +98,7 @@ aplicación concreta dentro del proyecto y la justificación de su uso desde un
 punto de vista técnico.
 
 
-\subsubsection*{Modelo MVC / MTV}
+\subsubsection{Modelo MVC / MTV}
 
 El sistema adopta el patrón clásico Model-View-Controller (MVC), adaptado al
 framework Django bajo la variante Model-Template-View (MTV). Este patrón
@@ -120,7 +120,7 @@ del protocolo HTTP, facilitando la testabilidad, el mantenimiento y la evolució
 del sistema a lo largo del desarrollo del proyecto.
 
 
-\subsubsection*{Patrón cliente-servidor}
+\subsubsection{Patrón cliente-servidor}
 
 El sistema se fundamenta en un modelo de desacoplamiento integral entre la
 interfaz de usuario y la lógica de servidor. Esta separación permite que el
@@ -137,7 +137,7 @@ futuro (como una aplicación móvil nativa) sin modificaciones estructurales.
 \end{itemize}
 
 
-\subsubsection*{Arquitectura en capas}
+\subsubsection{Arquitectura en capas}
 
 El sistema se estructura siguiendo una arquitectura en capas, donde cada nivel
 tiene una responsabilidad bien definida y se comunica únicamente con capas
@@ -157,7 +157,7 @@ modularidad del sistema, siendo especialmente relevante en un entorno híbrido
 que combina procesamiento de datos, modelos predictivos y servicios web.
 
 
-\subsection*{7.1.3 Patrones de comportamiento}
+\subsubsection{7.1.3 Patrones de comportamiento}
 Además de los patrones arquitectónicos, el sistema incorpora patrones de
 comportamiento que permiten gestionar de forma eficiente la interacción entre
 componentes y la ejecución de procesos complejos. Estos patrones resultan
@@ -168,7 +168,7 @@ poniendo especial énfasis en su utilidad dentro del sistema y en cómo
 contribuyen a mejorar la extensibilidad y desacoplamiento.
 
 
-\subsubsection*{Observer}
+\subsubsection{Observer}
 
 El patrón Observer define una relación uno-a-muchos donde múltiples objetos
 (observadores) son notificados automáticamente ante cambios de estado en un
@@ -187,7 +187,7 @@ Channels), utilizando Redis como backend.
 Este patrón desacopla la lógica de persistencia de las acciones derivadas
 (indexación y notificaciones), mejorando la posible escalada del sistema.
 
-\subsubsection*{Template method}
+\subsubsection{Template method}
 
 Define el esqueleto de un algoritmo en una clase base, delegando ciertos pasos
 en subclases que pueden redefinir comportamientos específicos.
@@ -204,7 +204,7 @@ Permite centralizar la lógica común del entrenamiento de modelos, reduciendo
 duplicidad de código y asegurando la consistencia en el pipeline de Machine
 Learning.
 
-\subsubsection*{Strategy}
+\subsubsection{Strategy}
 
 Permite seleccionar dinámicamente un algoritmo o comportamiento en tiempo de
 ejecución.
@@ -223,7 +223,7 @@ Este patrón facilita la experimentación y comparación entre distintos algorit
 (Random Forest, Ridge, Baseline), permitiendo cambiar la estrategia sin
 modificar el flujo principal de ejecución.
 
-\subsection*{7.1.4 Patrones en el frontend}
+\subsubsection{7.1.4 Patrones en el frontend}
 El diseño del frontend no solo responde a criterios visuales, sino también a
 principios estructurales que facilitan la gestión del estado y la reutilización
 de lógica. En este sentido, se han adoptado patrones propios del ecosistema
@@ -233,7 +233,7 @@ frontend, centrados en la gestión del estado global y la encapsulación de lóg
 reutilizable.
 
 
-\subsubsection*{Hooks}
+\subsubsection{Hooks}
 
 Los Hooks son funciones especializadas que permiten guardar el estado y otras funcionalidades 
 del ciclo de vida del framework dentro de componentes funcionales. A continuación, se describen 
@@ -254,7 +254,7 @@ Esta arquitectura basada en Hooks no solo mejora la legibilidad del código, sin
 frontend sea reactivo y eficiente, alineándose con los estándares actuales de la industria y 
 garantizando una experiencia de usuario fluida.
 
-\subsubsection*{Context API}
+\subsubsection{Context API}
 
 Context API es un sistema nativo de React diseñado para compartir datos de forma global entre componentes,
  eliminando la necesidad de pasar propiedades manualmente a través de niveles intermedios. 
@@ -271,7 +271,7 @@ Permite compartir información global entre componentes de forma eficiente,
 mejorando la escalabilidad y mantenibilidad del frontend.
 
 
-\subsection*{7.2 Pipeline de datos}
+\subsection{7.2 Pipeline de datos}
 El núcleo técnico del sistema reside en la transformación de datos deportivos
 brutos en conocimiento accionable. Este proceso se articula mediante un pipeline
 de tipo ETL (Extract, Transform, Load), compuesto por diversas fases que abarcan
@@ -289,7 +289,7 @@ algoritmos de Machine Learning.
 \end{figure}
 
 
-\subsection*{7.2.1 Ingesta}
+\subsubsection{7.2.1 Ingesta}
 Para la construcción del dataset, se han seleccionado dos fuentes de datos
 heterogéneas que ofrecen visiones complementarias del dominio:
 
@@ -301,7 +301,7 @@ conducciones progresivas, intercepciones, etc.).
 \end{itemize}
 
 
-\subsection*{7.2.2 Conciliación de entidades}
+\subsubsection{7.2.2 Conciliación de entidades}
 Uno de los mayores retos técnicos es la desambiguación de nombres. Un mismo
 jugador puede aparecer como "Lamine Yamal", "L. Yamal" o "Yamal" según la
 fuente.
@@ -315,7 +315,7 @@ Este proceso, junto con diccionarios para casos especiales de alias (ej: Pepelu
 vs. José Luis García Vayá), permite asignar correctamente a todos los jugadores
 sus puntos obtenidos en cada partido.
 
-\subsection*{7.2.3 Limpieza y normalización de datos}
+\subsubsection{7.2.3 Limpieza y normalización de datos}
 Una vez consolidado el histórico (2.5 temporadas), el script de procesamiento
 realiza tareas críticas de saneamiento:
 
@@ -330,11 +330,11 @@ eliminan registros de jugadores con menos de 10 minutos disputados en un
 partido, ya que su aporte estadístico no es representativo.
 \end{itemize}
 
-\subsection*{7.2.4 Ingeniería de características}
+\subsubsection{7.2.4 Ingeniería de características}
 Esta fase es la más determinante para la precisión del sistema. No se entrena el
 modelo con datos brutos, sino con variables elaboradas que capturan tendencias.
 
-\subsubsection*{7.2.4.1. Enriquecimiento con roles}
+\subsubsection{7.2.4.1. Enriquecimiento con roles}
 Se procesan los JSON de roles de FBRef para calcular un score de importancia por
 posición. La decisión de diseño clave aquí es la aplicación de un factor de
 posición exponencial. Si un jugador está en el top 1 de una métrica, su peso es
@@ -342,7 +342,7 @@ mucho mayor que si está en el top 10. La fórmula aplicada es:
 $$Score = \sum (Valor \times Peso \times \frac{1}{\sqrt{Posicion}})$$
 
 
-\subsubsection*{7.2.4.2 Variables temporales}
+\subsubsection{7.2.4.2 Variables temporales}
 Para capturar el estado de forma, se generan dos tipos de métricas sobre las
 estadísticas base (puntos, paradas, entradas, etc.):
 
@@ -355,7 +355,7 @@ de buen juego.
 \end{itemize}
 $$EWMA_t = \alpha \cdot X_t + (1-\alpha) \cdot EWMA_{t-1}$$
 
-\subsubsection*{7.2.4.3 Integración de clasificación y cuotas}
+\subsubsection{7.2.4.3 Integración de clasificación y cuotas}
 Para realizar la predicción de la jornada N
 N, el sistema utiliza información de la jornada anterior (N-1), incorporando tanto la 
 clasificación del equipo como la de su rival. De este modo, se introduce un contexto 
@@ -370,7 +370,7 @@ en las fases iniciales del proyecto, cuando no se incluían estas variables, los
   previa al partido, enriqueciendo el modelo con información externa de alto valor que los datos
    puramente históricos no lograban capturar por sí solos. Estos datos se descargan desde: \
    href{https://www.football-data.co.uk/spainm.php}{https://\linebreak www.football-data.co.uk/spainm.php}
-\subsection*{7.2.5 Prevención del data leakage}
+\subsubsection{7.2.5 Prevención del data leakage}
 En predicción deportiva, es común cometer el error de usar datos del futuro
 para predecir el pasado y dicho error ocurrió al inicio del proyecto. Para evitarlo, el sistema implementa tres
 salvaguardas:
@@ -387,7 +387,7 @@ con el futuro más reciente.
 
 
 
-\subsection*{7.3 Modelado predictivo}
+\subsection{7.3 Modelado predictivo}
 Una vez procesados los datos, el sistema aborda la fase de modelado mediante
 técnicas de Machine Learning supervisado. El objetivo es predecir el rendimiento
 futuro de los jugadores a partir de su histórico y de variables contextuales.
@@ -402,7 +402,7 @@ medias móviles, roles de élite, dificultad del rival, localía y cuotas de
 mercado.
 \end{itemize}
 
-\subsubsection*{7.3.1. Algoritmos y optimización}
+\subsubsection{7.3.1. Algoritmos y optimización}
 No se utiliza un único modelo, sino que se compite entre varias familias de
 algoritmos para cada posición:
 
@@ -420,7 +420,7 @@ hiperparámetros (profundidad del árbol, tasa de aprendizaje, número de
 estimadores) mediante validación cruzada, seleccionando el modelo con el menor
 Error Absoluto Medio (MAE).
 
-\subsection*{7.3.2 Métricas de evaluación del modelo}
+\subsubsection{7.3.2 Métricas de evaluación del modelo}
 Con el propósito de garantizar la validez científica y la utilidad práctica del
 sistema, la evaluación del rendimiento de los modelos se ha articulado en torno
 a dos métricas fundamentales: el Error Absoluto Medio (MAE) y el coeficiente de
@@ -438,7 +438,7 @@ aceptación, los cuales definen el nivel de precisión mínimo para considerar u
 resultado como satisfactorio y apto para el apoyo a la decisión.
 
 
-\subsubsection*{7.3.2.1. Justificación técnica del coeficiente de Spearman}
+\subsubsection{7.3.2.1. Justificación técnica del coeficiente de Spearman}
 A diferencia de la correlación de Pearson, que evalúa la relación lineal entre
 dos variables, el coeficiente de correlación de Spearman ($r_s$ o
 $\rho$) es una métrica adimensional que mide la fuerza y la dirección de la
@@ -492,7 +492,7 @@ recomendación estratégica.
 \end{enumerate}
 
 
-\subsubsection*{7.3.3. Criterios de validez y benchmarking de modelos}
+\subsubsection{7.3.3. Criterios de validez y benchmarking de modelos}
 Para determinar si un modelo predictivo es útil en un entorno tan volátil como
 el fútbol, no es suficiente con obtener un error bajo; es imperativo establecer
 qué constituye un "buen resultado" para cada posición. Antes de la fase de
@@ -580,7 +580,7 @@ Delanteros (DT) & $MAE \le 2.25$ & $MAE \le 2.75$ & $MAE > 3.25$ \\
 
 
 
-\subsection*{7.4 Decisiones de diseño estratégicas}
+\subsection{7.4 Decisiones de diseño estratégicas}
 Más allá de la implementación técnica, el sistema incorpora una serie de
 decisiones de diseño clave que afectan directamente a la validez, fiabilidad y
 utilidad del modelo predictivo. Estas decisiones han sido tomadas considerando
@@ -588,7 +588,7 @@ tanto aspectos teóricos como prácticos del dominio.
 En esta sección se exponen las principales elecciones estratégicas realizadas,
 junto con su justificación y su impacto en el comportamiento del sistema.
 
-\subsubsection*{7.4.1 Estrategia de extracción y congelación de datos}
+\subsubsection{7.4.1 Estrategia de extracción y congelación de datos}
 
 Se ha optado por congelar la extracción de datos en la jornada 17 de la
 temporada 2026/27. Esta decisión se fundamenta en los siguientes pilares:
@@ -615,7 +615,7 @@ tendría disponible en el momento de realizar su alineación.
 \end{itemize}
 
 
-\subsubsection*{7.4.2 Especialización de modelos por posición}
+\subsubsection{7.4.2 Especialización de modelos por posición}
 
 Una de las innovaciones clave en la arquitectura es la segmentación del
 aprendizaje según el rol del jugador. Se ha descartado el uso de un modelo único
@@ -646,7 +646,7 @@ posición, por lo que se considera esta opción lo mejor para aportar un valor y
 abordar el problema de la forma más realista posible.
 
 
-\subsection*{7.5 Modelado de datos}
+\subsection{7.5 Modelado de datos}
 El diseño de los datos constituye uno de los pilares fundamentales del sistema,
 ya que determina tanto la integridad de la información como la eficiencia en su
 acceso y procesamiento. Para ello, se ha seguido un enfoque progresivo que
@@ -663,7 +663,7 @@ hasta llegar a una implementación concreta en base de datos, alineada finalment
 con los modelos definidos en Django (models.py).
 
 
-\subsection*{7.5.1 Modelado conceptual}
+\subsubsection{7.5.1 Modelado conceptual}
 El modelo conceptual define las entidades principales del dominio y las
 relaciones entre ellas a alto nivel, sin entrar aún en detalles de
 implementación. En este caso, el dominio modelado corresponde a una competición
@@ -722,7 +722,7 @@ EquipoJugadorTemporada).
 
 
 
-\subsubsection*{7.5.2 Diagrama entidad-relación}
+\subsubsection{7.5.2 Diagrama entidad-relación}
 Dando el salto natural a la arquitectura relacional, el segundo diagrama elimina
 el ruido visual de los atributos para centrarse exclusivamente en cómo las
 entidades interactúan entre sí, se observan claramente las cardinalidades.
@@ -759,7 +759,7 @@ longitudinal de su rendimiento.
 
 
 
-\subsection*{7.5.3 Modelo lógico}
+\subsubsection{7.5.3 Modelo lógico}
 El modelo lógico representa la implementación concreta en base de datos
 relacional, y en este caso se ha desarrollado directamente a partir de Django
 (models.py), lo cual garantiza coherencia entre diseño e implementación.
@@ -791,7 +791,7 @@ Django:
 
 
 
-\subsection*{7.6 Infraestructura de datos y búsqueda}
+\subsection{7.6 Infraestructura de datos y búsqueda}
 Con el fin de cumplir los requisitos de rendimiento y escalabilidad, el sistema
 se apoya en una infraestructura de datos compuesta por múltiples tecnologías
 especializadas ya explicada en el apéndice de Stack Tecnológico. Cada una de ellas desempeña un papel fundamental en la gestión,
@@ -828,7 +828,7 @@ permitiendo implementar las mismas estrategias de indexación y consulta sin
 dependencia de licencias propietarias.
 
 
-\subsection*{7.8 Diseño de la interfaz}
+\subsection{7.8 Diseño de la interfaz}
 La interfaz de usuario constituye el punto de interacción entre el sistema y el
 usuario final, por lo que su diseño debe garantizar tanto la usabilidad como la
 claridad en la presentación de la información.
@@ -836,7 +836,7 @@ En esta sección se describe la estructura de navegación, los componentes
 principales y las decisiones de diseño visual adoptadas, con el objetivo de
 ofrecer una experiencia de usuario coherente e intuitiva.
 
-\subsubsection*{7.8.1 Nivel de navegación}
+\subsubsection{7.8.1 Nivel de navegación}
 
 El nodo raíz o vista de aterrizaje es el Menú (Home). Desde este punto, o a
 través del Sidebar, el sistema bifurca la navegación hacia los diferentes
@@ -852,7 +852,7 @@ la jornada seleccionada.
 \end{itemize}
 
 
-\subsubsection*{7.8.2 Estructura base y componentes persistentes}
+\subsubsection{7.8.2 Estructura base y componentes persistentes}
 
 La interfaz se construye sobre un layout principal que encapsula dos componentes
 de renderizado persistente, garantizando que el usuario nunca pierda el contexto
@@ -869,7 +869,7 @@ del usuario.
 módulos core del sistema: Menú, Mi Plantilla, Liga, Amigos, Equipos y Estadísticas.
 \end{itemize}
 
-\subsection*{7.8.3 Flujos de profundización}
+\subsubsection{7.8.3 Flujos de profundización}
 
 La aplicación implementa un sistema de navegación jerárquica donde las vistas
 generales actúan como pasarelas hacia vistas de detalle, pasando los
@@ -899,7 +899,7 @@ navegación específica más allá del navbar y el menú lateral.
 \end{figure}
 
 
-\subsubsection*{7.8.4 Diseño de la interfaz}
+\subsubsection{7.8.4 Diseño de la interfaz}
 El diseño de la paleta de colores responde a criterios de simplicidad, contraste y coherencia visual.
  La combinación de verde vibrante (\textit{Primary}) con tonalidades más oscuras busca transmitir una sensación 
  de tecnología, modernidad e innovación, valores que alinean 
@@ -931,7 +931,7 @@ El diseño de la paleta de colores responde a criterios de simplicidad, contrast
 \item \textbf{Body}: Noto Sans, sans-serif (textos corridos y descripciones)
 \end{itemize}
 
-\subsection*{7.9 Diseño de seguridad y autenticación}
+\subsection{7.9 Diseño de seguridad y autenticación}
 El sistema implementa la seguridad utilizando las capacidades nativas de Django,
 lo que incluye autenticación basada en sesiones, protección frente a ataques
 CSRF, gestión segura de cookies y almacenamiento de contraseñas mediante
@@ -940,14 +940,14 @@ framework gran parte de la gestión de la seguridad, reduciendo la complejidad
 del desarrollo y minimizando errores comunes en la implementación manual de
 estos mecanismos.
 
-\subsection*{7.10 Diseño del despliegue}
+\subsection{7.10 Diseño del despliegue}
 Para garantizar la portabilidad, escalabilidad y consistencia del sistema entre
 los diferentes entornos de ejecución, se ha adoptado una estrategia de
 containerización basada en Docker y Docker Compose. Esta decisión permite aislar
 las dependencias de cada componente, asegurando que el software se comporte de
 manera idéntica en desarrollo, preproducción y producción.
 
-\subsubsection*{7.10.1 Ecosistema de contenedores y rsponsabilidades}
+\subsubsection{7.10.1 Ecosistema de contenedores y rsponsabilidades}
 
 El sistema se descompone en cinco servicios principales orquestados mediante una
 red virtual privada:
@@ -977,7 +977,7 @@ al sistema.
 \caption{Diagrama de despliegue del sistema.}
 \label{fig:despliegue}
 \end{figure}
-\subsubsection*{7.10.2 Estrategia de costrucción}
+\subsubsection{7.10.2 Estrategia de costrucción}
 
 Para optimizar el rendimiento y la seguridad, se han diseñado Dockerfiles
 multi-etapa:
@@ -1019,6 +1019,7 @@ usuario completa y el rendimiento analítico requerido manteniendo una huella
 computacional mínima. Este enfoque garantiza la viabilidad del sistema dentro de
 los límites de computación del programa Azure for Students, evitando el
 agotamiento prematuro de las cuotas de crédito de la Universidad de Sevilla.
+
 
 
 

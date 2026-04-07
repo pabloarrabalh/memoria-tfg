@@ -16,7 +16,7 @@ conjunto, el stack se entiende como el conjunto de lenguajes, frameworks, bases
 de datos y herramientas que hacen posible el desarrollo, ejecución y operación 
 del sistema.
 
-\subsection*{5.1 Visión general de la arquitectura del sistema}
+\subsection{5.1 Visión general de la arquitectura del sistema}
 
 El sistema se basa en una arquitectura cliente‑servidor desacoplada, estableciendo 
 una separación estricta entre frontend, backend/API y motor de procesamiento de 
@@ -87,7 +87,7 @@ aporta muchas ventajas sin el coste de operación de múltiples servicios.
 \caption{Diagrama de resumen del stack tecnológico.}\label{fig:stack-resumen}
 \end{figure}
 
-\subsection*{5.2 Elección del lenguaje de programación: Python}
+\subsection{5.2 Elección del lenguaje de programación: Python}
 
 La decisión de emplear Python como lenguaje principal se fundamenta en razones técnicas y de 
 eficiencia en el desarrollo: el proyecto combina desarrollo web y un componente significativo de 
@@ -114,7 +114,7 @@ un componente central y no accesorio, elegir Python reduce la fricción técnica
 todo el ciclo de vida del dato dentro del mismo entorno tecnológico, lo que constituye una ventaja 
 estructural significativa.
 
-\subsection*{5.3 Backend: Django 5.1.4 + Django REST Framework}
+\subsection{5.3 Backend: Django 5.1.4 + Django REST Framework}
 
 El backend se implementa con Django 5.1.4 por una combinación de productividad, estructura y 
 seguridad. Django proporciona una base sólida para organizar el proyecto (apps, modelos, vistas, 
@@ -157,7 +157,7 @@ Spring Boot / Express: la principal desventaja en este proyecto sería la pérdi
 directa con el stack de ML en Python o la necesidad de introducir servicios adicionales para el 
 motor predictivo.
 
-\subsection*{5.4 Persistencia y base de datos: SQLite y PostgreSQL}
+\subsection{5.4 Persistencia y base de datos: SQLite y PostgreSQL}
 
 Durante la fase de desarrollo se ha utilizado SQLite por su simplicidad operativa: permite comenzar 
 a trabajar con rapidez, no requiere desplegar servicios adicionales y se integra de forma inmediata 
@@ -200,12 +200,12 @@ En este contexto, la elección de PostgreSQL permitió mantener coherencia con e
 planteado, reducir la complejidad técnica y optimizar el tiempo de desarrollo sin comprometer el 
 rendimiento necesario para el proyecto.
 
-\subsection*{5.5 Procesamiento de datos y Machine Learning}
+\subsection{5.5 Procesamiento de datos y Machine Learning}
 
 El proyecto incorpora un pipeline de datos completo que no se limita a entrenar un modelo: incluye 
 ingesta, limpieza, construcción de features, validación, evaluación e interpretabilidad.
 
-\subsubsection*{5.5.1 Preprocesado y ETL (Extract, Transform and Load)}
+\subsubsection{5.5.1 Preprocesado y ETL (Extract, Transform and Load)}
 
 Se emplean Pandas y NumPy para:
 
@@ -223,7 +223,7 @@ jugador en partido) y columnas representan variables. Esto se conoce como enfoqu
 mayoría de datos deportivos agregados, donde la señal predictiva suele estar en combinaciones de 
 variables independientes.
 
-\subsubsection*{5.5.2 Modelado (scikit‑learn, XGBoost, LightGBM)}
+\subsubsection{5.5.2 Modelado (scikit‑learn, XGBoost, LightGBM)}
 
 Se utiliza scikit‑learn para evaluación y validación (splits, métricas, pipelines y comparación de 
 enfoques). Además, se exploran modelos basados en árboles y gradient boosting (XGBoost y LightGBM), 
@@ -238,7 +238,7 @@ La elección de boosting se justifica por:
 \item Menor coste de ingeniería comparado con deep learning para este tipo de dato.
 \end{itemize}
 
-\subsubsection*{5.5.3 Interpretabilidad (XAI con SHAP)}
+\subsubsection{5.5.3 Interpretabilidad (XAI con SHAP)}
 
 La interpretabilidad se aborda con SHAP para generar explicaciones:
 
@@ -259,7 +259,7 @@ requerir más ajuste, más datos y mayor coste de entrenamiento para obtener mej
 no garantizadas frente a boosting. Dado el alcance del TFG, se prioriza un enfoque 
 más eficiente y explicable.
 
-\subsubsection*{5.5.4 Serialización e integración del modelo predictivo}
+\subsubsection{5.5.4 Serialización e integración del modelo predictivo}
 
 Para materializar la conexión entre la fase de entrenamiento y el entorno de 
 operación, se hace uso del módulo pickle de Python. Una vez que el pipeline de 
@@ -274,21 +274,21 @@ recalcular pesos. De esta forma, se garantiza una latencia baja en la respuesta
 HTTP y se mantiene una separación estricta entre el ciclo de entrenamiento 
 (offline) y el de inferencia (online).
 
-\subsection*{5.6 Obtención de datos y scraping}
+\subsection{5.6 Obtención de datos y scraping}
 
 El proyecto requiere recopilar información deportiva desde fuentes heterogéneas, por lo que se adopta 
 una estrategia híbrida de ingesta. En la práctica, muchas fuentes presentan limitaciones: APIs 
 incompletas, restricciones de uso, cambios de condiciones o modelos de pago, por lo que combinar 
 técnicas permite maximizar cobertura manteniendo viabilidad.
 
-\subsubsection*{5.6.1 Descarga de CSVs con cuotas (Football‑Data.co.uk)}
+\subsubsection{5.6.1 Descarga de CSVs con cuotas (Football‑Data.co.uk)}
 
 Una fuente clave de cuotas de apuestas son los ficheros CSV públicos de Football‑Data.co.uk 
 (SP1.csv), que ofrece enlaces de descarga histórica para España. Estos CSVs se integran en el 
 pipeline como datasets de entrada: se descargan y se normalizan para cruzarlos con el resto de 
 tablas del dominio.
 
-\subsubsection*{5.6.2 Consumo de APIs y evaluación de librerías}
+\subsubsection{5.6.2 Consumo de APIs y evaluación de librerías}
 
 A lo largo del desarrollo se exploran distintas APIs/librerías de datos deportivos (por ejemplo 
 statsbomb, soccerdata), finalmente descartadas por limitaciones prácticas (cobertura, 
@@ -296,7 +296,7 @@ estabilidad, compatibilidad con el dataset objetivo). Este trabajo forma parte d
 datos: evaluar fuentes, comparar consistencia temporal y decidir qué fuentes cumplen requisitos 
 mínimos (completitud, actualización, integrabilidad).
 
-\subsubsection*{5.6.3 Scraping: requests + parsing HTML}
+\subsubsection{5.6.3 Scraping: requests + parsing HTML}
 
 Dadas las limitaciones con las APIs, en la mayoría de casos se recurre a scraping con requests y 
 parsing con BeautifulSoup4 con lxml. Esta decisión permite mantener viabilidad económica y cobertura 
@@ -308,7 +308,7 @@ de datos, asumiendo el coste técnico de:
 \item Mitigar roturas ante cambios de HTML.
 \end{itemize}
 
-\subsection*{5.7 Frontend con React y Vite}
+\subsection{5.7 Frontend con React y Vite}
 
 La capa de presentación se desarrolla con React por su enfoque basado en componentes, idóneo para 
 dashboards y vistas con alta reutilización (tarjetas de jugadores, tablas, filtros, gráficos, 
@@ -316,14 +316,14 @@ paneles de explicación). Se utiliza Vite como herramienta de build y servidor d
 mejorando significativamente la experiencia de desarrollo en comparación con herramientas 
 tradicionales más pesadas.
 
-\subsubsection*{5.7.1 Desacoplamiento respecto al servidor}
+\subsubsection{5.7.1 Desacoplamiento respecto al servidor}
 
 Inicialmente se valora usar templates del lado servidor (Django templates), lo cual habría 
 simplificado la arquitectura a corto plazo. Sin embargo, se opta por un frontend desacoplado para 
 mantener separación de responsabilidades y permitir una evolución más flexible: rutas del cliente, 
 estados complejos y consumo de API de forma limpia.
 
-\subsubsection*{5.7.2 Base estructural: adaptación de React Petclinic}
+\subsubsection{5.7.2 Base estructural: adaptación de React Petclinic}
 
 El proyecto toma como base estructural React Petclinic, del cual se elimina toda la interfaz y 
 entidades, manteniendo únicamente el ``esqueleto funcional'' para adaptarlo al dominio deportivo. 
@@ -341,7 +341,7 @@ para visualización y gestión de estado.
 Templates del servidor: más sencillo al principio, pero limita escalabilidad de UI y mezcla 
 responsabilidades, complicando la evolución hacia un cliente rico.
 
-\subsection*{5.8 APIs y otras herramientas de soporte}
+\subsection{5.8 APIs y otras herramientas de soporte}
 
 Además de la API principal (DRF), se incorporan herramientas complementarias para resolver 
 necesidades de producto y de explotación del dato:
@@ -358,13 +358,13 @@ Este conjunto de herramientas se justifica por un objetivo práctico: mejorar la
 (búsquedas rápidas, navegación fluida) y reducir fricción en la integración de datos (matching y 
 normalización).
 
-\subsection*{5.9 Entorno de desarrollo, despliegue y calidad de software}
+\subsection{5.9 Entorno de desarrollo, despliegue y calidad de software}
 
 El proyecto adopta herramientas estándar para garantizar reproducibilidad, facilitar el desarrollo 
 y sostener calidad de software. Aunque el alcance sea académico, estas decisiones aproximan el 
 trabajo a prácticas profesionales y reducen riesgos técnicos.
 
-\subsubsection*{5.9.1 Gestión de Entornos Virtuales y Dependencias}
+\subsubsection{5.9.1 Gestión de Entornos Virtuales y Dependencias}
 
 Dado que el proyecto utiliza una gran cantidad de librerías con versiones específicas (especialmente 
 en el stack de Machine Learning), se ha optado por el uso de entornos virtuales mediante venv 
@@ -380,7 +380,7 @@ sistema, permitiendo la instalación masiva de las versiones exactas necesarias 
 comando. Puede ser generado automáticamente con diferentes herramientas, lo que disminuye en gran 
 medida la complejidad de su elaboración.
 
-\subsubsection*{5.9.2 Contenedores y orquestación: viabilidad de Docker}
+\subsubsection{5.9.2 Contenedores y orquestación: viabilidad de Docker}
 
 Se ha implementado una arquitectura basada en contenedores utilizando Docker, lo que permite aislar 
 cada componente del sistema en un entorno controlado. Para la gestión de estos servicios, se emplea 
@@ -417,7 +417,7 @@ cualquier proveedor de nube (AWS, Azure, Google Cloud, etc.) mediante un único 
 drásticamente la complejidad operativa.
 \end{itemize}
 
-\subsubsection*{5.9.3 Control de versiones, planificación y control de calidad}
+\subsubsection{5.9.3 Control de versiones, planificación y control de calidad}
 
 \textbf{Control de versiones:} GitHub.
 

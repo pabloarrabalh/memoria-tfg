@@ -97,46 +97,68 @@
 \textit{[Write the abstract in English here.]}
 
 \clearpage
-\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{2}
+\renewcommand{\contentsname}{Índice general}
+\makeatletter
+\newcommand{\tocgroup}[1]{\addtocontents{toc}{\protect\contentsline{tocgroup}{#1}{}{}}}
+\newcommand{\l@tocgroup}[2]{\vspace{0.5em}\noindent{\large\bfseries #1\par}}
+\renewcommand{\l@subsubsection}[2]{}
+\renewcommand{\l@paragraph}[2]{}
+\makeatother
 \tableofcontents
 
 \clearpage
+\tocgroup{I Introducción y conceptos}
+\phantomsection
 \addcontentsline{toc}{section}{1. Introducción}
 \input{chapters/introduction}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{2. Objetivos}
 \input{chapters/objetivos}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{3. Análisis similares}
 \input{chapters/analisis-similares}
 
 \clearpage
+\tocgroup{II Metodología y planificación}
+\phantomsection
 \addcontentsline{toc}{section}{4. Metodología}
 \input{chapters/metodologia}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{5. Tecnologías}
 \input{chapters/tecnologias}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{6. Identificación de requisitos}
 \input{chapters/requisitos}
 
 \clearpage
+\tocgroup{III Diseño y ejecución}
+\phantomsection
 \addcontentsline{toc}{section}{7. Diseño del Sistema}
 \input{chapters/disenyo}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{8. Implementación y desarrollo}
 \input{chapters/implementacion}
 
 \clearpage
+\tocgroup{IV Resultados y conclusiones}
+\phantomsection
 \addcontentsline{toc}{section}{9. Verificación, validación y calidad del software}
 \input{chapters/validacion}
 
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{Apéndice I. Enlaces externos}
 \input{chapters/apendice-enlaces}
 

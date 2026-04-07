@@ -7,7 +7,7 @@ enfoque incremental, asegurando que cada componente cumpla con los
 requisitos técnicos y funcionales definidos en las fases de diseño.
 
 
-\subsection*{9.1. Organización del entorno de pruebas}
+\subsection{9.1. Organización del entorno de pruebas}
 
 Se ha estructurado una suite de pruebas automatizadas compuesta por 
 111 casos de prueba, organizados en 6 módulos específicos según su 
@@ -42,10 +42,10 @@ test\_manual.py & Datos/Manual & 1 \\
 \end{itemize}
 
 
-\subsection*{9.2. Niveles de pruebas y resultados}
+\subsection{9.2. Niveles de pruebas y resultados}
 
 
-\subsubsection*{9.2.1. Pruebas Unitarias y de Integración}
+\subsubsection{9.2.1. Pruebas Unitarias y de Integración}
 
 Se han implementado pruebas para asegurar que las reglas de negocio 
 se cumplen estrictamente:
@@ -76,7 +76,7 @@ mediante tests que validan coherencia de datos, filtrado correcto
 por temporada y jornada, cálculos correctos de rankings.
 
 
-\subsubsection*{9.2.2. Validación de la API}
+\subsubsection{9.2.2. Validación de la API}
 
 Se han diseñado pruebas que cubren casos positivos y negativos:
 
@@ -94,7 +94,7 @@ Se han diseñado pruebas que cubren casos positivos y negativos:
 \end{itemize}
 
 
-\subsubsection*{9.2.3. Pruebas de Ciclo de Vida}
+\subsubsection{9.2.3. Pruebas de Ciclo de Vida}
 
 Se han automatizado múltiples flujos completos de usuario en la 
 plataforma con pruebas E2E (5 tests). Estos tests simulan:
@@ -115,7 +115,7 @@ Esto asegura que los mecanismos de seguridad, caché y persistencia
 funcionen correctamente en conjunto.
 
 
-\subsection*{9.3. Pruebas de carga}
+\subsection{9.3. Pruebas de carga}
 
 La escalabilidad y rendimiento se han evaluado mediante Locust, 
 simulando acceso concurrente de 20 usuarios durante 2 minutos a 
@@ -138,15 +138,22 @@ Latencia promedio & 708 ms \\
 \caption{Resultados de pruebas de carga}
 \end{table}
 
+Estos resultados reflejan un comportamiento adecuado en un entorno de desarrollo local, donde ya se han aplicado mecanismos de
+ optimización como el uso de caché mediante Redis. No obstante, para un despliegue real en producción será
+  necesario escalar la infraestructura para soportar mayores niveles de concurrencia y reducir la latencia.
+   En este sentido, la migración a un entorno cloud como Azure, permitirá
+    aprovechar recursos gestionados y una mejor configuración del sistema, por lo que se espera una mejora significativa 
+    en el rendimiento global.
 
-\subsection*{9.4. Resultados de cobertura y calidad}
+
+\subsection{9.4. Resultados de cobertura y calidad}
 
 Para auditar la calidad del código de forma objetiva, se han 
 utilizado dos herramientas complementarias: Coverage.py para la 
 cobertura dinámica y SonarQube para el análisis estático.
 
 
-\subsubsection*{9.4.1. Cobertura de código}
+\subsubsection{9.4.1. Cobertura de código}
 
 Se estableció un umbral crítico de aceptación del 65\%. Tras la 
 ejecución de la suite consolidada de 111 tests, el sistema alcanzó 
@@ -185,7 +192,7 @@ valor nulo 0.0\% en su indicador de cobertura, por lo que ha sido
 fundamental generar este reporte de cobertura.
 
 
-\subsubsection*{9.4.2. Análisis estático}
+\subsubsection{9.4.2. Análisis estático}
 
 El análisis mediante SonarQube proporciona una visión 
 multidimensional de la salud del proyecto:
@@ -224,7 +231,7 @@ para futuras evoluciones de la plataforma.
 \end{figure}
 
 
-\subsection*{9.6. Validación de los resultados de ML}
+\subsection{9.6. Validación de los resultados de ML}
 
 Como se detalló en el apartado 7.3.3, para evaluar la calidad 
 predictiva de los modelos desarrollados, se establecieron umbrales 
@@ -234,7 +241,7 @@ permiten clasificar la precisión de los modelos según la posición
 táctica:
 
 
-\subsubsection*{9.6.1 Objetivos de rendimiento por posición}
+\subsubsection{9.6.1 Objetivos de rendimiento por posición}
 
 \begin{table}[H]
 \centering
@@ -258,7 +265,7 @@ $> 3.25$ \\
 \end{table}
 
 
-\subsubsection*{9.6.2 Resultados obtenidos por demarcación}
+\subsubsection{9.6.2 Resultados obtenidos por demarcación}
 
 Tras el entrenamiento y la optimización de hiperparámetros mediante 
 Grid Search, se presentan a continuación los resultados obtenidos 
@@ -267,7 +274,7 @@ regularizada (Ridge, ElasticNet) y modelos basados en árboles
 (Random Forest, XGBoost).
 
 
-\paragraph*{A. Defensas (DF)}
+\paragraph{A. Defensas (DF)}
 
 El modelo Ridge destaca como el más preciso, logrando situarse 
 dentro del rango de rendimiento aceptable con un 
@@ -292,7 +299,7 @@ XGBoost & 2.7366 & 3.4026 & 0.0744 & lr: 0.1 \\
 \end{table}
 
 
-\paragraph*{B. Delanteros (DT)}
+\paragraph{B. Delanteros (DT)}
 
 En esta demarcación, el modelo ElasticNet obtuvo el mejor 
 desempeño, quedando muy cerca del umbral aceptable (2.75) con una 
@@ -318,7 +325,7 @@ XGBoost & 2.9387 & 3.8463 & 0.2279 & n\_est: 300 \\
 \end{table}
 
 
-\paragraph*{C. Mediocentros (MC)}
+\paragraph{C. Mediocentros (MC)}
 
 El modelo Ridge lidera la precisión en el centro del campo, 
 mostrando una estabilidad notable y situándose apenas a 0.06 
@@ -344,7 +351,7 @@ XGBoost & 2.7621 & 3.5537 & 0.1566 & lr: 0.1 \\
 \end{table}
 
 
-\paragraph*{D. Porteros (PT)}
+\paragraph{D. Porteros (PT)}
 
 Para la posición de portero, el modelo ElasticNet ofrece el mejor 
 ajuste, cumpliendo prácticamente de forma exacta con el objetivo 
@@ -369,7 +376,7 @@ XGBoost & 3.3537 & 4.0727 & -0.0407 & lr: 0.1 \\
 \end{table}
 
 
-\subsubsection*{9.6.3 Comparativa final y análisis de cumplimiento de objetivos}
+\subsubsection{9.6.3 Comparativa final y análisis de cumplimiento de objetivos}
 
 La siguiente tabla resume el cumplimiento de los objetivos por 
 cada posición utilizando el mejor modelo obtenido:
@@ -392,14 +399,14 @@ Porteros & ElasticNet & 3.19 & 3.18 & Cumplido \\
 \end{table}
 
 
-\paragraph*{Observaciones generales}
+\paragraph{Observaciones generales}
 
 En líneas generales, los modelos de regresión lineal (Ridge y 
 ElasticNet) han demostrado una mayor capacidad de generalización 
 frente a modelos complejos como XGBoost en este conjunto de datos. 
 Los resultados son satisfactorios, ya que en todas las posiciones 
-el $\mathrm{MAE}$ se mantiene \textbf{significativamente alejado 
-del Umbral de Alerta (rango P75)}, validando la utilidad del 
+el $\mathrm{MAE}$ se mantiene significativamente alejado 
+del Umbral de Alerta (rango P75), validando la utilidad del 
 modelo para la predicción de métricas en el contexto del estudio.
 
 Especialmente notable es que la desviación máxima respecto al 
@@ -407,30 +414,30 @@ objetivo es de tan solo 0.06 puntos en mediocentros, demostrando
 la consistencia del enfoque de modelado.
 
 
-\subsubsection*{9.6.4 Valoración global de los resultados}
+\subsubsection{9.6.4 Valoración global de los resultados}
 
 A pesar de que en las categorías de delanteros y mediocentros el 
 $\mathrm{MAE}$ se sitúa ligeramente por encima de la mediana fijada 
 como ``Objetivo aceptable'', los modelos se consideran 
-\textbf{válidos y funcionales} para el propósito del estudio por 
+válidos y funcionales para el propósito del estudio por 
 las siguientes razones:
 
 
-\paragraph*{1. Capacidad de clasificación (Correlación de Spearman)}
+\paragraph{1. Capacidad de clasificación}
 
 Las demarcaciones de delanteros ($\rho = 0.289$) y mediocentros 
 ($\rho = 0.228$) presentan los coeficientes de Spearman más 
 elevados del proyecto. Esto indica que el modelo tiene una 
-\textbf{notable capacidad para ordenar correctamente} a los 
+notable capacidad para ordenar correctamente a los 
 jugadores según su rendimiento real, lo cual es el objetivo 
 crítico en procesos de scouting. La capacidad de ranking es más 
 importante que la precisión absoluta cuando el objetivo es 
 identificar talento.
 
 
-\paragraph*{2. Proximidad a los umbrales}
+\paragraph{2. Proximidad a los umbrales}
 
-Las desviaciones respecto al objetivo son \textbf{mínimas}:
+Las desviaciones respecto al objetivo son mínimas:
 
 \begin{itemize}
   \item Delanteros: $\Delta \mathrm{MAE} = +0.04$ (1.5\% por encima 
@@ -441,22 +448,58 @@ Las desviaciones respecto al objetivo son \textbf{mínimas}:
 \end{itemize}
 
 Ambas desviaciones se mantienen muy alejadas del Umbral de Alerta 
-(P75), con un margen de seguridad de \textbf{0.46 y 0.59 puntos 
-respectivamente}, lo que demuestra la robustez de las 
+(P75), con un margen de seguridad de 0.46 y 0.59 puntos 
+respectivamente, lo que demuestra la robustez de las 
 predicciones.
 
 
-\paragraph*{3. Consistencia predictiva y generalización}
+\paragraph{3. Consistencia predictiva y generalización}
 
 El hecho de que modelos lineales regularizados (Ridge y ElasticNet) 
-sean los ganadores sugiere que el modelo ha \textbf{capturado 
-tendencias generales del juego} que no dependen del ruido o del 
+sean los ganadores sugiere que el modelo ha capturado 
+tendencias generales del juego que no dependen del ruido o del 
 overfitting. Esta característica garantiza una predicción real en 
 datos no vistos, lo que es esencial para su aplicación en 
-competiciones o temporadas futuras.
+competiciones o temporadas futuras. Resulta altamente revelador que modelos 
+lineales regularizados (Ridge y 
+ElasticNet) superen sistemáticamente a algoritmos basados en árboles de 
+decisión complejos (Random Forest y XGBoost) en todas las demarcaciones. 
+Esto confirma que el rendimiento individual en el fútbol contiene un 
+componente intrínseco de aleatoriedad (ruido). Mientras que modelos como 
+XGBoost tienden a sobreajustarse memorizando dicho ruido, 
+los modelos lineales demuestran una mayor capacidad de generalización al 
+capturar estrictamente la tendencia subyacente.
 
+\paragraph{4. La paradoja varianza vs. cnsistencia}
 
-\paragraph*{4. Resumen de validación final}
+Los resultados exponen un patrón estadístico que refleja fielmente la 
+lógica azarosa del deporte:
+\begin{itemize}
+  \item \textbf{Atacantes (DT y MC):} Presentan la mayor capacidad de 
+        clasificación ($\rho \approx 0.289$) pero un mayor error absoluto 
+        ($\mathrm{MAE}$). Es más sencillo ordenar la calidad de los atacantes 
+        debido a que los jugadores de élite destacan claramente en sus 
+        métricas base, pero predecir su puntuación exacta es complejo por 
+        depender de eventos de altísima varianza (como los goles o asistencias).
+  \item \textbf{Defensores y Porteros (DF y PT):} Cumplen con holgura los 
+        objetivos de $\mathrm{MAE}$ pero registran una capacidad de ranking pobre 
+        ($\rho < 0.12$). Sus puntuaciones base son mucho más estables y predecibles 
+        (dependen de volumen de juego, despejes o porterías a cero), pero dada 
+        la alta homogeneidad en sus calificaciones empíricas, el modelo 
+        encuentra dificultades para establecer una jerarquía predictiva clara.
+\end{itemize}
+
+\paragraph{6. Alta penalización de características}
+
+El análisis de los hiperparámetros óptimos arroja valores de penalización 
+notablemente altos, especialmente en los modelos Ridge (e.g., $\alpha=1000.0$ 
+en Defensas y $\alpha=250.0$ en Mediocentros). Esta necesidad del algoritmo 
+de suprimir agresivamente el impacto de ciertas variables indica la presencia 
+de multicolinealidad entre los predictores extraídos del scraping, confirmando 
+que la regularización ha sido una técnica crítica y exitosa para filtrar métricas 
+redundantes que no aportaban valor real a la predicción final.
+
+\paragraph{Resumen de validación final}
 
 \begin{table}[H]
 \centering
@@ -480,23 +523,23 @@ exactamente) \\
 \end{table}
 
 
-\paragraph*{Conclusión técnica}
+\paragraph{Conclusión técnica}
 
-Se \textbf{confirma la utilidad y robustez de la herramienta} 
+Se confirma la utilidad y robustez de la herramienta
 desarrollada. Mientras que el $\mathrm{MAE}$ nos proporciona una 
 medida de proximidad al valor exacto predicho, el coeficiente de 
-Spearman nos confirma que el modelo \textbf{``entiende'' la 
-jerarquía y estructura del rendimiento de los jugadores} en el 
+Spearman nos confirma que el modelo``entiende'' la 
+jerarquía y estructura del rendimiento de los jugadores en el 
 mercado real de la Liga EA Sports, permitiendo:
 
 \begin{enumerate}
-  \item Identificar correctamente el \textbf{talento infravalorado} 
+  \item Identificar correctamente el talento infravalorado
         (jugadores con rendimiento superior al esperado)
   
-  \item Detectar jugadores en \textbf{mala dinámica} (con 
+  \item Detectar jugadores en mala dinámica (con 
         rendimiento inferior a sus métricas base)
   
-  \item Proporcionar un \textbf{ranking fiable} para procesos de 
+  \item Proporcionar un ranking fiable para procesos de 
         fichaje y toma de decisiones
 \end{enumerate}
 
@@ -504,3 +547,4 @@ En conclusión, los modelos desarrollados son adecuados para su
 implementación en sistemas de recomendación de transferencias y 
 análisis predictivo de rendimiento en el contexto de la 
 competición analizada.
+

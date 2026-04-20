@@ -64,6 +64,7 @@ sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a
 \subsubsection{Implementación de Kanban}
 
 \textbf{Herramienta utilizada:} GitHub Projects
+\textbf{Herramienta de monitorización:} Clockify
 
 \textbf{Límites WIP aplicados:}
 \begin{itemize}
@@ -75,6 +76,7 @@ sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a
 \subsection{4.3 Planificación Temporal}
 
 \textbf{Herramienta de planificación:} Microsoft Project
+\textbf{Herramienta de monitorización:} Clockify
 
 \textbf{Parámetros de planificación:}
 \begin{itemize}
@@ -494,8 +496,7 @@ Días de trabajo efectivo (4h/día) & 91 días & 96 días & + 5 días efectivos 
 \end{tabularx}
 \end{center}
 
-Como se observa en los datos, el esfuerzo total del proyecto solo sufrió un incremento de 20 horas (equivalentes a 5 jornadas de trabajo de 4 horas). A nivel de calendario, la finalización se desplazó hasta el 7 de abril. Gracias al gran margen de holgura planificado desde el principio, este desplazamiento temporal fue absorbido íntegramente sin poner en riesgo la entrega ni la defensa del proyecto.
-
+Como se observa en los datos, el esfuerzo total del proyecto solo sufrió un incremento de 20 horas (equivalentes a 5 jornadas de trabajo de 4 horas). A nivel de calendario, la finalización se desplazó hasta el 7 de abril. Gracias al gran margen de holgura planificado desde el principio, este desplazamiento temporal fue absorbido íntegramente sin poner en riesgo la entrega ni la defensa del proyecto. 
 \subsubsection{Comparativa de esfuerzo por paquetes de trabajo}
 
 En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura de Desglose de Trabajo (EDT), evidenciando dónde se produjeron las desviaciones:
@@ -519,6 +520,8 @@ En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura 
 \end{tabularx}
 \end{center}
 
+Todas las entradas de la herramienta Clockify se pueden consultar en el Apéndice II-Clockify.
+
 \subsubsection{Análisis de desviaciones}
 
 Al comparar la planificación inicial con el tiempo real invertido, se observan variaciones inherentes a la naturaleza de un proyecto que combina ingeniería de software y machine learning. Las diferencias más significativas se concentraron en las siguientes áreas:
@@ -541,13 +544,13 @@ Además del coste de personal, se han contemplado los siguientes gastos operativ
 
 \textbf{CAPEX (Capital Expenditure):}
 \begin{itemize}
-    \item Amortización del equipo informático utilizado. Se considera un ordenador con un coste aproximado de 1.200 € y una vida útil de 4 años. Imputando un uso parcial al proyecto, se estima un coste fijo de 100 €.
+   \item \textbf{Amortización de equipo informático:} Según las tablas de la AEAT 2026, los equipos para tratamiento de información tienen un coeficiente de amortización lineal máximo del 26\% anual. Para un ordenador de 1.200 €, la amortización imputada por las 17 semanas de duración del proyecto se calcula como: $1.200 \times 0,26 \times (17/52) = 102,00$ €. Se establece un coste fijo de \textbf{102 €}.
 \end{itemize}
 
 \textbf{OPEX (Operational Expenditure):}
 \begin{itemize}
     \item Uso de herramientas externas y servicios cloud. Esto incluye el control de versiones mediante GitHub (plan Team, 4 €/usuario/mes), herramientas de Inteligencia Artificial como Gemini Pro (aprox. 20 €/mes), y el despliegue de la aplicación mediante contenedores Docker sobre Microsoft Azure (App Service y Container Registry), con un coste estimado de 30 €/mes.
-    \item No obstante, gracias a la disponibilidad de licencias educativas y el programa Azure for Students, el coste real aplicado al proyecto ha sido de 0 €, lo que supone un ahorro aproximado de 162 € durante los tres meses de desarrollo.
+    \item No obstante, gracias a la disponibilidad de licencias educativas y el programa Azure for Students, el coste real aplicado al proyecto ha sido de 0 €, lo que supone un ahorro aproximado de 216 € durante los cuatro meses de desarrollo.
 \end{itemize}
 
 \subsubsection{Cálculo de costes}
@@ -560,28 +563,28 @@ Aplicando las premisas anteriores a las horas reales de trabajo:
 \toprule
 \textbf{Concepto de Gasto} & \textbf{Coste Planificado (364 h)} & \textbf{Coste Real (384 h)} \\
 \midrule
-Coste Personal (Horas $\times$ 31 €) & 11.284,00 € & 11.904,00 € \\
-CAPEX (Amortización de equipo) & 100,00 € & 100,00 € \\
+Coste Personal (Horas $\times$ 31) € & 11.284,00 € & 11.904,00 € \\
+CAPEX (Amortización de equipo) & 102,00 € & 102,00 € \\
 OPEX (Licencias e Infraestructura Cloud) & 0,00 €* & 0,00 €* \\
 \midrule
-COSTE TOTAL DEL PROYECTO & 11.384,00 € & 12.004,00 € \\
+COSTE TOTAL DEL PROYECTO & 11.386,00 € & 12.006,00 € \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-\noindent (Nota: Sin la aplicación de licencias educativas, el OPEX ascendería a 162 € en total).
+\noindent (Nota: Sin la aplicación de licencias educativas, el OPEX ascendería a 216 € en total).
 
-El coste final de desarrollo del Trabajo de Fin de Grado asciende a 12.004,00 €, lo que supone un incremento de 620,00 € respecto a lo estimado inicialmente, derivado principalmente del aumento de horas en las fases de entrenamiento de modelos y desarrollo.
+El coste final de desarrollo del Trabajo de Fin de Grado asciende a 12.006,00 €, lo que supone un incremento de 620,00 € respecto a lo estimado inicialmente, derivado principalmente del aumento de horas en las fases de entrenamiento de modelos y desarrollo.
 
 \subsubsection{Reserva de Contingencia}
 
 Atendiendo a las buenas prácticas en la dirección y gestión de proyectos, no es recomendable establecer un presupuesto cerrado sin margen de maniobra. Por ello, se ha establecido una reserva de contingencia del 10 \% sobre el coste total final:
 
-\textbf{Reserva de contingencia:} 1.200,40 €
+\textbf{Reserva de contingencia:} 1.200,60 €
 
 Por tanto, el presupuesto final estimado con el que se debería dotar al proyecto para garantizar su viabilidad técnica y económica asciende a:
 
 \begin{center}
-\Large 13.204,40 €
+\Large 13.206,60 €
 \end{center}
 

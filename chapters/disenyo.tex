@@ -23,7 +23,7 @@ flexibilidad y mantenibilidad del sistema.
 Esta separación permite desacoplar responsabilidades y facilitar la evolución
 independiente de cada componente. En particular, la capa de datos queda
 especializada en tres subsistemas complementarios: persistencia transaccional en
-PostgreSQL, búsqueda y recuperación documental en OpenSearch, y almacenamiento
+PostgreSQL, búsqueda y recuperación documental en MeiliSearch, y almacenamiento
 en memoria de baja latencia mediante Redis. Esta distribución funcional reduce
 cuellos de botella en lectura, mejora la capacidad de respuesta del sistema y
 habilita comunicación asíncrona eficiente para funcionalidades en tiempo real.
@@ -179,7 +179,7 @@ objeto sujeto.
 Se implementa mediante el sistema de signals de Django (\texttt{signals.py}):
 \begin{itemize}
 \item Creación automática de UserProfile tras la creación de un User.
-\item Indexación de entidades (Jugador, Equipo) en OpenSearch.
+\item Indexación de entidades (Jugador, Equipo) en MeiliSearch.
 \item Emisión de notificaciones en tiempo real mediante WebSockets (Django
 Channels), utilizando Redis como backend.
 \end{itemize}
@@ -806,7 +806,7 @@ relacional primario. Almacena la información estructural y crítica: datos de
 jugadores, histórico de plantillas, usuarios y configuraciones de seguridad.
 Garantiza la integridad referencial y el cumplimiento de las propiedades ACID.
 
-\item \textbf{OpenSearch}: Se utiliza como motor de indexación y búsqueda
+\item \textbf{MeiliSearch}: Se utiliza como motor de indexación y búsqueda
 avanzada. Su función es permitir que el Buscador (RF4) y el Matching de
 entidades funcionen con latencias mínimas, incluso sobre grandes volúmenes de
 texto, mediante el uso de índices invertidos.
@@ -825,7 +825,8 @@ solución completamente abierta y sin costes asociados, se decidió sustituirlo
 por OpenSearch. Esta alternativa, desarrollada como un fork open source de
 Elasticsearch, mantiene una alta compatibilidad a nivel conceptual y funcional,
 permitiendo implementar las mismas estrategias de indexación y consulta sin
-dependencia de licencias propietarias.
+dependencia de licencias propietarias. Finalmente, esta opción se descartó debido
+ a motivos de rendimiento y se sustituyó por MeiliSearch.
 
 
 \subsection{7.8 Diseño de la interfaz}
@@ -949,7 +950,7 @@ manera idéntica en desarrollo, preproducción y producción.
 
 \subsubsection{7.10.1 Ecosistema de contenedores y rsponsabilidades}
 
-El sistema se descompone en cinco servicios principales orquestados mediante una
+Durante el desarrollo sistema se descompone en cinco servicios principales orquestados mediante una
 red virtual privada:
 
 \begin{itemize}
@@ -960,10 +961,8 @@ persistencia se garantiza mediante volúmenes de Docker (postgres\_data).
 Proporciona caché distribuida para respuestas de API y backend de channel layer
 para Django Channels. Su incorporación reduce latencia en lecturas repetidas y
 permite comunicación en tiempo real entre múltiples instancias del backend.
-\item \textbf{Motor de búsqueda (opensearch)}: nodo de OpenSearch 2.11
-encargado de la indexación y consultas de alto rendimiento. Incluye
-healthchecks mediante curl para asegurar la disponibilidad del clúster antes de
-iniciar el backend.
+\item \textbf{Motor de búsqueda (meilisearch)}: nodo de meilisearch
+encargado de la indexación y consultas de alto rendimiento.
 \item \textbf{Núcleo de aplicación (backend)}: ejecuta la lógica de Django
 sobre un servidor Daphne (ASGI), permitiendo la gestión híbrida de peticiones
 REST y comunicaciones bidireccionales mediante WebSockets.
@@ -973,10 +972,23 @@ al sistema.
 \end{itemize}
 \begin{figure}[H]
 \centering
+\includegraphics[width=0.8\textwidth]{images/despliegue-local.png}
+\caption{Diagrama de despliegue del sistema en local.}
+\label{fig:despliegue-local}
+\end{figure}
+
+Para la fase de producción, se ha optado por una estrategia diferente, utilizar servicios gestionados en la nube para
+alojar la base de datos, la capa de caché y el frontend. Esta decisión ha sido motivada por el uso del crédito de Azure
+proporcionado por la Universidad de Sevilla, si se desplegaba todo en conjunto el rendimiento era deficiente y se consumiría todo
+el crédito disponible en poco tiempo.
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=0.8\textwidth]{images/diagramadespliegue.png}
-\caption{Diagrama de despliegue del sistema.}
+\caption{Diagrama de despliegue del sistema en fase de producción.}
 \label{fig:despliegue}
 \end{figure}
+
 \subsubsection{7.10.2 Estrategia de costrucción}
 
 Para optimizar el rendimiento y la seguridad, se han diseñado Dockerfiles

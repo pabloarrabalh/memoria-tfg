@@ -199,7 +199,7 @@ Para personalizar la experiencia, \texttt{favoritos.py} persiste las preferencia
 \subsubsection{8.1.2.2 Motor de búsqueda, clasificación y agregación de estadísticas}
 
 Este bloque constituye el núcleo analítico del sistema, encargándose de transformar volúmenes masivos de métricas en bruto en información estructurada,
- ránkings comparativos y narrativas de partido. El módulo \texttt{buscar.py} actúa como la interfaz de abstracción sobre el motor OpenSearch, implementando
+ ránkings comparativos y narrativas de partido. El módulo \texttt{buscar.py} actúa como la interfaz de abstracción sobre el motor MeiliSearch, implementando
   búsquedas de texto con lógica difusa sobre jugadores y equipos, aplicando pesos dinámicos para priorizar coincidencias exactas. Complementando esta 
   capa, \texttt{jugador\_insight.py} utiliza un motor heurístico que pondera estadísticas clave según la demarcación del futbolista para generar conclusiones
    semánticas dinámicas, transformando datos numéricos en información de valor deportivo.
@@ -364,7 +364,7 @@ Para mantener el desacoplamiento del código, se utilizó el patrón Observer me
 eventos en la base de datos sin necesidad de ensuciar las vistas con lógica adicional. Se implementaron tres flujos críticos:
 
 \begin{itemize}
-\item Indexación en OpenSearch: cada vez que un Jugador o Equipo es creado o actualizado, una señal \texttt{post\_save} actualiza automáticamente el índice en el motor de búsqueda, garantizando que los resultados de búsqueda estén siempre sincronizados.
+\item Indexación en MeiliSearch: cada vez que un Jugador o Equipo es creado o actualizado, una señal \texttt{post\_save} actualiza automáticamente el índice en el motor de búsqueda, garantizando que los resultados de búsqueda estén siempre sincronizados.
 \item Auto-predicción en segundo plano: al recibir nuevas estadísticas de un partido, el sistema dispara automáticamente el cálculo de la predicción para la siguiente jornada.
 \item Gestión de perfiles: creación automática de la entidad UserProfile al registrar un nuevo usuario en el sistema auth.
 \end{itemize}
@@ -406,7 +406,7 @@ Esto permite servir datos idénticos de forma instantánea, invalidando el conte
 
 Para garantizar la robustez del sistema desde el momento del despliegue, se ha implementado una lógica de inicialización avanzada en el 
 componente \texttt{apps.py}. Este módulo no solo registra la configuración de la aplicación, sino que actúa como un orquestador de integridad, 
-asegurando que todos los servicios dependientes (Base de Datos, OpenSearch y Modelos de ML) estén sincronizados y listos para operar.
+asegurando que todos los servicios dependientes (Base de Datos, MeiliSearch y Modelos de ML) estén sincronizados y listos para operar.
 
 \subsubsection{8.1.4.1 Inicialización asíncrona y gestión de cold start}
 
@@ -434,7 +434,7 @@ La función \texttt{\_initialize\_data} ejecuta la lógica de iniciar el servido
 \item Auditoría de persistencia: comprueba el volumen de registros en Partido y Estadisticas. Si detecta una base de datos vacía, marca el sistema como ``incompleto''.
 \item Carga masiva de datos: si la comprobación falla, invoca el módulo de scraping para poblar la base de datos desde cero. Un detalle técnico relevante es la desconexión temporal de Signals durante esta fase; esto evita que se disparen miles de hilos de predicción innecesarios durante una carga masiva, optimizando el uso de CPU y memoria.
 \item Verificación de roles: asegura que los campos JSON de roles (corners, penaltis) estén poblados, lanzando procesos de limpieza si detecta una carencia superior al 50\%.
-\item Sincronización con el motor de búsqueda: verifica la disponibilidad del cliente OpenSearch y fuerza una reindexación completa de jugadores y equipos.
+\item Sincronización con el motor de búsqueda: verifica la disponibilidad del cliente MeiliSearch y fuerza una reindexación completa de jugadores y equipos.
 \item Pre-generación de inferencias: identifica jornadas de la temporada actual sin predicciones y lanza el comando de generación para que el usuario disponga de datos predictivos desde el primer minuto.
 \end{enumerate}
 
@@ -720,7 +720,7 @@ Para deportes es demasiado rígido.
 Ejemplo comparativo:
 \begin{lstlisting}[language=Python,caption={Comparación de distancia Levenshtein vs WRatio}]
 "Isaac Palazon" vs "Isaac Palazon Camacho"
-Levenshtein: 9 caracteres de diferencia → 57.1% similitud (por debajo del umbral)
+Levenshtein: 9 caracteres de diferencia -> 57.1% similitud (por debajo del umbral)
 \end{lstlisting}
 
 Con Levenshtein, muchas coincidencias legítimas quedarían por debajo del umbral de aceptación.
@@ -739,7 +739,7 @@ Cuando una fuente usa el nombre completo y otra usa una versión abreviada, el P
 \item \textbf{Token Sort Ratio:} divide en tokens (palabras), ordena alfabéticamente y compara.
 \begin{lstlisting}[language=Python,caption={Token Sort Ratio: ordenación de tokens}]
 "Garcia Joan" vs "Joan Garcia"
-→ Ambos se ordenan como ["Garcia", "Joan"]
+-> Ambos se ordenan como ["Garcia", "Joan"]
 Token Sort Ratio = 100%
 \end{lstlisting}
 Este paso es clave para datos procedentes de diferentes portales donde el orden de los nombres es impredecible.
@@ -1237,3 +1237,31 @@ Esto provocó un fenómeno de data leakages: el modelo "predecía" el pasado uti
 La implementación del sistema ha sido un proceso iterativo de refinamiento técnico. La transición de un modelo monolítico a uno desacoplado, la superación de las barreras de extracción de datos y la corrección de sesgos en los modelos
  predictivos han consolidado una plataforma que no solo es funcional, sino también escalable y robusta ante las inconsistencias del mundo real. Los problemas enfrentados han servido para validar la arquitectura propuesta, demostrando que la integración de Machine Learning en entornos de producción exige un control riguroso tanto de la infraestructura como de la integridad de los datos.
 
+\subsubsection{8.8.5 Elección del motor de búsqueda}
+
+Durante el desarrollo del sistema, la elección del motor de búsqueda ha sido un aspecto clave debido a la necesidad de realizar consultas eficientes sobre grandes volúmenes de datos deportivos.
+
+En una primera fase, se optó por utilizar \textbf{ElasticSearch}, aprovechando su integración con servicios gestionados en la nube y su potente sistema de indexación. Sin embargo, esta solución presentaba una limitación importante: tras un periodo inicial gratuito, el servicio requería una suscripción de pago, lo cual no se ajustaba a los requisitos del proyecto.
+
+Como alternativa, se evaluó \textbf{OpenSearch}, un fork open-source de ElasticSearch que eliminaba dicha restricción económica. No obstante, durante las pruebas de despliegue se observó que su consumo de recursos era elevado, especialmente en términos de memoria RAM. Esto lo hacía inviable en entornos con recursos limitados, como las máquinas virtuales gratuitas o de bajo coste disponibles en Azure.
+
+\textbf{Solución:} Finalmente, se optó por \textbf{MeiliSearch}, un motor de búsqueda ligero y optimizado para rendimiento, que permite su despliegue en entornos con recursos reducidos sin comprometer significativamente la velocidad de respuesta. Esta elección permitió mantener la funcionalidad de búsqueda avanzada dentro de las restricciones de infraestructura del proyecto, asegurando al mismo tiempo una experiencia de usuario fluida.
+
+Esta transición evidencia la importancia de considerar no solo las capacidades técnicas de una herramienta, sino también su viabilidad en entornos reales de despliegue, especialmente cuando existen limitaciones económicas y de recursos.
+\subsubsection{8.8.6 Despliegue en producción}
+
+El despliegue en producción planteó desafíos significativos, especialmente en relación con la gestión de costes y la sostenibilidad de la infraestructura a lo largo del tiempo.
+
+Inicialmente, se consideró una arquitectura monolítica basada en una única máquina virtual en Azure que albergara todos los componentes del sistema. Sin embargo, durante la fase de estimación de costes se determinó que esta solución supondría un gasto mensual mayor al crédito estundiantil de Azure, lo cual resultaba inviable para un proyecto académico cuyo objetivo es mantenerse accesible durante varios meses para su evaluación.
+
+\textbf{Solución:} Se rediseñó la arquitectura hacia un modelo distribuido, delegando distintos componentes en servicios especializados y, en muchos casos, con planes gratuitos o de bajo coste:
+\begin{itemize}
+    \item El \textbf{frontend} se desplegó en Vercel, aprovechando su integración con aplicaciones SPA y su red de distribución global.
+    \item La \textbf{base de datos} se externalizó a Supabase, proporcionando un servicio PostgreSQL gestionado.
+    \item El sistema de \textbf{caché} se implementó mediante Upstash Redis, optimizado para entornos serverless.
+    \item En Azure se mantuvieron únicamente los componentes críticos: el \textbf{backend en Django} y el motor de búsqueda \textbf{MeiliSearch}.
+\end{itemize}
+
+Esta estrategia permitió reducir drásticamente los costes de infraestructura, manteniendo al mismo tiempo la escalabilidad y disponibilidad del sistema. Además, el enfoque distribuido mejora la resiliencia de la aplicación y refleja una arquitectura más cercana a entornos reales de producción.
+
+En conclusión, el proceso de despliegue no solo ha servido para optimizar recursos, sino también para validar decisiones arquitectónicas orientadas a la sostenibilidad y eficiencia del sistema.

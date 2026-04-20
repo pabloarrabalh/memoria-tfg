@@ -350,9 +350,8 @@ necesidades de producto y de explotación del dato:
 apodos, diferencias ortográficas) al conciliar entidades entre fuentes. Esto es habitual cuando se 
 combinan datasets externos y scraping.
 
-\textbf{Opensearch:} se emplea como motor de búsqueda para habilitar consultas rápidas sobre campos 
-de texto (nombres de jugadores/equipos). Opensearch construye un índice invertido a partir del 
-texto analizado, lo que permite búsquedas full‑text eficientes y ranking por relevancia.
+\textbf{Meilisearch:} se emplea como motor de búsqueda para habilitar consultas rápidas sobre campos 
+de texto (nombres de jugadores/equipos). Se valoró también el uso de ElasticSearch y OpenSearch, pero fueron descartados por motivos técnicos.
 
 Este conjunto de herramientas se justifica por un objetivo práctico: mejorar la experiencia de usuario 
 (búsquedas rápidas, navegación fluida) y reducir fricción en la integración de datos (matching y 
@@ -398,7 +397,7 @@ de build de Vite.
 \item \textbf{Persistencia (PostgreSQL):} Servicio dedicado para la base de datos relacional, 
 asegurando el almacenamiento persistente mediante volúmenes de Docker.
 
-\item \textbf{Motor de Búsqueda (OpenSearch):} Nodo independiente para la indexación y búsqueda 
+\item \textbf{Motor de Búsqueda (Meilisearch):} Nodo independiente para la indexación y búsqueda 
 avanzada de datos, garantizando que los procesos de búsqueda intensiva no penalicen el rendimiento 
 de la base de datos principal o no afecte al no estar disponible.
 \end{itemize}

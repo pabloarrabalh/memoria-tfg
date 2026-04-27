@@ -90,11 +90,42 @@
 
 \clearpage
 \section*{Resumen}
-\textit{[Escribe aquí el resumen en español.]}
+\textit{El presente Trabajo de Fin de Grado describe el diseño e implementación de LigaMaster, una plataforma web orientada al análisis predictivo y la toma de decisiones en el Fantasy Football
+. En un entorno caracterizado por la alta volatilidad de los datos y la opacidad algorítmica de las herramientas actuales
+, este proyecto propone un sistema de apoyo al usuario basado en la Inteligencia Artificial Explicable (XAI)
+.
+Para la construcción de la plataforma se ha adoptado una arquitectura desacoplada, utilizando Django y Django REST Framework para el backend, y React para la interfaz de usuario
+. El pipeline de datos procesa información heterogénea extraída mediante web scraping de diversas fuentes deportivas
+, superando complejos retos técnicos como la normalización y el matching difuso de entidades
+.
+El núcleo predictivo compite entre algoritmos de Machine Learning (Random Forest, XGBoost, Ridge y ElasticNet) entrenados y especializados por posición táctica (porteros, defensas, centrocampistas y delanteros) para pronosticar los puntos de los jugadores
+. Los resultados empíricos revelan que los modelos lineales con regularización generalizan mejor en este dominio
+, cumpliendo satisfactoriamente con los exigentes objetivos de Error Absoluto Medio (MAE) y del coeficiente de correlación de Spearman
+.
+Como principal valor añadido frente a soluciones comerciales, el sistema integra la metodología SHAP para proporcionar predicciones interpretables
+. Este enfoque rompe la "caja negra" de los modelos tradicionales, permitiendo al mánager comprender qué factores estadísticos y de contexto influyen realmente en las recomendaciones
+. En conclusión, el proyecto culmina en una herramienta completa, robusta y transparente que eleva la gestión de plantillas virtuales a un nivel analítico avanzado
+.}
+\clearpage
 
 \vspace{1.2cm}
 \section*{Abstract}
-\textit{[Write the abstract in English here.]}
+\textit{This Bachelor's Thesis describes the design and implementation of LigaMaster, a web platform oriented towards predictive analysis and decision-making in Fantasy Football
+. In an environment characterized by high data volatility and the algorithmic opacity of current tools
+, this project proposes a user support system based on Explainable Artificial Intelligence (XAI)
+.
+To build the platform, a decoupled architecture was adopted, using Django and Django REST Framework for the backend, and React for the user interface
+. The data pipeline processes heterogeneous information extracted through web scraping from various sports sources
+, overcoming complex technical challenges such as data normalization and fuzzy entity matching
+.
+The predictive core compares Machine Learning algorithms (Random Forest, XGBoost, Ridge, and ElasticNet) trained and specialized by tactical position (goalkeepers, defenders, midfielders, and forwards) to forecast player points
+. Empirical results reveal that regularized linear models generalize better in this domain
+, satisfactorily meeting the demanding targets for Mean Absolute Error (MAE) and the Spearman correlation coefficient
+.
+As its main added value compared to commercial solutions, the system integrates the SHAP methodology to provide interpretable predictions
+. This approach breaks the "black box" of traditional models, allowing the manager to understand which statistical and contextual factors actually influence the recommendations
+. In conclusion, the project culminates in a comprehensive, robust, and transparent tool that elevates the management of virtual squads to an advanced analytical level
+.}
 
 \clearpage
 \setcounter{secnumdepth}{0}
@@ -167,12 +198,27 @@
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{Anexo I. Enlaces externos}
+\addcontentsline{toc}{section}{Anexo I. Glosario de términos}
+\input{chapters/anexo-glosario}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{Anexo II. Repositorios consultados}
 \input{chapters/apendice-enlaces}
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{Anexo II. Registros de Clockify}
-\input{chapters/apendice-clockify}
+\addcontentsline{toc}{section}{Anexo III. Registros de Clockify}
+\input{chapters/apendice-clockify}\clearpage
+
+
+\phantomsection
+\addcontentsline{toc}{section}{Anexo IV. Manuales de instalación y usuario}
+\input{chapters/apendice-manuales}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{Anexo V. Autodeclaración del uso de IA}
+\input{chapters/anexo-ia}
 
 \end{document}

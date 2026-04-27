@@ -1,5 +1,18 @@
 \section*{10. Conclusiones}
-\subsection{10.1. Validación de los resultados de ML}
+\subsection{10.1. Cumplimiento de objetivos}
+
+El desarrollo de la plataforma LigaMaster ha concluido con éxito,
+ logrando el objetivo general propuesto al inicio del trabajo: diseñar
+  e implementar una plataforma web de apoyo a la toma de decisiones en
+   el Fantasy Football mediante análisis predictivo y explicabilidad. 
+   Se ha logrado una integración completa entre un motor de \textit{Machine Learning}
+    desarrollado en Python, un \textit{backend} robusto con Django REST Framework y
+     un \textit{frontend} interactivo y desacoplado creado con React. Los objetivos 
+     funcionales se han cubierto en su totalidad, permitiendo la visualización de estadísticas,
+      gestión de plantillas y predicción de rendimiento basada en explicabilidad (XAI).
+
+
+\subsection{10.2 Validación de los resultados de ML}
 
 Como se detalló en el apartado 7.3.3, para evaluar la calidad 
 predictiva de los modelos desarrollados, se establecieron umbrales 
@@ -9,7 +22,7 @@ permiten clasificar la precisión de los modelos según la posición
 táctica:
 
 
-\subsubsection{10.1.1 Objetivos de rendimiento por posición}
+\subsubsection{10.2.1 Objetivos de rendimiento por posición}
 
 \begin{table}[H]
 \centering
@@ -33,7 +46,7 @@ $> 3.25$ \\
 \end{table}
 
 
-\subsubsection{10.1.2 Resultados obtenidos por demarcación}
+\subsubsection{10.2.2 Resultados obtenidos por demarcación}
 
 Tras el entrenamiento y la optimización de hiperparámetros mediante 
 Grid Search, se presentan a continuación los resultados obtenidos 
@@ -144,7 +157,7 @@ XGBoost & 3.3537 & 4.0727 & -0.0407 & lr: 0.1 \\
 \end{table}
 
 
-\subsubsection{10.1.3 Comparativa final y análisis de cumplimiento de objetivos}
+\subsubsection{10.2.3 Comparativa final y análisis de cumplimiento de objetivos}
 
 La siguiente tabla resume el cumplimiento de los objetivos por 
 cada posición utilizando el mejor modelo obtenido:
@@ -194,15 +207,9 @@ Las demarcaciones de delanteros ($\rho = 0.289$) y mediocentros
 elevados del proyecto. Esto indica que el modelo tiene una 
 notable capacidad para ordenar correctamente a los 
 jugadores según su rendimiento real, lo cual es el objetivo 
-crítico en procesos de scouting. La capacidad de ranking es más 
+crítico. La capacidad de ranking es más 
 importante que la precisión absoluta cuando el objetivo es 
-identificar talento.
-
-
-\paragraph{2. Proximidad a los umbrales}
-
-Las desviaciones respecto al objetivo son mínimas:
-
+identificar talento. Además, las desviaciones respecto al objetivo son mínimas:
 \begin{itemize}
   \item Delanteros: $\Delta \mathrm{MAE} = +0.04$ (1.5\% por encima 
         del objetivo)
@@ -217,7 +224,7 @@ respectivamente, lo que demuestra la robustez de las
 predicciones.
 
 
-\paragraph{3. Consistencia predictiva y generalización}
+\paragraph{2. Consistencia predictiva y generalización}
 
 El hecho de que modelos lineales regularizados (Ridge y ElasticNet) 
 sean los ganadores sugiere que el modelo ha capturado 
@@ -229,12 +236,12 @@ lineales regularizados (Ridge y
 ElasticNet) superen sistemáticamente a algoritmos basados en árboles de 
 decisión complejos (Random Forest y XGBoost) en todas las demarcaciones. 
 Esto confirma que el rendimiento individual en el fútbol contiene un 
-componente intrínseco de aleatoriedad (ruido). Mientras que modelos como 
-XGBoost tienden a sobreajustarse memorizando dicho ruido, 
+componente intrínseco de aleatoriedad y ruido. Mientras que modelos como 
+XGBoost tienden a sobreajustarse memorizando dicho ruido y se ve relejado en los resultados, 
 los modelos lineales demuestran una mayor capacidad de generalización al 
 capturar estrictamente la tendencia subyacente.
 
-\paragraph{4. La paradoja varianza vs. cnsistencia}
+\paragraph{3. La paradoja varianza vs. consistencia}
 
 Los resultados exponen un patrón estadístico que refleja fielmente la 
 lógica azarosa del deporte:
@@ -253,12 +260,12 @@ lógica azarosa del deporte:
         encuentra dificultades para establecer una jerarquía predictiva clara.
 \end{itemize}
 
-\paragraph{5. Alta penalización de características}
+\paragraph{4. Alta penalización de características}
 
 El análisis de los hiperparámetros óptimos arroja valores de penalización 
 notablemente altos, especialmente en los modelos Ridge (e.g., $\alpha=1000.0$ 
-en Defensas y $\alpha=250.0$ en Mediocentros). Esta necesidad del algoritmo 
-de suprimir agresivamente el impacto de ciertas variables indica la presencia 
+en Defensas y $\alpha=250.0$ en Mediocentros). Esto refleja la necesidad del algoritmo 
+de suprimir el impacto de ciertas variables indica la presencia 
 de multicolinealidad entre los predictores extraídos del scraping, confirmando 
 que la regularización ha sido una técnica crítica y exitosa para filtrar métricas 
 redundantes que no aportaban valor real a la predicción final.
@@ -312,3 +319,25 @@ implementación en sistemas de recomendación de transferencias y
 análisis predictivo de rendimiento en el contexto de la 
 competición analizada.
 
+\subsection{10.3. Limitaciones encontradas}
+
+A lo largo del proyecto, se han identificado ciertas limitaciones inherentes a la obtención y procesamiento de los datos, los más destacados han sido:
+\begin{itemize}
+    \item \textbf{Proceso de matching} de jugadores: La disparidad en la nomenclatura de los jugadores entre las distintas fuentes de datos ha supuesto un desafío mayor de lo esperado.
+    \item \textbf{Falta de APIs oficiales para el mercado:} La falta de endpoints públicos en la API oficial de LaLiga Fantasy impidió extraer e integrar los valores económicos dinámicos en tiempo real de forma automatizada. Esto ha limitado la capacidad de realizar un módulo puramente financiero en la plataforma, lo cual hubiese sido interesante.
+    \item \textbf{Bloqueos de IP:} Durante la fase de scraping, debido a los bloqueos de IP, se optó por descargar manualmente el HTML de todos los partidos, lo cual resultó tardado y ciertamente tedioso.
+\end{itemize}
+
+\subsection{10.4. Líneas de trabajo futuro}
+
+El sistema desarrollado posee una arquitectura escalable que abre la puerta a diversas mejoras y nuevas vías de desarrollo que ampliarían la funcionalidad de la plataforma:
+\begin{itemize}
+    \item \textbf{Predicción de titularidades:} Integrar un modelo secundario que evalúe la probabilidad de que un jugador parta en el once inicial. Al analizar rotaciones tácticas, histórico de minutos jugados, acumulación de tarjetas y posibles partes médicos, se refinaría enormemente la precisión de las puntuaciones esperadas por jornada, ya que actualmente el sistema asume la disponibilidad plena del jugador.
+    \item \textbf{Desarrollo de una aplicación móvil:} Aprovechando que el backend está completamente desacoplado y expuesto a través de una API REST con DRF, el siguiente paso natural sería implementar una aplicación nativa. Esto mejoraría la experiencia de usuario en dispositivos móviles, donde la mayoría de personas juegan a los Fantasy Football, y permitiría habilitar un sistema de notificaciones más elaborado y en tiempo real.
+\end{itemize}
+
+\subsection{10.5. Valoración personal}
+
+La realización de este Trabajo de Fin de Grado ha supuesto un verdadero reto que me ha permitido consolidar y poner en práctica los conocimientos adquiridos a lo largo de la titulación.A través de este proyecto, he gestionado todas las etapas del ciclo de vida del software: desde la captura de requisitos y el diseño de procesos ETL, hasta la implementación de modelos de aprendizaje automático, el desarrollo full-stack y el despliegue final. Si bien estas tareas han sido recurrentes durante mi formación, la ejecución de este proyecto ha supuesto un hito personal al asumir, por primera vez, la autonomía y responsabilidad total sobre un sistema complejo de principio a fin.
+
+Especialmente valioso ha sido el aprendizaje autodidacta en técnicas de Explainable AI (XAI), lo que me ha dotado de una perspectiva diferente y realista sobre las exigencias actuales en el desarrollo de software y el mundo de la IA. Además, de obtener conocimientos sobre el tratamiento de datos en profundidad y la ciencia de datos.

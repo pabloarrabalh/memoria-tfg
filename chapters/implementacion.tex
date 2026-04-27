@@ -1136,7 +1136,7 @@ Para evitar la redundancia de código y facilitar el mantenimiento, se encapsul�
 \begin{itemize}
 \item useAuth: centraliza las comprobaciones de token JWT y la persistencia de la sesión en el \texttt{sessionStorage}.
 
-\item useJornada: hook que permite a cualquier componente suscribirse a los cambios de la jornada activa sin necesidad de pasar props a través de múltiples niveles de la jerarquía (Prop Drilling).
+\item useJornada: hook que permite a cualquier componente suscribirse a los cambios de la jornada activa sin necesidad de pasar props a través de múltiples niveles de la jerarquía, evitando el prop drilling.
 
 \item usePredictor: encapsula las llamadas a los modelos de Machine Learning, gestionando automáticamente los estados de error y reintento.
 \end{itemize}

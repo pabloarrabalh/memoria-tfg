@@ -58,37 +58,64 @@
 \date{\today}
 
 \begin{document}
+% Portada y agradecimientos según la guía
+\thispagestyle{empty} % Impide que se incluya número de página en la portada
+\begin{center}
 
-\begin{titlepage}
-\centering
-\vspace*{1.5cm}
-\includegraphics[width=0.38\textwidth]{images/logo-us.png}\par
-\vspace{2cm}
-{\LARGE \textbf{LigaMaster}}\par
-\vspace{1cm}
-{\Large Trabajo de Fin de Grado}\par
-\vfill
-{\large Pablo Arrabal Hermoso}\par
-\vspace{0.5cm}
-\href{https://tfg-delta-three.vercel.app}{https://tfg-delta-three.vercel.app}\par
-\vspace{0.5cm}
-{\large \today}\par
-\end{titlepage}
+\vspace*{1cm}
 
-\clearpage
+\includegraphics[width=\textwidth]{images/logo_us.png}
+
+\vspace*{3cm}
+\begin{large}
+TRABAJO FIN DE GRADO
+\end{large}
+
+\vspace*{0.1in}
+\textbf{\huge LigaMaster}
+
+\vspace*{.2in}
+
+{\large Realizado por}\\
+\textbf{\Large Pablo Arrabal Hermoso}
+
+\vspace*{3cm}
+
+\textbf{Para la obtención del título de}\\
+{\large Grado en Ingeniería Informática - Ingeniería del Software}
+
+\vspace*{0.2in}
+
+\textbf{Dirigido por}\\
+{\large José Antonio Troyano Jiménez}\\
+
+\vspace*{0.2in}
+
+\textbf{En el departamento de}\\
+{\large Lenguajes y Sistemas Informáticos}
+
+\vspace*{.6in}
+\textbf{\Large Convocatoria de junio, curso 2025/26}
+
+\end{center}
+
+% Dedicatoria
+% Si no se desea incluir, comentar o borrar la línea siguiente para eliminar la página de dedicatoria
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\textit{Aquí la dedicatoria del trabajo}
+\end{center}
+\vspace*{\fill}
+
+
+\clearpage\setcounter{page}{1} % Comienza a incluir números de página a partir de aquí
+\pagenumbering{roman} % En números romanos
+
+% Agradecimientos
 \section*{Agradecimientos}
-\vspace{1cm}
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
-
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
-
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
-
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
-
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
-
-\noindent\rule{\textwidth}{0.4pt}\vspace{1.2cm}
+% Escribe aquí tus agradecimientos
 
 \clearpage
 \section*{Resumen}
@@ -129,7 +156,7 @@ As its main added value compared to commercial solutions, the system integrates 
 . In conclusion, the project culminates in a comprehensive, robust, and transparent tool that elevates the management of virtual squads to an advanced analytical level
 .}
 
-\clearpage
+
 \setcounter{secnumdepth}{0}
 \setcounter{tocdepth}{2}
 \renewcommand{\contentsname}{Índice general}
@@ -139,6 +166,8 @@ As its main added value compared to commercial solutions, the system integrates 
 \renewcommand{\l@subsubsection}[2]{}
 \renewcommand{\l@paragraph}[2]{}
 \makeatother
+
+\clearpage
 \tableofcontents
 \clearpage
 \listoftables
@@ -147,60 +176,63 @@ As its main added value compared to commercial solutions, the system integrates 
 \clearpage
 \lstlistoflistings
 
+% Aquí termina la parte preliminar con numeración romana
 \clearpage
+\pagenumbering{arabic} % Cambia a números arábigos (decimales)
+
 \tocgroup{I Introducción y conceptos}
 \phantomsection
 \addcontentsline{toc}{section}{1. Introducción}
-\input{chapters/introduction}
+\input{chapters/01_introduction}
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{2. Objetivos}
-\input{chapters/objetivos}
+\input{chapters/02_objetivos}
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{3. Análisis similares}
-\input{chapters/analisis-similares}
+\input{chapters/03_analisis-similares}
 
 \clearpage
 \tocgroup{II Metodología y planificación}
 \phantomsection
 \addcontentsline{toc}{section}{4. Metodología}
-\input{chapters/metodologia}
+\input{chapters/04_metodologia}
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{5. Tecnologías}
-\input{chapters/tecnologias}
+\addcontentsline{toc}{section}{5. Stack tecnológico}
+\input{chapters/05_tecnologias}
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{6. Identificación de requisitos}
-\input{chapters/requisitos}
+\input{chapters/06_requisitos}
 
 \clearpage
 \tocgroup{III Diseño y ejecución}
 \phantomsection
 \addcontentsline{toc}{section}{7. Diseño del Sistema}
-\input{chapters/disenyo}
+\input{chapters/07_disenyo}
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{8. Implementación y desarrollo}
-\input{chapters/implementacion}
+\input{chapters/08_implementacion}
 
 \clearpage
 \tocgroup{IV Resultados y conclusiones}
 \phantomsection
 \addcontentsline{toc}{section}{9. Calidad del software y pruebas}
-\input{chapters/validacion}
+\input{chapters/09_validacion}
 
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{10. Conclusiones}
-\input{chapters/conclusiones}
+\input{chapters/10_conclusiones}
 
 \appendix
 
@@ -213,17 +245,17 @@ As its main added value compared to commercial solutions, the system integrates 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{Anexo II. Repositorios consultados}
-\input{chapters/apendice-enlaces}
+\input{chapters/anexo-enlaces}
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{Anexo III. Registros de Clockify}
-\input{chapters/apendice-clockify}\clearpage
+\input{chapters/anexo-clockify}\clearpage
 
 
 \phantomsection
 \addcontentsline{toc}{section}{Anexo IV. Manuales de instalación y usuario}
-\input{chapters/apendice-manuales}
+\input{chapters/anexo-manuales}
 
 \clearpage
 \phantomsection

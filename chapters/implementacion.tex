@@ -148,7 +148,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 La gestión de amistades requiere una lógica que identifique correctamente a los participantes de la relación
  según quién realice la consulta. El AmistadSerializer resuelve esta ambigüedad accediendo al contexto de la 
- petición (request) para determinar cuál de los dos usuarios en el modelo Amistad es el ``amigo'' del usuario
+ petición para determinar cuál de los dos usuarios en el modelo Amistad es el ``amigo'' del usuario
   autenticado. Por otro lado, serializadores como SolicitudAmistadSerializer utilizan el parámetro \texttt{source}
    para crear alias legibles (como \texttt{emisor\_username}) a partir de relaciones de clave foránea, simplificando
  la estructura del JSON para el frontend.
@@ -344,14 +344,13 @@ pocos_minutos_set = {
 
 \subsubsection{8.1.2.7 Orquestación}
 
-El archivo \texttt{menu.py} actúa como el coordinador de la vista de inicio. Aunque se implementó una
- función \texttt{\_bg\_compute\_predictions} para procesamiento paralelo, el flujo actual del \texttt{MenuView} 
- devuelve las predicciones síncronamente desde el caché a través del decorador \texttt{@cache\_api\_response}, que almacena 
- resultados durante 120 segundos. Las predicciones se pre-generan al arranque del sistema mediante el pipeline de \texttt{apps.py} (paso 5), 
- garantizando disponibilidad inmediata desde el primer minuto de operación. Para solicitudes posteriores dentro de la ventana de caché, 
- se sirven datos almacenados sin cálculos adicionales.
-
-Aquellas vistas con una carga algorítmica especialmente relevante serán analizadas con mayor profundidad en los capítulos correspondientes de esta memoria.
+Dado que el cálculo de percentiles y rankings estadísticos requiere procesar miles de registros de EstadisticasPartidoJugador,
+ el coste computacional es elevado. Para mantener tiempos de respuesta óptimos, se implementó un sistema de caché utilizando
+ el backend de caché de Redis.
+ 
+Las funciones que generan rankings y agregaciones almacenan los resultados en caché mediante claves únicas asociadas a la 
+temporada y jornada, usando cache.set. Esto permite servir respuestas instantáneas para consultas repetidas, y el contenido se 
+invalida automáticamente tras un periodo de expiración o cuando se detectan cambios en los datos relevantes.
 
 \subsubsection{8.1.3 Arquitectura reactiva y optimización de rendimiento}
 
@@ -690,12 +689,12 @@ se requiere una coincidencia más exigente (nombre completo o al menos dos token
 
 \paragraph{Nivel 2: Coincidencia por prefijo/sufijo}
 
-Cuando el nombre es un único token (ej. ``Mbappé'', ``Ronaldo'', ``Messi'') y no tiene un apellido crítico.
+Cuando el nombre es un único token y no tiene un apellido crítico.
 
 En el fútbol es habitual usar nombres acortados (``Luis'' en lugar de ``Luis García'') y apodos (``Pepelu'' en lugar de ``José Luis García'').
 
 \textbf{Implementación:} para un nombre de un solo token, el sistema busca si coincide con el inicio o fin de algún candidato. Si ``Araújo'' 
-está en Fantasy y FBRef trae ``Ronald Araújo'', el algoritmo lo detecta como match prefijo/sufijo con un score moderadamente alto (85).
+está en Fantasy y FBRef trae ``Ronald Araújo'', el algoritmo lo detecta como match prefijo/sufijo con un score moderadamente alto y se realiza el match.
 
 \paragraph{Nivel 3: Fallback a WRatio}
 
@@ -971,10 +970,10 @@ porque cada conjunto de features refleja la lógica real del rol en el campo en 
 
 Para enriquecer el dataset con contexto extra, se integraron dos tipos de señales. La primera procede de los roles destacados de FBRef. Estos rankings 
 se convierten en variables numéricas a través de un factor de posición que penaliza progresivamente los puestos inferiores, de manera que un primer puesto 
-pesa mucho más que un décimo o un vigésimo. La segunda procede del contexto de partido, con variables derivadas de cuotas y dificultad de fixture, que ayudan 
+pesa mucho más que un décimo o un vigésimo. La segunda procede del contexto de partido, con variables derivadas de cuotas y dificultad del partido, que ayudan 
 a estimar el escenario competitivo antes del encuentro.
 
-Este bloque fue especialmente útil para introducir señales de elite y de contexto sin depender solo de estadísticas acumuladas. Por ejemplo, 
+Este bloque fue especialmente útil para introducir señale sin depender solo de estadísticas acumuladas. Por ejemplo, 
 el módulo \texttt{role\_enricher.py} crea interacciones entre la condición de jugador destacado y la intensidad real de su rol, como \texttt{elite\_paradas\_interact} en 
 porteros o \texttt{elite\_entradas\_interact} en defensas. Además, se añadieron variables de disponibilidad-forma, como la combinación entre minutos recientes y 
 producción reciente, porque en Fantasy un jugador solo aporta si juega y mantiene continuidad.
@@ -988,14 +987,12 @@ df["elite_paradas_interact"] = (
 \subsubsection{8.5.5 Selección de características mediante Spearman}
 
 Dada la alta dimensionalidad tras generar ventanas temporales (más de 150 variables por posición), se aplicó una selección de características basada 
-en la Correlación de Spearman. A diferencia de Pearson, Spearman detecta relaciones no lineales (monótonas), lo cual es crucial en el fútbol donde el
- impacto de una estadística (ej. despejes) en los puntos suele saturarse a partir de cierto umbral. Se descartaron sistemáticamente todas las variables
+en la Correlación de Spearman. Se descartaron sistemáticamente todas las variables
   con un $|\rho| < 0.02$, reduciendo la complejidad del modelo y mejorando el tiempo de entrenamiento.
 
 \subsection{8.6 Implementación de IA Explicable (XAI)}
 
-Uno de los mayores retos al trabajar con modelos de Machine Learning complejoses su opacidad, 
-conocida comúnmente como el problema de la ``caja negra''. Para un usuario de la plataforma, recibir una predicción de ``8.5 puntos'' sin contexto
+Uno de los mayores retos al trabajar con modelos de Machine Learning complejos es su opacidad, el problema de la ``caja negra''. Para un usuario de la plataforma, recibir una predicción de ``8.5 puntos'' sin contexto
  no genera confianza y dificulta la toma de decisiones.
 
 Para resolver este problema, se ha implementado una capa de IA Explicable (XAI). Esta arquitectura no solo entrega una predicción numérica, sino que 
@@ -1030,7 +1027,7 @@ Para gestionar la heterogeneidad de los modelos (árboles y lineales) y las dife
  como una capa de abstracción entre los valores matemáticos de SHAP y el lenguaje natural deportivo.
 
 \begin{itemize}
-\item Polimorfismo de modelos: el sistema detecta automáticamente la arquitectura del modelo cargado. Si es un bosque de decisión (Random Forest o XGBoost), 
+\item Variedad de modelos: el sistema detecta automáticamente la arquitectura del modelo cargado. Si es un bosque de decisión (Random Forest o XGBoost), 
 instancía un \texttt{TreeExplainer}; si es un modelo lineal (Ridge o ElasticNet), utiliza un \texttt{LinearExplainer}.
 
 \item Mapeo semántico: se implementó un diccionario exhaustivo (\texttt{EXPLICACIONES\_FEATURES}) que asocia cada variable técnica con una narrativa de 
@@ -1075,8 +1072,8 @@ return Response({
 Para garantizar la fiabilidad de las predicciones, el sistema implementa una lógica de transición inteligente. Durante las primeras 5 jornadas de la
  competición, el histórico es insuficiente para que las ventanas temporales (especialmente las de tamaño 5) tengan significancia estadística.
 
-En este periodo de ``arranque en frío'', la vista \texttt{PredecirJugadorView} activa automáticamente un modelo de Media Histórica. A partir de la 
-jornada 6, el orquestador conmuta dinámicamente al motor de Machine Learning y activa las explicaciones XAI. Además, el sistema inyecta alertas 
+En este periodo de ``arranque en frío'', la vista \texttt{PredecirJugadorView} activa automáticamente un modelo de media histórica. A partir de la 
+jornada 6, el orquestador cambia al motor de Machine Learning y activa las explicaciones XAI. Además, el sistema inyecta alertas 
 preventivas de ``pocos minutos'' si detecta que un jugador tiene una tendencia de inactividad que las métricas de rendimiento podrían estar enmascarando, 
 añadiendo una capa de seguridad heurística a la predicción estadística.
 

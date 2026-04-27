@@ -18,7 +18,7 @@ Para el desarrollo de este proyecto se evaluaron diferentes metodologías ágile
 \begin{itemize}
     \item Scrum está diseñado para equipos, no para desarrollo individual. Los roles (Product Owner, Scrum Master, Developer) resultan artificiales cuando el desarrollador es una única persona.
     \item Las ceremonias diarias (por ejemplo, el Daily Scrum) carecen de sentido práctico en contexto individual.
-    \item Rigidez de los sprints: Una vez iniciado el sprint, no se pueden modificar los objetivos ni las tareas seleccionadas hasta su finalización.
+    \item Rigidez de los sprints: una vez iniciado el sprint, no se pueden modificar los objetivos ni las tareas seleccionadas hasta su finalización.
 \end{itemize}
 
 \subsubsection{Motivos de descarte:}
@@ -41,9 +41,9 @@ Kanban es una metodología ágil basada en flujo continuo de trabajo que visuali
 \subsubsection{Ventajas para este proyecto:}
 
 \begin{itemize}
-    \item \textbf{Flexibilidad adaptativa:} Permite reordenar prioridades según descubrimientos técnicos o cambios en requisitos sin violar reglas metodológicas.
-    \item \textbf{Flujo natural:} Se adapta al ritmo real de trabajo individual sin imposiciones de tiempo o plazos de entrega intermedios.
-    \item \textbf{Visualización clara:} El tablero proporciona instantáneamente el estado del proyecto.
+    \item \textbf{Flexibilidad:} permite reordenar prioridades según descubrimientos técnicos o cambios en requisitos sin violar reglas metodológicas.
+    \item \textbf{Flujo natural:} se adapta al ritmo real de trabajo individual sin imposiciones de tiempo o plazos de entrega intermedios.
+    \item \textbf{Visualización clara:} el tablero proporciona instantáneamente el estado del proyecto.
 \end{itemize}
 
 \subsubsection{Desventajas asumidas:}
@@ -64,6 +64,7 @@ sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a
 \subsubsection{Implementación de Kanban}
 
 \textbf{Herramienta utilizada:} GitHub Projects
+
 \textbf{Herramienta de monitorización:} Clockify
 
 \textbf{Límites WIP aplicados:}
@@ -76,13 +77,14 @@ sin entregas intermedias formales. La flexibilidad de Kanban permite adaptarse a
 \subsection{4.3 Planificación Temporal}
 
 \textbf{Herramienta de planificación:} Microsoft Project
+
 \textbf{Herramienta de monitorización:} Clockify
 
 \textbf{Parámetros de planificación:}
 \begin{itemize}
     \item Rol único: Developer
     \item Jornada laboral: 4 horas diarias
-    \item Duración total estimada: 19 semanas
+    \item Duración total estimada: 17 semanas
 \end{itemize}
 
 El diagrama de Gantt generado (ver Figura 5) muestra la distribución temporal de las diferentes fases del proyecto: análisis y diseño inicial, desarrollo de módulos principales, integración, pruebas y documentación final.
@@ -478,7 +480,7 @@ este proyecto se fijó en 4 horas diarias, adaptándose a la realidad de la carg
 
 Para garantizar el éxito del proyecto y mitigar posibles solapamientos con entregas o exámenes de otras asignaturas, la estrategia principal de planificación consistió en concentrar el desarrollo para finalizar a finales de febrero. Esto proporcionó un amplio margen de holgura temporal en caso de no poder cumplir el primer plazo establecido.
 
-\subsubsection{Resumen Temporal y Desviaciones Globales}
+\subsubsection{Resumen temporal y desviaciones globales}
 
 A continuación, se presenta la comparativa entre la línea base del proyecto planificada y la ejecución real:
 
@@ -486,12 +488,12 @@ A continuación, se presenta la comparativa entre la línea base del proyecto pl
 \small
 \begin{tabularx}{\textwidth}{Xccc}
 \toprule
-\textbf{Parámetro} & \textbf{Planificación Inicial} & \textbf{Ejecución Real} & \textbf{Desviación} \\
+\textbf{Parámetro} & \textbf{Planificado} & \textbf{Fecha real} & \textbf{Desviación} \\
 \midrule
 Fecha de inicio & 10/12/2025 & 10/12/2025 & -- \\
 Fecha de fin & 12/03/2026 & 07/04/2026 & + 26 días naturales \\
 Horas de trabajo total & 364 h & 384 h & + 20 h \\
-Días de trabajo efectivo (4h/día) & 91 días & 96 días & + 5 días efectivos \\
+Días de trabajo (4h/día) & 91 días & 96 días & + 5 días efectivos \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -505,7 +507,7 @@ En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura 
 \small
 \begin{tabularx}{\textwidth}{cXccc}
 \toprule
-\textbf{ID} & \textbf{Paquete de Trabajo} & \textbf{Horas Previstas} & \textbf{Horas Reales} & \textbf{Desviación} \\
+\textbf{ID} & \textbf{Paquete de trabajo} & \textbf{Horas previstas} & \textbf{Horas reales} & \textbf{Desviación} \\
 \midrule
 1 & Análisis e investigación inicial & 48 h & 48 h & 0 h \\
 2 & Planificación del proyecto & 80 h & 48 h & -32 h \\
@@ -520,7 +522,7 @@ En la siguiente tabla se desglosa el esfuerzo por cada paquete de la Estructura 
 \end{tabularx}
 \end{center}
 
-Todas las entradas de la herramienta Clockify se pueden consultar en el Apéndice II-Clockify.
+Todas las entradas de la herramienta Clockify se pueden consultar en el Anexo II-Clockify.
 
 \subsubsection{Análisis de desviaciones}
 
@@ -528,13 +530,13 @@ Al comparar la planificación inicial con el tiempo real invertido, se observan 
 
 \begin{itemize}
     \item \textbf{Fase de entrenamiento y optimización:} las tareas relacionadas con el ajuste de features, hiperparámetros, validación cruzada y evaluación requirieron 48 horas frente a las 32 estimadas. Esto refleja la dificultad de acotar temporalmente las fases de experimentación, donde los resultados obligan a realizar múltiples iteraciones, pruebas y refinamientos hasta alcanzar la precisión deseada en el modelo.
-    \item \textbf{Desarrollo de vistas y templates (Frontend/Backend):} Su implementación alcanzó un total de 60 horas (frente a las 40 iniciales) debido al desarrollo iterativo necesario para integrar correctamente la lógica de los modelos predictivos en la interfaz visual.
-    \item \textbf{Compensación de tiempos:} Por el contrario, fases como la planificación del proyecto (estimada de forma muy conservadora en 80 h) o el testing requirieron menos dedicación de la prevista inicialmente, lo que ayudó a equilibrar el balance global de horas.
+    \item \textbf{Desarrollo de vistas y templates (Frontend/Backend):} su implementación alcanzó un total de 60 horas (frente a las 40 iniciales) debido al desarrollo iterativo necesario para integrar correctamente la lógica de los modelos predictivos en la interfaz visual.
+    \item \textbf{Compensación de tiempos:} por el contrario, fases como la planificación del proyecto (estimada de forma muy conservadora en 80 h) o el testing requirieron menos dedicación de la prevista inicialmente, lo que ayudó a equilibrar el balance global de horas.
 \end{itemize}
 
-\subsubsection{Estimación Económica y Desglose de Costes}
+\subsubsection{Estimación económica y desglose de costes}
 
-Para calcular el coste del desarrollo, se ha tomado como referencia la tarifa de un perfil profesional de Analista programador J2EE / Web, representativo del estándar de la industria de software. Los datos provienen del "Informe final sobre la consulta preliminar del mercado" de la Junta de Andalucía y disponible en la web de TFG de la ETSII US. En dicho documento, la media acotada para este perfil oscila entre los 28,37 €/hora para perfiles Junior y los 33,43 €/hora para perfiles Senior, por lo que se ha establecido un valor medio de 31 €/hora para este proyecto.
+Para calcular el coste del desarrollo, se ha tomado como referencia la tarifa de un perfil profesional de Analista programador J2EE / Web, representativo del estándar de la industria de software. Los datos provienen del ''Informe final sobre la consulta preliminar del mercado" de la Junta de Andalucía y disponible en la web de TFG de la ETSII US. En dicho documento, la media acotada para este perfil oscila entre los 28,37 €/hora para perfiles Junior y los 33,43 €/hora para perfiles Senior, por lo que se ha establecido un valor medio de 31 €/hora para este proyecto.
 
 A diferencia de las estimaciones basadas únicamente en salarios brutos, este valor de 31 €/hora representa el precio/hora sin IVA que las empresas del sector facturan habitualmente a la Administración Pública. Al tratarse de una tarifa de licitación para la prestación de servicios profesionales, este importe ya integra de forma intrínseca todos los costes laborales asociados, incluyendo la Seguridad Social a cargo de la empresa, así como los gastos de estructura, herramientas, licencias y el beneficio industrial.
 
@@ -544,7 +546,9 @@ Además del coste de personal, se han contemplado los siguientes gastos operativ
 
 \textbf{CAPEX (Capital Expenditure):}
 \begin{itemize}
-   \item \textbf{Amortización de equipo informático:} Según las tablas de la AEAT 2026, los equipos para tratamiento de información tienen un coeficiente de amortización lineal máximo del 26\% anual. Para un ordenador de 1.200 €, la amortización imputada por las 17 semanas de duración del proyecto se calcula como: $1.200 \times 0,26 \times (17/52) = 102,00$ €. Se establece un coste fijo de \textbf{102 €}.
+   \item \textbf{Amortización de equipo informático:} según las tablas de la AEAT 2026, los equipos para tratamiento de información tienen un coeficiente de amortización lineal máximo del 26\% anual. Para un ordenador de 1.200 €, la amortización imputada por las 17 semanas de duración del proyecto se calcula como: 
+ 
+   $1.200 \times 0,26 \times (17/52) = 102,00$ €. Se establece un coste fijo de \textbf{102 €}.
 \end{itemize}
 
 \textbf{OPEX (Operational Expenditure):}
@@ -561,9 +565,9 @@ Aplicando las premisas anteriores a las horas reales de trabajo:
 \small
 \begin{tabularx}{\textwidth}{Xcc}
 \toprule
-\textbf{Concepto de Gasto} & \textbf{Coste Planificado (364 h)} & \textbf{Coste Real (384 h)} \\
+\textbf{Concepto de gasto} & \textbf{Coste planificado (364 h)} & \textbf{Coste Real (384 h)} \\
 \midrule
-Coste Personal (Horas $\times$ 31) € & 11.284,00 € & 11.904,00 € \\
+Coste personal (Horas $\times$ 31) € & 11.284,00 € & 11.904,00 € \\
 CAPEX (Amortización de equipo) & 102,00 € & 102,00 € \\
 OPEX (Licencias e Infraestructura Cloud) & 0,00 €* & 0,00 €* \\
 \midrule
@@ -576,7 +580,7 @@ COSTE TOTAL DEL PROYECTO & 11.386,00 € & 12.006,00 € \\
 
 El coste final de desarrollo del Trabajo de Fin de Grado asciende a 12.006,00 €, lo que supone un incremento de 620,00 € respecto a lo estimado inicialmente, derivado principalmente del aumento de horas en las fases de entrenamiento de modelos y desarrollo.
 
-\subsubsection{Reserva de Contingencia}
+\subsubsection{Reserva de contingencia}
 
 Atendiendo a las buenas prácticas en la dirección y gestión de proyectos, no es recomendable establecer un presupuesto cerrado sin margen de maniobra. Por ello, se ha establecido una reserva de contingencia del 10 \% sobre el coste total final:
 

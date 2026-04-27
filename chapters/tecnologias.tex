@@ -1,12 +1,11 @@
 \section*{5. Justificación y resumen del stack tecnológico}
 
 El stack tecnológico de este TFG se ha seleccionado para resolver un problema 
-híbrido: construir una aplicación web completae 
+híbrido: construir una aplicación web completa e
 integrar un motor de análisis de datos y Machine Learning con capacidad de 
 explicación (XAI). Para ello se adopta una arquitectura cliente‑servidor desacoplada 
 y un stack mayoritariamente basado en Python, lo que permite unificar el ciclo de 
-vida del dato (obtención $\rightarrow$ limpieza $\rightarrow$ modelado 
-$\rightarrow$ predicción $\rightarrow$ explicación) y su exposición a través de 
+vida del dato y su exposición a través de 
 una API web.
 
 A nivel de principios, las decisiones de tecnología se han guiado por: 
@@ -183,7 +182,7 @@ para soportar crecimiento y operaciones críticas con garantías consistentes.
 Como complemento indispensable, se incorpora \textbf{Redis} como almacén de datos clave-valor en memoria. Su elección se justifica por dos necesidades estructurales:
 \begin{itemize}
     \item \textbf{Soporte para Django Channels:} Redis funciona como la \textit{channel layer} necesaria para gestionar la comunicación asíncrona de los WebSockets, permitiendo el envío de notificaciones en tiempo real (eventos de partidos o interacciones sociales).
-    \item \textbf{Capa de aceleración (Caching):} Se emplea para almacenar temporalmente los resultados de cálculos estadísticos complejos (percentiles y ránkings). Al servir estos datos desde la memoria RAM, se evita la recomputación constante y se optimiza el rendimiento de la API bajo concurrencia.
+    \item \textbf{Capa de caché:} se emplea para almacenar temporalmente los resultados de cálculos estadísticos complejos (percentiles y ránkings). Al servir estos datos desde la memoria RAM, se evita la recomputación constante y se optimiza el rendimiento de la API bajo concurrencia.
 \end{itemize}
 
 \textbf{Alternativas consideradas y justificación}
@@ -281,12 +280,16 @@ una estrategia híbrida de ingesta. En la práctica, muchas fuentes presentan li
 incompletas, restricciones de uso, cambios de condiciones o modelos de pago, por lo que combinar 
 técnicas permite maximizar cobertura manteniendo viabilidad.
 
-\subsubsection{5.6.1 Descarga de CSVs con cuotas (Football‑Data.co.uk)}
+\subsubsection{5.6.1 Descarga de CSVs con cuotas}
 
 Una fuente clave de cuotas de apuestas son los ficheros CSV públicos de Football‑Data.co.uk 
 (SP1.csv), que ofrece enlaces de descarga histórica para España. Estos CSVs se integran en el 
 pipeline como datasets de entrada: se descargan y se normalizan para cruzarlos con el resto de 
 tablas del dominio.
+
+La inclusión de datos externos de contexto se consideraba algo fundamental en el proyecto y su obtención
+en fases iniciales fue escasa. En esa etapa se observó una diferencia aproximadada de 0.5 en el MAE, en función de si 
+se tenían o no datos relacionados con las apuestas.
 
 \subsubsection{5.6.2 Consumo de APIs y evaluación de librerías}
 
@@ -363,23 +366,23 @@ El proyecto adopta herramientas estándar para garantizar reproducibilidad, faci
 y sostener calidad de software. Aunque el alcance sea académico, estas decisiones aproximan el 
 trabajo a prácticas profesionales y reducen riesgos técnicos.
 
-\subsubsection{5.9.1 Gestión de Entornos Virtuales y Dependencias}
+\subsubsection{5.9.1 Gestión de entornos virtuales y dependencias}
 
 Dado que el proyecto utiliza una gran cantidad de librerías con versiones específicas (especialmente 
 en el stack de Machine Learning), se ha optado por el uso de entornos virtuales mediante venv 
-(Python Virtual Environments).
+(Python Virtual Environments). Lo que resulta fundamental en varios aspectos:
 
-\textbf{Aislamiento:} Esta técnica permite que las dependencias del proyecto residan en un directorio 
+\textbf{Aislamiento:} esta técnica permite que las dependencias del proyecto residan en un directorio 
 local, evitando conflictos con las librerías globales del sistema operativo.
 
-\textbf{Pip y requirements.txt:} La gestión de paquetes se realiza a través de pip. Para asegurar que 
+\textbf{Pip y requirements.txt:} la gestión de paquetes se realiza a través de pip. Para asegurar que 
 el motor de ML y el backend de Django funcionen correctamente en cualquier máquina, se mantiene un 
 archivo requirements.txt actualizado. Este archivo actúa como el ``contrato de dependencias'' del 
 sistema, permitiendo la instalación masiva de las versiones exactas necesarias mediante un solo 
 comando. Puede ser generado automáticamente con diferentes herramientas, lo que disminuye en gran 
 medida la complejidad de su elaboración.
 
-\subsubsection{5.9.2 Contenedores y orquestación: viabilidad de Docker}
+\subsubsection{5.9.2 Contenedores}
 
 Se ha implementado una arquitectura basada en contenedores utilizando Docker, lo que permite aislar 
 cada componente del sistema en un entorno controlado. Para la gestión de estos servicios, se emplea 
@@ -393,7 +396,7 @@ motor de Machine Learning.
 \item \textbf{Frontend (UI):} Contenedor que sirve la aplicación React, optimizada tras el proceso 
 de build de Vite.
 
-\item \textbf{Capa de Mensajería y Caché (Redis):} Nodo independiente basado en \texttt{redis:7-alpine} para el soporte de tiempo real y optimización de lecturas de la API.
+\item \textbf{Capa de mensajería y caché (Redis):} Nodo independiente basado en \texttt{redis:7-alpine} para el soporte de tiempo real y optimización de lecturas de la API.
 \item \textbf{Persistencia (PostgreSQL):} Servicio dedicado para la base de datos relacional, 
 asegurando el almacenamiento persistente mediante volúmenes de Docker.
 
@@ -405,13 +408,13 @@ de la base de datos principal o no afecte al no estar disponible.
 \textbf{Ventajas de este enfoque:}
 
 \begin{itemize}
-\item \textbf{Consistencia entre entornos:} Se elimina el problema de ``funciona en mi máquina'', ya 
+\item \textbf{Consistencia entre entornos:} se elimina el problema de ``funciona en mi máquina'', ya 
 que el entorno de desarrollo es idéntico al de producción.
 
-\item \textbf{Aislamiento de dependencias:} Cada servicio tiene sus propias librerías y 
+\item \textbf{Aislamiento de dependencias:} cada servicio tiene sus propias librerías y 
 configuraciones (por ejemplo, el stack de ML en el backend no interfiere con el motor de búsqueda).
 
-\item \textbf{Escalabilidad y portabilidad:} La arquitectura está preparada para ser desplegada en 
+\item \textbf{Escalabilidad y portabilidad:} la arquitectura está preparada para ser desplegada en 
 cualquier proveedor de nube (AWS, Azure, Google Cloud, etc.) mediante un único comando, lo que reduce 
 drásticamente la complejidad operativa.
 \end{itemize}

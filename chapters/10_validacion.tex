@@ -1,0 +1,232 @@
+\section*{10. Calidad del software y pruebas}
+
+En este capítulo se detalla la estrategia de aseguramiento de la 
+calidad (QA) implementada para garantizar la robustez y fiabilidad 
+del sistema. El proceso de validación se ha diseñado siguiendo un 
+enfoque incremental, asegurando que cada componente cumpla con los 
+requisitos técnicos y funcionales definidos en las fases de diseño.
+
+
+\subsection{10.1. Organización del entorno de pruebas}
+
+Se ha estructurado una suite de pruebas automatizadas compuesta por 
+111 casos de prueba, organizados en 6 módulos específicos según su 
+responsabilidad. Esta organización permite una ejecución ágil y una 
+localización rápida de errores durante la fase de desarrollo.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{Archivo} & \textbf{Nivel de Prueba} & 
+\textbf{Tests} \\
+\hline
+test\_modelos.py & Unitario & 46 \\
+test\_api.py & Integración Exhaustiva & 53 \\
+test\_e2e.py & Extremo a Extremo & 5 \\
+test\_errores.py & Negativo & 3 \\
+test\_matching.py & Algoritmíco & 3 \\
+test\_manual.py & Datos/Manual & 1 \\
+\hline
+\end{tabular}
+\caption{Suite de pruebas automatizadas}
+\end{table}
+
+\noindent\textbf{Estadísticas:}
+\begin{itemize}
+  \item Total de tests: 111
+  \item Tiempo de ejecución: $\sim$40 segundos
+  \item Módulos cubiertos: 18 módulos API + modelos + matching 
+        + drf\_views
+\end{itemize}
+
+
+\subsection{10.2. Niveles de pruebas y resultados}
+
+
+\subsubsection{10.2.1. Pruebas Unitarias y de Integración}
+
+Se han implementado pruebas para asegurar que las reglas de negocio 
+se cumplen estrictamente:
+
+\begin{itemize}
+  \item \textbf{Modelos (92.45\% cobertura):} Validación de 
+        constraints (equipos local $\neq$ visitante en Partido), 
+        posiciones más frecuentes en Jugador, integridad de 
+        relaciones FK.
+  
+  \item \textbf{Autenticación (88.89\% cobertura):} Flujos de 
+        login, registro, renovación de tokens, casos de 
+        credenciales inválidas.
+  
+  \item \textbf{Favoritos (71.11\% cobertura):} Toggle de equipos 
+        favoritos, persistencia en BD, validación de usuario 
+        autenticado.
+  
+  \item \textbf{API de Equipos:} Listado completo, búsqueda 
+        case-insensitive, detalle con estadísticas.
+  
+  \item \textbf{API de Jugadores:} Detalle con historial, cálculo 
+        de posición más frecuente, carrera completa.
+\end{itemize}
+
+La integración con la base de datos PostgreSQL ha sido verificada 
+mediante tests que validan coherencia de datos, filtrado correcto 
+por temporada y jornada, cálculos correctos de rankings.
+
+
+\subsubsection{10.2.2. Validación de la API}
+
+Se han diseñado pruebas que cubren casos positivos y negativos:
+
+\begin{itemize}
+  \item \textbf{Pruebas positivas:} Se verifica que cada respuesta 
+        JSON contenga los campos requeridos por el frontend. Tests 
+        parametrizados cubren variaciones de parámetros (temporadas, 
+        posiciones, jornadas).
+  
+  \item \textbf{Pruebas de casos negativos:} Se valida que el 
+        sistema responda con 401 (No autorizado) ante intentos de 
+        acceso sin sesión, 400 (Bad Request) ante errores de 
+        validación, 404 (Not Found) para endpoints inexistentes, y 
+        500 (Internal Server Error) para fallos del servidor.
+\end{itemize}
+
+
+\subsubsection{10.2.3. Pruebas de Ciclo de Vida}
+
+Se han automatizado múltiples flujos completos de usuario en la 
+plataforma con pruebas E2E (5 tests). Estos tests simulan:
+
+\begin{enumerate}
+  \item \textbf{Autenticación:} Registro e inicio de sesión
+  \item \textbf{Navegación:} Consulta de endpoints protegidos 
+        (/api/me/), listado y detalle de equipos
+  \item \textbf{Interacción:} Cambio de jornada activa, toggle de 
+        favoritos, búsqueda de jugadores
+  \item \textbf{Consultas Avanzadas:} Acceso a análisis 
+        (predicciones, estadísticas, clasificaciones)
+  \item \textbf{Cierre de sesión:} Cierre de sesión y validación 
+        de tokens expirados
+\end{enumerate}
+
+Esto asegura que los mecanismos de seguridad, caché y persistencia 
+funcionen correctamente en conjunto.
+
+
+\subsection{10.3. Pruebas de carga}
+
+La escalabilidad y rendimiento se han evaluado mediante Locust, 
+simulando acceso concurrente de 20 usuarios durante 2 minutos a 
+endpoints de equipos, clasificaciones, jugadores y predicciones en 
+entorno de desarrollo local.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Usuarios concurrentes & 20 \\
+Total de requests & 1,220 \\
+Throughput & 10.22 req/s \\
+Latencia promedio & 708 ms \\
+\hline
+\end{tabular}
+\caption{Resultados de pruebas de carga}
+\end{table}
+
+Estos resultados reflejan un comportamiento adecuado en un entorno de desarrollo local, donde ya se han aplicado mecanismos de
+optimización como el uso de caché mediante Redis. No obstante, para un despliegue real en producción será
+necesario escalar la infraestructura para soportar mayores niveles de concurrencia y reducir la latencia.
+En este sentido, la migración a un entorno cloud como Azure, permitirá
+aprovechar recursos gestionados y una mejor configuración del sistema, por lo que se espera una mejora significativa 
+en el rendimiento global.
+
+
+\subsection{10.4. Resultados de cobertura y calidad}
+
+Para auditar la calidad del código de forma objetiva, se han 
+utilizado dos herramientas complementarias: Coverage.py para la 
+cobertura dinámica y SonarQube para el análisis estático.
+
+
+\subsubsection{10.4.1. Cobertura de código}
+
+Se estableció un umbral crítico de aceptación del 65\%. Tras la 
+ejecución de la suite consolidada de 111 tests, el sistema alcanzó 
+una cobertura global del 77.10\%, superando significativamente el 
+objetivo inicial.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3.5cm}|c|p{5cm}|}
+\hline
+\textbf{Categoría} & \textbf{Cobertura} & \textbf{Descripción} \\
+\hline
+Modelos de Datos & 92.45\% & Validación de constraints, 
+relaciones FK e integridad \\
+\hline
+Lógica de Matching & 61.07\% & Desambiguación de nombres y 
+emparejamiento de jugadores \\
+\hline
+Módulos API REST & 76.32\% & 18 módulos de endpoints (auth, 
+equipos, jugadores, estadísticas) \\
+\hline
+Flujos E2E y Casos Especiales & 77.10\% & Pruebas de ciclo de vida, 
+casos manuales y manejo de errores \\
+\hline
+\textbf{TOTAL SISTEMA} & \textbf{77.10\%} & \textbf{Cobertura global 
+integrada mediante 111 tests} \\
+\hline
+\end{tabular}
+\caption{Cobertura de código por categoría}
+\end{table}
+
+Es importante destacar que, aunque se ha integrado SonarQube para 
+la monitorización de la deuda técnica, dicha herramienta muestra un 
+valor nulo 0.0\% en su indicador de cobertura, por lo que ha sido 
+fundamental generar este reporte de cobertura.
+
+
+\subsubsection{10.4.2. Análisis estático}
+
+El análisis mediante SonarQube proporciona una visión 
+multidimensional de la salud del proyecto:
+
+\begin{itemize}
+  \item \textbf{Mantenibilidad (Rating A):} El sistema presenta 
+        una deuda técnica mínima en relación con su tamaño (más de 
+        9.8k líneas analizadas), validando el uso de patrones de 
+        diseño limpios.
+  
+  \item \textbf{Seguridad:} Se obtuvo una calificación de A en 
+        seguridad general, aunque se identificaron 4 Security 
+        Hotspots (Rating C). Estos corresponden a configuraciones 
+        de red y gestión de sesiones que han sido revisadas 
+        manualmente para garantizar que, en el entorno de 
+        producción de Azure, los riesgos estén mitigados.
+  
+  \item \textbf{Confiabilidad (Rating C):} Se detectaron 6 issues 
+        menores relacionados con la fiabilidad. Tras su análisis, 
+        se determinó que corresponden a la gestión de reintentos 
+        en el scraping, donde la naturaleza estocástica de las 
+        peticiones web puede generar excepciones controladas.
+\end{itemize}
+
+En conclusión, la combinación de una alta cobertura de tests 
+automatizados y una excelente calificación en mantenibilidad 
+asegura que el sistema no solo es funcional y robusto en la 
+actualidad, sino que es plenamente escalable y fácil de mantener 
+para futuras evoluciones de la plataforma.
+
+\vspace{1cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/sonar.png}
+  \caption{Estado del dashboard de SonarQube}
+\end{figure}
+

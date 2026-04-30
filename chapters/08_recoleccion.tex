@@ -1,93 +1,397 @@
 \section*{8. Recolección y análisis de datos}
-
-Este capítulo detalla el proceso crítico de transformación de los datos en bruto obtenidos mediante técnicas de extracción web hasta la consolidación de un dataset estructurado apto para el entrenamiento de modelos de Machine Learning. Se describe la procedencia, la limpieza y la ingeniería de variables que permite al sistema capturar la naturaleza del fútbol.
-
-\subsection{8.1 Ingesta y scraping de datos}
-La construcción del dataset se fundamenta en la extracción de datos de fuentes heterogéneas especializadas:
+ 
+Este capítulo detalla el proceso crítico de transformación de los datos en bruto
+obtenidos mediante técnicas de extracción web hasta la consolidación de un dataset
+estructurado apto para el entrenamiento de modelos de Machine Learning. Se describe
+la procedencia de los datos, el proceso de integración entre fuentes heterogéneas, la
+limpieza, y la ingeniería de variables que permite al sistema capturar la naturaleza
+estocástica del fútbol.
+ 
+\subsection{8.1 Fuentes de datos y proceso de scraping}
+ 
+La construcción del dataset se fundamenta en la extracción automatizada de datos desde
+tres fuentes especializadas y complementarias:
+ 
 \begin{itemize}
-    \item \textbf{FBRef.com}: Fuente principal de métricas avanzadas (xG, PSxG, conducciones progresivas, intercepciones).
-    \item \textbf{FutbolFantasy.com}: Proporciona el contexto específico del juego y los puntos obtenidos.
-    \item \textbf{Transfermarkt}: Utilizada para datos contextuales como rachas y clasificaciones.
+    \item \textbf{FBRef.com}: Fuente principal de métricas avanzadas de rendimiento
+    individual (xG, PSxG, conducciones progresivas, intercepciones, estadísticas
+    defensivas y de portería). Los datos se obtienen procesando los archivos HTML de
+    cada partido de las últimas 2,5 temporadas (2023/24, 2024/25 y la actual 2025/26).
+ 
+    \item \textbf{FutbolFantasy.com}: Proporciona el contexto específico del juego
+    Fantasy, incluyendo los puntos obtenidos por cada jugador en cada jornada. Constituye
+    la fuente de la variable objetivo (\texttt{target\_pf\_next}).
+ 
+    \item \textbf{Transfermarkt}: Fuente de contexto competitivo, empleada para extraer
+    las rachas de los equipos, la clasificación por jornada, datos de estadios y
+    nacionalidades de los jugadores.
 \end{itemize}
-
-El proceso de scraping implementa técnicas de evasión de bloqueos mediante \textit{backoff} exponencial y simulación de cabeceras de navegador real (\texttt{cloudscraper}), asegurando la integridad de los más de 23.000 registros históricos.
-
-\subsection{8.2 Matching de entidades}
-Para resolver la desambiguación de nombres entre fuentes (ej: "L. Yamal" vs "Lamine Yamal"), se utiliza un sistema de
- \textit{Fuzzy Matching} basado en la distancia de Levenshtein y el algoritmo \textbf{WRatio}, que permite gestionar 
- variaciones en el orden de los tokens y abreviaturas, asegurando que las estadísticas se asignen al jugador correcto 
- con un umbral de confianza controlado.
-
+ 
+\subsubsection{8.1.1 Barreras técnicas y estrategias de mitigación}
+ 
+Durante el proceso de extracción se detectaron dos barreras críticas que obligaron a
+diseñar estrategias específicas:
+ 
+\begin{itemize}
+    \item \textbf{Bloqueos de IP en FBRef}: Este portal implementa políticas extremadamente
+    estrictas de \textit{rate limiting}. Ante la imposibilidad de realizar un scraping masivo
+    automatizado sin ser bloqueado, se optó por la descarga controlada y local de los archivos
+    HTML de cada partido, procesándolos de forma diferida. Esta decisión garantizó la
+    integridad de los datos sin comprometer la disponibilidad del sistema.
+ 
+    \item \textbf{Evasión de Cloudflare en FutbolFantasy}: El portal bloquea agentes no
+    humanos. Se implementó el módulo \texttt{descargar\_puntos.py} utilizando la librería
+    \texttt{cloudscraper}, que simula una huella de navegador real gestionando
+    automáticamente los desafíos de JavaScript y cabeceras \textit{User-Agent}.
+\end{itemize}
+ 
+Para garantizar la robustez de las descargas, se implementó un algoritmo de
+\textit{backoff} exponencial con varianza aleatoria, que evita que el servidor identifique
+patrones de automatización y permite recuperarse de errores transitorios de red:
+ 
+\begin{lstlisting}[language=Python,caption={Algoritmo de reintentos con backoff exponencial}]
+delay_base = min(backoff_inicial * (2 ** (intento - 1)), backoff_max)
+delay = delay_base + random.uniform(0, 1.5)
+time.sleep(delay)
+\end{lstlisting}
+ 
+\subsubsection{8.1.2 Módulos de scraping}
+ 
+La lógica de extracción se estructura en módulos especializados:
+ 
+\begin{itemize}
+    \item \textbf{\texttt{fbref.py}}: Parsea las tablas HTML de cada partido (summary,
+    passing, defense, etc.) mediante BeautifulSoup. Combina múltiples tablas en memoria
+    usando el nombre normalizado del jugador como clave de unión. Incluye lógica especializada
+    para porteros, cuyas métricas (PSxG, Save\%, GA90) se extraen de tablas parcialmente
+    distintas.
+ 
+    \item \textbf{\texttt{roles.py}}: Extrae los rankings de eficiencia de FBRef
+    (goles por disparo, pases al último tercio, intercepciones, etc.) desde nodos HTML
+    ocultos en comentarios del DOM, usando una técnica de extracción específica:
+ 
+\begin{lstlisting}[language=Python,caption={Extracción de datos ocultos en comentarios HTML}]
+comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+for c in comments:
+    if 'id="div_leaders"' in c:
+        frag_soup = BeautifulSoup(c, "lxml")
+\end{lstlisting}
+ 
+    \item \textbf{\texttt{transfermarkt.py}}: Extrae la clasificación por jornada
+    (PJ, PG, PE, PP, GF, GC, puntos) y datos de contexto competitivo.
+ 
+    \item \textbf{\texttt{commons.py}}: Motor de normalización de texto compartido entre
+    todos los módulos. Aplica normalización NFD para eliminar acentos y diacríticos,
+    expresiones regulares para limpiar caracteres especiales, y detección de minutos
+    concatenados al nombre del jugador (ej.: \texttt{90+4'}).
+ 
+    \item \textbf{\texttt{popularDB.py}}: Orquestador final del pipeline. Valida la
+    disponibilidad local de los HTMLs, crea las entidades base en la base de datos
+    (temporadas, equipos, jornadas), ensambla las estadísticas por partido y jugador,
+    aplica la normalización final y persiste los datos en PostgreSQL.
+\end{itemize}
+ 
+\subsection{8.2 Matching de entidades entre fuentes}
+ 
+Uno de los mayores retos técnicos del proyecto fue la desambiguación de nombres entre
+fuentes. Un mismo jugador puede aparecer como ``Lamine Yamal'', ``L. Yamal'' o ``Yamal''
+según el portal. El proceso de \textit{matching} se articula en tres niveles.
+ 
+\subsubsection{8.2.1 Normalización de texto}
+ 
+Antes de cualquier comparación, el sistema aplica una normalización agresiva:
+conversión a minúsculas, eliminación de tildes mediante NFD, eliminación de caracteres
+especiales (guiones, puntos) y limpieza de minutos concatenados por FBRef al nombre
+del jugador.
+ 
+\subsubsection{8.2.2 Diccionario de alias}
+ 
+Para casos donde la normalización es insuficiente (ej.: ``Pepelu'' vs. ``José Luis García
+Vaya''), el sistema utiliza un diccionario de alias por temporada y equipo que intercepta
+estos casos antes de la lógica probabilística.
+ 
+\subsubsection{8.2.3 Fuzzy Matching contextual a tres niveles}
+ 
+El \textit{matching} no compara contra toda la base de datos, sino que se acota al
+contexto del partido (los jugadores de los dos equipos enfrentados), eliminando falsos
+positivos masivos. La función \texttt{obten\_coincidencia\_nombre} aplica una estrategia
+en cascada:
+ 
+\begin{enumerate}
+    \item \textbf{Regla de apellidos críticos}: Para apellidos muy comunes en el fútbol
+    (García, González, Williams...) se exige coincidencia del nombre completo. Este nivel
+    resuelve casos como los hermanos Iñaki y Nico Williams del Athletic Club.
+ 
+    \item \textbf{Coincidencia por prefijo/sufijo}: Para nombres de un único token sin
+    apellido crítico, el sistema detecta si coincide con el inicio o fin de algún candidato.
+    Resuelve apodos y abreviaciones (``Araújo'' $\rightarrow$ ``Ronald Araújo'').
+ 
+    \item \textbf{Fallback a WRatio}: Si los niveles anteriores no producen un resultado
+    confiable, se recurre al algoritmo \textbf{WRatio} de la librería \texttt{rapidfuzz},
+    que combina internamente \textit{Partial Ratio}, \textit{Token Sort Ratio} y escalado
+    ponderado de pesos. Esto supera las limitaciones de la distancia de Levenshtein clásica,
+    que rechazaría como válida la coincidencia ``Isaac Palazon'' frente a ``Isaac Palazon
+    Camacho'' por la diferencia de caracteres.
+\end{enumerate}
+ 
+En caso de conflicto (el mismo jugador Fantasy propuesto para múltiples registros de FBRef),
+el sistema aplica criterios de desempate por minutos jugados, puntuación Fantasy y
+consistencia del apellido.
+ 
 \subsection{8.3 Limpieza y saneamiento del dataset}
-Antes del análisis, los datos pasan por un pipeline de saneamiento:
+ 
+Una vez consolidado el histórico, el pipeline aplica las siguientes transformaciones de
+saneamiento:
+ 
 \begin{itemize}
-    \item \textbf{Tratamiento de outliers}: Identificación de puntuaciones anómalas (errores de fuentes) sustituyéndolas por la mediana o moda estadística.
-    \item \textbf{Filtrado de actividad}: Eliminación de registros de jugadores con menos de 10 minutos disputados para evitar ruido estadístico.
-    \item \textbf{Normalización NFD}: Eliminación de acentos y caracteres especiales para uniformizar las claves de búsqueda.
+    \item \textbf{Tratamiento de outliers}: Se identifican registros con puntuaciones
+    anómalas superiores a 30 puntos en una jornada (habitualmente errores de las fuentes) y
+    se sustituyen por la mediana o moda estadística del jugador, evitando que el modelo
+    aprenda de eventos estadísticamente irrelevantes.
+ 
+    \item \textbf{Filtrado de actividad}: Se eliminan registros de jugadores con menos de
+    10 minutos disputados, ya que su aporte estadístico no es representativo y genera
+    métricas por 90 minutos distorsionadas.
+ 
+    \item \textbf{Filtrado por historial mínimo}: Se exige un mínimo de 5 partidos por
+    jugador para que las variables de ventana deslizante tengan una base histórica
+    estadísticamente fiable.
+ 
+    \item \textbf{Sanitización de valores no válidos}: Los valores \texttt{NaN} e
+    infinitos se corrigen mediante imputación por mediana o relleno controlado en función
+    de la fase del procesamiento.
 \end{itemize}
-
-\subsection{8.4 Ingeniería de características (Feature Engineering)}
-El sistema no utiliza datos brutos, sino variables elaboradas que capturan tendencias temporales.
-
+ 
+\subsection{8.4 Ingeniería de características}
+ 
+El sistema no utiliza datos brutos para el entrenamiento, sino variables elaboradas que
+capturan tendencias temporales y contexto competitivo. Es importante destacar que estas
+variables derivadas no residen de forma persistente en la base de datos; se generan
+dinámicamente durante el pipeline de entrenamiento a partir de los datos brutos, garantizando
+que los cálculos se realicen siempre sobre el estado más actualizado y sin redundancia de
+almacenamiento.
+ 
 \subsubsection{8.4.1 Variables de serie temporal}
-Se calculan métricas sobre ventanas deslizantes (ventanas de 3 y 5 jornadas):
+ 
+Para capturar el estado de forma de cada jugador, se generan métricas sobre ventanas
+deslizantes con desplazamiento temporal (\texttt{shift(1)}), garantizando que cada fila
+utilice únicamente información anterior al partido a predecir:
+ 
 \begin{itemize}
-    \item \textbf{Rolling Mean}: Promedio simple para capturar la estabilidad.
-    \item \textbf{EWMA (Exponential Weighted Moving Average)}: Media ponderada que prioriza el rendimiento más reciente para detectar rachas de forma.
+    \item \textbf{Rolling Mean (media móvil simple)}: Promedio de las últimas $N$
+    jornadas (ventanas de 3 y 5). Captura la estabilidad y el rendimiento sostenido.
+    \item \textbf{EWMA (Exponential Weighted Moving Average)}: Media ponderada que
+    prioriza los encuentros más recientes, permitiendo al modelo reaccionar con mayor
+    sensibilidad ante cambios de forma, rol o minutaje.
 \end{itemize}
-
-\subsubsection{8.4.2 Definición de features por posición}
-Para maximizar la precisión, se han diseñado conjuntos de variables específicos según el rol del jugador en el campo. Es importante destacar que
- estos descriptores avanzados no residen de forma persistente en la base de datos; se generan de forma dinámica durante el pipeline de entrenamiento. 
- Esta decisión de diseño garantiza que los cálculos de medias móviles y tendencias exponenciales se realicen siempre sobre el estado más actualizado de los 
- datos brutos sin incurrir en redundancia de almacenamiento.
-
-\paragraph{Porteros (GK/PT)}
+ 
+$$EWMA_t = \alpha \cdot X_t + (1-\alpha) \cdot EWMA_{t-1}$$
+ 
+Durante el desarrollo se evaluó también una ventana de 7 partidos, que fue descartada
+por suavizar en exceso la señal y enmascarar cambios relevantes en el rendimiento.
+ 
+\subsubsection{8.4.2 Enriquecimiento con roles de élite}
+ 
+Los rankings de eficiencia extraídos de FBRef (jugadores en el top-10 de una métrica en
+la liga) se convierten en variables numéricas mediante un factor de posición exponencial.
+Un jugador en el puesto 1 de un ranking tiene un peso significativamente mayor que uno
+en el puesto 10:
+ 
+$$Score = \sum \left(Valor \times Peso \times \frac{1}{\sqrt{Posicion}}\right)$$
+ 
+El módulo \texttt{role\_enricher.py} crea adicionalmente variables de interacción entre
+la condición de élite y la intensidad del rol específico del jugador (ej.:
+\texttt{elite\_paradas\_interact} para porteros).
+ 
+\subsubsection{8.4.3 Integración de cuotas de mercado y contexto de partido}
+ 
+Las cuotas de las casas de apuestas, transformadas en probabilidades implícitas, se
+incorporan como señal del ``sentimiento del mercado'' previo al partido. Esta fue una
+decisión de diseño determinante: en las fases iniciales del proyecto sin estas variables,
+los resultados predictivos eran significativamente peores. Los datos se obtienen de
+\href{https://www.football-data.co.uk/spainm.php}{football-data.co.uk}.
+ 
+Variables derivadas de este bloque: probabilidad implícita de victoria (\texttt{p\_home},
+\texttt{p\_away}), probabilidad de más de 2.5 goles (\texttt{p\_over25\_ewma5}), dificultad
+del rival (\texttt{fixture\_difficulty\_home}, \texttt{fixture\_difficulty\_away}), y
+goles encajados esperados por el rival (\texttt{opp\_gc\_ewma5}).
+ 
+\subsubsection{8.4.4 Variables específicas por posición}
+ 
+Para maximizar la precisión predictiva, se han diseñado conjuntos de variables específicos
+según el rol del jugador. Las variables de ruido (estadísticas propias de otra posición)
+se eliminan explícitamente para evitar que el modelo aprenda de señales sin valor
+predictivo real para cada demarcación.
+ 
+\paragraph{Porteros (PT/GK)}
+ 
+Las variables de creación ofensiva (goles, xG, regates, conducciones, duelos) se eliminan
+por ser ruido puro para esta posición. Las variables específicas generadas son:
+ 
 \begin{itemize}
-    \item \textbf{cs\_expected\_points}: Probabilidad de portería a cero basada en cuotas de mercado y dificultad del rival.
-    \item \textbf{save\_per\_90\_ewma5}: Media ponderada de paradas por cada 90 minutos de juego.
-    \item \textbf{psxg\_per\_90\_ewma5}: Goles esperados tras el tiro, indicando la calidad de las paradas realizadas.
-    \item \textbf{expected\_gk\_core\_points}: Variable sintética que combina la probabilidad de \textit{Clean Sheet} con el volumen de paradas esperado.
+    \item \textbf{\texttt{cs\_probability}}: Probabilidad compuesta de portería a cero,
+    calculada como media ponderada de cuatro señales: probabilidad implícita de las apuestas
+    (peso 0.4), ratio inverso de goles encajados del rival (0.2), ratio inverso de tiros
+    del rival (0.2) y dificultad del fixture (0.2).
+    \item \textbf{\texttt{cs\_expected\_points}}: Puntos esperados por \textit{clean sheet}
+    ($4 \times cs\_probability$).
+    \item \textbf{\texttt{save\_per\_90\_ewma5}}: Media exponencial de paradas por cada
+    90 minutos, capturando la actividad y eficacia del portero.
+    \item \textbf{\texttt{psxg\_per\_90\_ewma5}}: Goles esperados tras el tiro (PSxG)
+    por 90 minutos, indicador de la presión recibida.
+    \item \textbf{\texttt{expected\_gk\_core\_points}}: Variable sintética que combina
+    CS esperado, volumen de paradas y PSxG en un único indicador:
+    $cs\_expected\_points + 0.4 \cdot save\_per\_90\_ewma5 - 0.3 \cdot psxg\_per\_90\_ewma5$.
 \end{itemize}
-
+ 
 \paragraph{Defensas (DF)}
+ 
+Las métricas de portería (paradas, PSxG, goles en contra y sus derivadas temporales) se
+eliminan como ruido. Las variables específicas generadas son:
+ 
 \begin{itemize}
-    \item \textbf{tackles\_per\_90\_ewma5}: Intensidad defensiva en entradas.
-    \item \textbf{int\_per\_90\_ewma5}: Capacidad de interceptación prospectiva.
-    \item \textbf{def\_actions\_ewma5}: Agregado de acciones defensivas totales (despejes, bloqueos y entradas).
-    \item \textbf{cs\_activity\_alignment}: Correlación entre la probabilidad de portería a cero del equipo y la actividad defensiva del jugador.
+    \item \textbf{\texttt{tackles\_per\_90\_ewma5}}: Intensidad defensiva en entradas
+    normalizada a 90 minutos, con suavizado exponencial.
+    \item \textbf{\texttt{int\_per\_90\_ewma5}}: Capacidad de interceptación por 90
+    minutos, con tendencia exponencial.
+    \item \textbf{\texttt{clearances\_per\_90}}: Despejes normalizados a 90 minutos.
+    \item \textbf{\texttt{defensive\_actions\_total}}: Agregado ponderado de acciones
+    defensivas ($entradas + intercepciones + despejes \times 0.5$).
+    \item \textbf{\texttt{def\_actions\_per\_90}} y \textbf{\texttt{def\_actions\_ewma5}}:
+    Normalización e historial exponencial de las acciones defensivas totales.
+    \item \textbf{\texttt{cs\_activity\_alignment}}: Correlación entre la probabilidad de
+    portería a cero del equipo y la actividad defensiva propia del jugador.
+    \item \textbf{\texttt{int\_momentum}}: Tendencia en el número de intercepciones
+    (diferencia EWMA3 $-$ EWMA5).
+    \item \textbf{\texttt{defensive\_context}}: Interacción entre la condición de local
+    y la dificultad del fixture.
 \end{itemize}
-
+ 
 \paragraph{Mediocentros (MC)}
+ 
+Las métricas exclusivas de portería (paradas, PSxG, \textit{clean sheet} esperado) se
+eliminan como ruido. Las variables específicas generadas son:
+ 
 \begin{itemize}
-    \item \textbf{pass\_attempts\_per\_90}: Volumen de distribución de juego.
-    \item \textbf{pass\_accuracy\_consistency}: Estabilidad en el acierto de pase en las últimas jornadas.
-    \item \textbf{dribble\_intensity}: Capacidad de progresión mediante conducciones de balón.
-    \item \textbf{defensive\_contribution}: Equilibrio entre la creación de juego y la recuperación de balones.
+    \item \textbf{\texttt{pass\_attempts\_per\_90}}: Volumen de distribución de juego
+    normalizado a 90 minutos.
+    \item \textbf{\texttt{pass\_accuracy\_consistency}}: Estabilidad en el acierto de
+    pase en las últimas jornadas (EWMA5 del porcentaje de pases completados).
+    \item \textbf{\texttt{dribbles\_per\_90}}: Frecuencia de regates por 90 minutos.
+    \item \textbf{\texttt{dribble\_intensity}}: Media móvil de conducciones totales.
+    \item \textbf{\texttt{progressive\_action\_rate}}: Tasa de conducciones progresivas
+    por 90 minutos.
+    \item \textbf{\texttt{defensive\_contribution}}: EWMA5 de las acciones defensivas
+    totales (entradas más intercepciones), capturando el rol recuperador del centrocampista.
+    \item \textbf{\texttt{creative\_vs\_defensive}}: Ratio entre el promedio móvil de
+    pases y el de entradas, que caracteriza el perfil ofensivo o defensivo del jugador.
+    \item \textbf{\texttt{dribble\_confidence}}: EWMA5 del porcentaje de regates
+    completados, indicador de confianza en la conducción.
+    \item \textbf{\texttt{overall\_activity}}: Suma de pases, entradas, regates y
+    conducciones, como índice global de implicación en el juego.
+    \item \textbf{\texttt{playing\_time\_form\_combo}}: Producto del porcentaje de
+    minutos jugados (EWMA5) por los puntos Fantasy (EWMA5), penalizando a jugadores
+    con buen rendimiento pero escasa participación.
 \end{itemize}
-
+ 
 \paragraph{Delanteros (DT)}
+ 
+Las métricas de portería y las acciones defensivas (despejes, bloqueos, duelos aéreos,
+\textit{clearances} temporales) se eliminan como ruido. Las variables específicas
+generadas son:
+ 
 \begin{itemize}
-    \item \textbf{xg\_overperformance}: Diferencia entre goles marcados y goles esperados (xG), detectando estados de gracia.
-    \item \textbf{shot\_conversion\_ewma5}: Eficiencia de cara a puerta (goles por tiro).
-    \item \textbf{offensive\_pressure\_score}: Variable que pondera el volumen de tiros y el xG generado.
-    \item \textbf{scoring\_momentum}: Tendencia de racha goleadora calculada mediante la diferencia de EWMA3 y EWMA5.
+    \item \textbf{\texttt{xg\_overperformance}}: Diferencia entre goles marcados y xG
+    esperado en los últimos 5 partidos, detectando estados de gracia o mala racha ante
+    el gol.
+    \item \textbf{\texttt{shot\_conversion\_ewma5}}: Eficiencia de cara a puerta
+    (goles por tiro), con suavizado exponencial para capturar la tendencia reciente.
+    \item \textbf{\texttt{offensive\_pressure\_score}}: Variable compuesta que pondera
+    el volumen de tiros y el xG generado ($shots\_roll5 \times 0.4 + xg\_roll5 \times 0.6$).
+    \item \textbf{\texttt{scoring\_stability}}: Inversa de la diferencia absoluta entre
+    la media móvil de goles (roll5 y ewma5), midiendo la consistencia goleadora.
+    \item \textbf{\texttt{xg\_per\_minute\_ewma}}: xG generado por minuto disponible,
+    que penaliza a jugadores con buenos números pero escasa participación.
+    \item \textbf{\texttt{goals\_per\_minute\_ewma}}: Goles por minuto disponible.
+    \item \textbf{\texttt{scoring\_momentum}}: Tendencia de racha goleadora calculada
+    como la diferencia EWMA3 $-$ EWMA5 de goles.
+    \item \textbf{\texttt{xg\_momentum}}: Tendencia del xG generado (EWMA3 $-$ EWMA5).
+    \item \textbf{\texttt{pf\_consistency\_fw}}: Inversa de la volatilidad de los puntos
+    Fantasy en los últimos 5 partidos, midiendo la fiabilidad del delantero.
 \end{itemize}
-
-\subsubsection{8.4.3 Selección de características y reducción de ruido}
-Se implementa una fase de filtrado de ruido para eliminar colinealidad y variables redundantes. Mediante el análisis de la \textbf{correlación de Spearman}, se descartan todas las variables con un $|\rho| < 0.02$, asegurando que solo las señales con valor predictivo real entren en el modelo.
-
+ 
+\subsubsection{8.4.5 Variables comunes eliminadas por ruido}
+ 
+Con independencia de la posición, se eliminan sistemáticamente aquellas variables que
+los modelos penalizan con importancia nula o que introducen colinealidad sin valor
+predictivo adicional: \texttt{duels\_won\_pct\_ewma5}, \texttt{duels\_won\_roll5},
+\texttt{duels\_won\_ewma5}, \texttt{elite\_entradas\_interact} y
+\texttt{ratio\_roles\_criticos}.
+ 
 \subsection{8.5 Prevención del data leakage}
-Para garantizar que el modelo sea aplicable en el mundo real, se aplica un \textbf{desplazamiento temporal (Shift)}: para predecir la jornada $N$, el sistema solo tiene acceso a las variables generadas hasta la jornada $N-1$. Esto evita que información del "futuro" (como el resultado del partido a predecir) se filtre en el entrenamiento.
-
-\subsection{8.6 Estructura del dataset}
-Tras el proceso de ETL y enriquecimiento, el dataset final presenta una estructura robusta con un total de \textbf{29.222 filas} (observaciones de jugador/partido) y \textbf{68 columnas} (dimensiones de análisis). Estas variables se categorizan en los siguientes bloques:
-
+ 
+Para garantizar que el sistema sea aplicable en el mundo real, se implementan dos
+salvaguardas fundamentales:
+ 
 \begin{itemize}
-    \item \textbf{Identificación y Bio}: Datos demográficos y de campo (\textit{player, nacionalidad, edad, posicion, dorsal}).
-    \item \textbf{Contexto de Encuentro}: Información situacional (\textit{equipo\_propio, equipo\_rival, local, temporada, jornada, fecha\_partido}).
-    \item \textbf{Estadísticas de Rendimiento}: Métricas técnicas de ataque y distribución (\textit{titular, min\_partido, goles, asistencias, xG, xAG, tiros, pases, regates, conducciones}).
-    \item \textbf{Métricas Defensivas y de Portería}: Acciones de recuperación y protección (\textit{entradas, duelos, bloqueos, despejes, paradas, PSxG, goles\_en\_contra}).
-    \item \textbf{Contexto Competitivo (Propio y Rival)}: Variables de clasificación y estado de forma procedentes de Transfermarkt (\textit{posicion, pj, pg, pe, pp, gf, gc, dg, pts, racha5partidos}).
-    \item \textbf{Variable Objetivo}: El valor a predecir por los modelos (\textit{target\_pf\_next}).
+    \item \textbf{Desplazamiento temporal (Shift)}: Todas las estadísticas de rendimiento
+    se desplazan una jornada hacia atrás (\texttt{shift(1)}) por jugador. Para predecir
+    la jornada $N$, el modelo solo tiene acceso a variables calculadas hasta la jornada
+    $N-1$.
+ 
+    \item \textbf{Validación temporal estricta}: En lugar de una validación aleatoria
+    (K-Fold), se utiliza un corte temporal: el 80\% de los datos más antiguos se usan
+    para entrenamiento y el 20\% más reciente para test. Esto garantiza que el modelo
+    nunca aprende del futuro.
 \end{itemize}
+ 
+\subsection{8.6 Estructura del dataset final}
+ 
+Tras el proceso de ETL y enriquecimiento, el dataset final presenta una estructura robusta
+con un total de \textbf{29.222 filas} (observaciones jugador/partido) y \textbf{68 columnas}.
+Las variables se agrupan en los siguientes bloques:
+ 
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{4.5cm}|p{9cm}|}
+\hline
+\textbf{Bloque} & \textbf{Variables representativas} \\
+\hline
+Identificación y Bio &
+\texttt{player, nacionalidad, edad, posicion, dorsal} \\
+\hline
+Contexto de Encuentro &
+\texttt{equipo\_propio, equipo\_rival, is\_home, temporada, jornada, fecha\_partido} \\
+\hline
+Rendimiento ofensivo &
+\texttt{gol\_partido, asist\_partido, xg\_partido, xag, tiros, tiro\_puerta\_partido,
+regates\_completados, conducciones\_progresivas, pases\_totales,
+pases\_completados\_pct} \\
+\hline
+Métricas defensivas y portería &
+\texttt{entradas, intercepciones, despejes, bloqueos, duelos\_ganados,
+porcentaje\_paradas, psxg, goles\_en\_contra} \\
+\hline
+Contexto competitivo &
+\texttt{pos\_clasificacion, pj, pg, pe, pp, gf, gc, pts, racha5partidos,
+opp\_gc\_ewma5, opp\_shots\_ewma5, fixture\_difficulty\_home/away} \\
+\hline
+Cuotas de mercado &
+\texttt{p\_home, p\_away, p\_over25, p\_over25\_ewma5} \\
+\hline
+Disponibilidad y forma &
+\texttt{min\_partido, minutes\_pct\_roll3/5, minutes\_pct\_ewma3/5,
+pf\_roll3/5, pf\_ewma3/5} \\
+\hline
+Variable objetivo &
+\texttt{target\_pf\_next} \\
+\hline
+\end{tabular}
+\caption{Bloques de variables del dataset final.}
+\label{tab:dataset-estructura}
+\end{table}
+ 
+\noindent Las variables de serie temporal (rolling y EWMA) y las features específicas por posición
+descritas en el apartado 8.4.4 se generan dinámicamente sobre este conjunto base durante
+la fase de entrenamiento, y no se almacenan de forma persistente en la base de datos.

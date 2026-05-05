@@ -135,31 +135,56 @@ El algoritmo de \textit{matching} se valida de forma aislada mediante casos cons
 
 
 % =============================================================
-\subsection{10.3 Pruebas de carga}
+% =============================================================
+\subsection{10.3 Pruebas de carga y rendimiento}
 \label{sec:pruebas-carga}
 
-La escalabilidad del sistema se ha evaluado con Locust, simulando 20 usuarios concurrentes durante 2 minutos sobre los \textit{endpoints} de consulta más frecuentes. El objetivo es medir el comportamiento del \textit{backend} bajo carga realista, sin introducir variabilidad artificial.
+Para evaluar la capacidad, rendimiento y escalabilidad de la API bajo condiciones realistas, se ha ejecutado una batería de pruebas de carga utilizando la herramienta Locust. El entorno de pruebas se ha configurado con 3 \textit{workers} distribuidos, evaluando distintos volúmenes de tráfico para identificar el comportamiento del sistema y detectar sus límites físicos.
+
+Las pruebas se han estructurado en fases de intensidad creciente. Aunque el objetivo teórico era alcanzar los 300 usuarios concurrentes, el análisis se centra en las fases de validación inicial y carga moderada, donde se localizó el punto exacto de saturación arquitectónica del sistema.
 
 \begin{table}[H]
 \centering
-\caption{Resultados de las pruebas de carga}
-\label{tab:carga}
+\caption{Resultados agregados de las pruebas de estrés con Locust}
+\label{tab:resultados-carga}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{ll}
+\begin{tabular}{lcc}
 \hline
-\textbf{Métrica} & \textbf{Valor} \\
+\textbf{Métrica} & \textbf{Fase 1 (10 usuarios)} & \textbf{Fase 2 (100 usuarios)} \\
 \hline
-Usuarios concurrentes & 20 \\
-Total de peticiones   & 1\,220 \\
-Throughput            & 10{,}22 req/s \\
-Latencia promedio     & 708 ms \\
+Duración de la prueba & 3 minutos & 5 minutos \\
+Tasa de generación (\textit{Spawn rate}) & 2 usr/s & 10 usr/s \\
+Total de peticiones procesadas & 612 & 2\,187 \\
+Throughput (RPS) & $\sim$5{,}8 req/s & $\sim$4{,}6 req/s \\
+Tasa de error (Fallos) & 4{,}7\,\% & 14{,}5\,\% \\
+Latencia Mediana & 130 ms & 5\,800 ms \\
+Percentil 90 (P90) & 2\,400 ms & 25\,000 ms \\
 \hline
 \end{tabular}
 \end{table}
 
-Los resultados son coherentes con un entorno de desarrollo local y confirman que la capa de lectura responde de forma estable bajo la carga simulada. La caché con Redis amortigua parte del coste en \textit{endpoints} repetitivos; no obstante, en un escenario productivo será necesario escalar la infraestructura y revisar las estrategias de invalidación y particionado de carga.
+\textbf{Análisis de resultados y comportamiento del sistema:}
 
+Durante la \textbf{Fase 1 (10 usuarios concurrentes)}, la plataforma demostró un comportamiento estable y funcional, con una tasa de error baja (4{,}7\,\%) y un tiempo de respuesta mediano bastante rápido (130 ms). Si bien el comportamiento general es positivo para una carga base, algunas rutas que exigen mayor procesamiento, como \texttt{/api/clasificacion} o \texttt{POST /api/cambiar-jornada}, comenzaron a mostrar latencias significativas en el percentil 90 superior a los 2 segundos.
 
+Al escalar a la \textbf{Fase 2 (100 usuarios concurrentes)}, el sistema alcanzó rápidamente su límite operativo. A pesar de aumentar la concurrencia en un factor de 10, el \textit{throughput} (RPS) no logró escalar, estancándose e incluso reduciéndose ligeramente a 4{,}6 peticiones por segundo. La tasa de error se elevó al 14{,}5\,\%, y las latencias sufrieron una degradación drástica: el tiempo mediano de respuesta ascendió a 5{,}8 segundos y el percentil 90 alcanzó los 25 segundos. Bajo estas condiciones métricas, el paso a la Fase 3 (300 usuarios) supone un colapso completo del servicio debido a la incapacidad previa de procesar la carga de la Fase 2.
+
+\textbf{Diagnóstico del cuello de botella:}
+
+El análisis detallado del colapso en la Fase 2 confirma que la degradación del servicio no se debe a ineficiencias en el código de la aplicación o del ORM sino queestá originado por la configuración límite de conexiones concurrentes en PostgreSQL.
+
+Al recibir la avalancha de peticiones (10 nuevos usuarios por segundo), el límite máximo de conexiones (\texttt{max\_connections}) tolerado por
+ la base de datos se agota casi de inmediato. Esto obliga a las instancias de Django a poner en cola el resto de las solicitudes a la espera de 
+ que se libere un hilo en la base de datos. Este encolamiento pasivo es el responsable directo de que la latencia se dispare a decenas de segundos 
+ y de que un 14{,}5\,\% de las peticiones terminen en error por agotamiento de tiempo de espera (\textit{timeout}).
+
+\textbf{Conclusión:}
+
+El \textit{backend} en su configuración actual soporta de forma fluida un tráfico simultáneo de aproximadamente 10 a 20 usuarios. 
+Para alcanzar el objetivo de 100 usuarios o más con latencias inferiores a 1000 ms, es imprescindible modificar la topología de la 
+base de datos. La mejora inmediata si pasase a producción sería implementar un agrupador de conexiones (\textit{Connection Pooler}) como PgBouncer, 
+aumentar el parámetro \texttt{max\_connections} en PostgreSQL, y expandir el uso de Redis para cachear operaciones pesadas de lectura, 
+aliviando así la presión directa sobre el gestor relacional.
 % =============================================================
 \subsection{10.4 Resultados de cobertura y calidad}
 \label{sec:cobertura-calidad}

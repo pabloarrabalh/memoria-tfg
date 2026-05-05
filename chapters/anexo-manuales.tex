@@ -553,3 +553,67 @@ Accede a \texttt{http://localhost:9000} y revisa:
     \item Code Smells
     \item Bugs
 \end{itemize}
+\subsubsection*{2.9 Pruebas de carga con Locust}
+
+Este apartado describe cómo ejecutar pruebas de carga distribuidas contra la API de LigaMaster utilizando Locust con Docker. Locust permite simular múltiples usuarios concurrentes contra la API. La configuración utiliza una arquitectura master-worker distribuida en Docker:
+
+\begin{itemize}
+    \item 1 servidor master (interfaz web en puerto 8089)
+    \item 3 workers conectados automáticamente al master
+\end{itemize}
+
+\paragraph*{1. Construcción de la imagen}
+
+Ejecuta el siguiente comando para construir la imagen Docker de Locust sin utilizar caché:
+
+\begin{verbatim}
+docker compose -f docker-compose.locust.yml build --no-cache
+\end{verbatim}
+
+\paragraph*{2. Levantar el cluster (master + 3 workers)}
+
+Inicia el cluster distribuido:
+
+\begin{verbatim}
+docker compose -f docker-compose.locust.yml up -d
+\end{verbatim}
+
+Este comando inicia:
+
+\begin{itemize}
+    \item 1 servidor master (puerto 8089 para la interfaz web)
+    \item 3 trabajadores (workers) 
+\end{itemize}
+
+\paragraph*{3. Acceder a la interfaz web}
+
+Abre tu navegador y accede a:
+
+\begin{center}
+\texttt{http://localhost:8089}
+\end{center}
+
+En la interfaz ingresa los parámetros de la prueba:
+
+\begin{itemize}
+    \item \textbf{Number of users}: cantidad de usuarios virtuales.
+    \item \textbf{Spawn rate}: usuarios por segundo a generar.
+\end{itemize}
+
+Una vez ingresados los parámetros, haz clic en \textbf{Start swarming} para iniciar la prueba de carga.
+
+\paragraph*{4. Parar el cluster}
+
+Para detener y eliminar los contenedores:
+
+\begin{verbatim}
+docker compose -f docker-compose.locust.yml down
+\end{verbatim}
+
+\paragraph*{Notas}
+
+\begin{itemize}
+    \item \textbf{Host en la prueba}: \texttt{http://backend:8000}
+    
+    \item \textbf{Usuario de prueba}: las pruebas utilizan credenciales \texttt{testlocust} / \texttt{TestLocust123!} para autenticación automática en el bootstrap inicial. (es posible que no estén en la BBDD de producción)
+\end{itemize}

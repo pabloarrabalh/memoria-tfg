@@ -2,22 +2,554 @@
 Este anexo tiene como objetivo proporcionar las instrucciones necesarias para la puesta en marcha de la aplicación en diferentes entornos, así como una guía básica para el usuario final.
 \subsection*{1. Manual de instalación}
 
-Para facilitar el acceso y la evaluación del proyecto, se han dispuesto varias modalidades de ejecución: una versión desplegada en la nube y opciones de despliegue local (con y sin contenedores).
 
-\subsubsection*{1.1. Versión desplegada}
-La plataforma se encuentra actualmente operativa y puede ser consultada a través de las siguientes direcciones:
+\subsubsection*{1.1 Objetivo}
+
+Este manual detalla cómo inicializar y ejecutar LigaMaster en tres configuraciones distintas:
+
+\begin{enumerate}
+    \item \textbf{Desarrollo local}: backend ejecutándose en la máquina local, con servicios de apoyo (PostgreSQL, Meilisearch, Redis) en contenedores Docker.
+    \item \textbf{Docker completo}: toda la pila de aplicación containerizada y orquestada mediante Docker Compose.
+    \item \textbf{Acceso remoto}: conexión directa a la versión desplegada en Vercel, sin instalación local.
+\end{enumerate}
+
+\subsubsection*{1.2 Requisitos previos}
+
+Antes de proceder con cualquiera de los escenarios, verifica que tu sistema dispone de:
 
 \begin{itemize}
-    \item \textbf{Interfaz de usuario (Frontend):} \href{https://tfg-delta-three.vercel.app}{https://tfg-delta-three.vercel.app}
+    \item \textbf{Python 3.11}: verifica ejecutando \texttt{python {-}{-}version}. Debe mostrar \texttt{Python 3.11.x}.
+    \item \textbf{Node.js 18+}: verifica ejecutando \texttt{node {-}{-}version}. Debe mostrar \texttt{v18.x.x} o superior.
+    \item \textbf{Docker Desktop}: requerido solo para los escenarios que utilizan contenedores. Descargable desde \texttt{https://www.docker.com/products/docker-desktop}.
+    \item \textbf{Git}: sistema de control de versiones para clonar el repositorio.
 \end{itemize}
 
-Esta modalidad no requiere de ninguna configuración previa por parte del evaluador.
-
-\subsubsection*{1.2. Instalación Local (Sin contenedores)}
-Para ejecutar la aplicación directamente sobre el sistema operativo, se deben seguir los siguientes pasos generales:
+Además, el proyecto utiliza un entorno virtual Python denominado \texttt{.venv311}.
 
 
-\subsubsection*{1.3. Instalación Local mediante Docker}
-Para ejecutar la aplicación en un entorno aislado manteniendo la consistencia de las dependencias, se utiliza Docker.
+\subsubsection*{1.3 Escenario A: Desarrollo local}
+
+Este escenario es recomendado para desarrollo activo del código. El backend se ejecuta directamente en la máquina del desarrollador, mientras que los servicios de apoyo (especialmente la base de datos PostgreSQL, además de Meilisearch y Redis) se ejecutan en contenedores Docker para mantener el entorno aislado.
+
+Nota importante: si ya tienes un PostgreSQL local usando el puerto 5432, la base de datos en Docker se publica en el puerto 5433 del host para evitar conflictos.
+
+\paragraph*{1.3.1 Configuración inicial (ejecutar una sola vez)}
+
+\begin{enumerate}
+    \item \textbf{Clonar el repositorio}:
+    \begin{verbatim}
+    git clone https://github.com/pabloarrabalh/TFG.git
+    cd TFG
+    \end{verbatim}
+    
+    \item \textbf{Iniciar Docker Desktop}: Abre la aplicación desde el menú inicio y espera a que muestre el estado ``running'' (indicador verde). Verifica la disponibilidad ejecutando:
+    \begin{verbatim}
+    docker ps
+    \end{verbatim}
+    
+    \item \textbf{Levantar servicios de apoyo en Docker}: Levanta PostgreSQL, Meilisearch y Redis en contenedores Docker; la aplicación Django conectará a PostgreSQL ejecutándose en Docker en `localhost:5433`.
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml up -d db meilisearch redis
+    \end{verbatim}
+
+    Espera aproximadamente 30 segundos a que los servicios alcancen estado ``healthy''. Verifica con:
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml ps
+    \end{verbatim}
+
+    Todos los servicios deben mostrar estado ``Up (healthy)''. Si necesitas comprobar la codificación del servidor Postgres desde el contenedor.
+    
+    \item \textbf{Crear entorno virtual Python}:
+    \begin{verbatim}
+    python -m venv .venv311
+    & .\.venv311\Scripts\Activate.ps1
+    \end{verbatim}
+    
+    Verifica que el indicador de la terminal muestra \texttt{(.venv311)}.
+    
+    \item \textbf{Instalar dependencias Python}: 
+    \begin{verbatim}
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    \end{verbatim}
+    
+    Este proceso requiere aproximadamente 2-3 minutos.
+    
+    \item \textbf{Configurar variables de entorno}: Copia el archivo de configuración local:
+    \begin{verbatim}
+    copy .env.local .env
+    \end{verbatim}
+    
+    Verifica que el archivo \texttt{.env} contiene las siguientes variables con los valores correctos para desarrollo local usando servicios en Docker (el puerto 5433 de Postgres se expondrá en el host):
+    \begin{verbatim}
+    DB_HOST=localhost     
+    DB_PORT=5433
+    MEILISEARCH_HOST=http://localhost:7700
+    REDIS_URL=redis://localhost:6379/1
+    \end{verbatim}
+    
+    \item \textbf{Aplicar migraciones de base de datos}:
+    \begin{verbatim}
+    python manage.py makemigrations
+    python manage.py migrate
+    \end{verbatim}
+
+    \item \textbf{(Recomendado) Generar o regenerar predicciones manualmente}: si quieres generarlas en local, ejecuta:
+    \begin{verbatim}
+    python manage.py generar_predicciones --temporada 25_26
+     --all-jornadas --sin-filtro-minutos --workers 4 --force
+    \end{verbatim}
+    Este proceso es largo y se necesita tanto en local como en Docker, se recomienda consultar la versión desplegada para evitar esperas.
+
+    \item \textbf{(Opcional) Crear superusuario para acceso administrativo}:
+    \begin{verbatim}
+    python manage.py createsuperuser
+    \end{verbatim}
+    
+\end{enumerate}
+
+Comprobaciones:
+\begin{enumerate}
+\item PostgreSQL:
+\begin{verbatim}
+python manage.py shell -c "from django.db import connection; 
+connection.ensure_connection(); 
+print('DB OK:', 
+connection.settings_dict['HOST'], connection.settings_dict['PORT'])"
+\end{verbatim}
+\item Meilisearch: curl http://localhost:7700/health Seleccionar opción S/Y
+\end{enumerate}
+
+\paragraph*{1.3.2 Ejecución en cada sesión de desarrollo}
+
+Una vez completada la configuración inicial, para iniciar el sistema en sesiones posteriores:
+
+\textbf{Terminal 1 - Backend}:
+\begin{verbatim}
+cd TFG
+& .\.venv311\Scripts\Activate.ps1
+python manage.py runserver
+\end{verbatim}
+
+Este comando inicia el servidor Django en \texttt{http://127.0.0.1:8000/}.
+
+\textbf{Terminal 2 - Frontend}:
+\begin{verbatim}
+cd TFG/frontend-web
+npm install  # solo en la primera ejecución
+npm run dev
+\end{verbatim}
+
+Este comando inicia el servidor de desarrollo Vite en \texttt{http://localhost:5173/}.
+
+La aplicación estará completamente operativa con ambos servidores en ejecución.
+
+\paragraph*{1.3.3 Puertos y URLs en desarrollo local}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Servicio} & \textbf{Puerto} & \textbf{URL} \\
+\hline
+Backend Django & 8000 & \texttt{http://127.0.0.1:8000/} \\
+Frontend Vite & 5173 & \texttt{http://localhost:5173/} \\
+Meilisearch & 7700 & \texttt{http://localhost:7700/} \\
+Redis & 6379 & \texttt{localhost:6379} \\
+PostgreSQL & 5432 & \texttt{localhost:5432} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection*{1.4 Escenario B: Docker completo}
+
+Este escenario encapsula toda la aplicación en contenedores, replicando exactamente el entorno de producción. Se recomienda para verificaciones de integración y despliegues.
+
+\paragraph*{1.4.1 Configuración e inicialización}
+
+\begin{enumerate}
+    \item \textbf{Clonar el repositorio}:
+    \begin{verbatim}
+    git clone https://github.com/pabloarrabalh/TFG.git
+    cd TFG
+    \end{verbatim}
+    
+    \item \textbf{Iniciar Docker Desktop}: Abre la aplicación y verifica que se encuentra en estado ``running''.
+    
+    \item \textbf{Configurar variables de entorno para Docker}: Copia la configuración específica para Docker:
+    \begin{verbatim}
+    copy .env.docker .env
+    \end{verbatim}
+    
+    Verifica que el archivo \texttt{.env} contiene:
+    \begin{verbatim}
+    DB_HOST=db
+    MEILISEARCH_HOST=http://meilisearch:7700
+    REDIS_URL=redis://redis:6379/1
+    \end{verbatim}
+    
+    \textbf{Nota crítica}: En este escenario, los hosts son nombres de servicios Docker (definidos en \texttt{docker-compose.local.yml}), no \texttt{localhost}.
+    
+    \item \textbf{Construir e iniciar contenedores (primera ejecución)}:
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml up --build
+    \end{verbatim}
+    
+    Este proceso incluye la compilación de imágenes Docker, la creación de volúmenes, y la inicialización de servicios.
+    Puede requerir 5-10 minutos en la primera ejecución. La población inicial de la base de datos (carga de datos CSV,
+    cálculo de predicciones ML, indexación en Meilisearch) puede requerir 20-30 minutos adicionales.
+
+    Nota: en Docker no hace falta lanzar un comando extra para generar predicciones si la BD está vacía; el backend las genera automáticamente en el arranque inicial mediante \texttt{docker-entrypoint.sh}.
+    
+    \item \textbf{Ejecutar en sesiones posteriores}:
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml up
+    \end{verbatim}
+    
+    Los contenedores conservarán el estado de volúmenes persistentes (base de datos, índices, etc.).
+    
+\end{enumerate}
+
+\paragraph*{1.4.2 Acceso a la aplicación en Docker}
+
+Una vez que los servicios se encuentren en ejecución y los logs muestren ``Daphne running'', accede a:
+
+\begin{itemize}
+    \item \textbf{Frontend + Backend}: \texttt{http://localhost/}
+    \item \textbf{Admin Django}: \texttt{http://localhost/admin/}
+    \item \textbf{API REST}: \texttt{http://localhost/api/}
+\end{itemize}
+
+El proxy Nginx en puerto 80 redirige las solicitudes hacia el backend Django en puerto 8000 (interno, no expuesto directamente).
+
+\paragraph*{1.4.3 Gestión de contenedores}
+
+\textbf{Detener servicios sin eliminar datos}:
+\begin{verbatim}
+docker compose -f docker-compose.local.yml stop
+\end{verbatim}
+
+\textbf{Detener y eliminar contenedores (preservando volúmenes)}:
+\begin{verbatim}
+docker compose -f docker-compose.local.yml down
+\end{verbatim}
+
+\textbf{Ver logs en tiempo real}:
+\begin{verbatim}
+docker compose -f docker-compose.local.yml logs -f backend
+\end{verbatim}
+
+\subsubsection*{1.5 Escenario C: Versión desplegada}
+
+Para usuarios que no desean realizar instalación local, la aplicación está disponible en una instancia de producción:
+
+\begin{center}
+\texttt{https://tfg-delta-three.vercel.app}
+\end{center}
+
+Esta versión se encuentra completamente funcional y requiere únicamente un navegador web.
+ No es necesario instalar dependencias, ejecutar migraciones, ni gestionar contenedores locales.
+
+ 
+\subsubsection*{1.6 Resolución de problemas}
+
+\begin{itemize}
+    \item \textbf{``Cannot connect to Docker daemon''}: Docker Desktop no está en ejecución. Abre la aplicación desde el menú inicio y espera a que alcance estado ``running''.
+    
+    \item \textbf{``Port XXX already in use''}: El puerto está en uso por otro proceso. Para desarrollo local, inicia el backend en otro puerto o termina el otro proceso que esté corriendo:
+    \begin{verbatim}
+    python manage.py runserver 8001
+    \end{verbatim}
+    
+    \item \textbf{``Connection refused'' en PostgreSQL}: El servicio Docker no está operativo o el puerto expuesto es incorrecto. Verifica:
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml ps
+    \end{verbatim}
+    Si el estado no es ``healthy'', espera 30 segundos y repite. Si persiste, reinicia los servicios y comprueba que Django apunta a `localhost:5433`:
+    \begin{verbatim}
+    docker compose -f docker-compose.local.yml down
+    docker compose -f docker-compose.local.yml up -d
+    \end{verbatim}
+    
+    \item \textbf{``ModuleNotFoundError'' en Python}: Las dependencias no están instaladas. Verifica que el entorno virtual está activado y ejecuta:
+    \begin{verbatim}
+    pip install -r requirements.txt
+    \end{verbatim}
+    
+    \item \textbf{Meilisearch tardanza en indexación}: En la primera ejecución, la indexación de todos los jugadores puede requerir 1-3 minutos. Este comportamiento es normal. No interrumpas el proceso.
+        
+    \item \textbf{``django.core.exceptions.ImproperlyConfigured''}: Las variables de entorno son incorrectas o inexistentes. Verifica que el archivo \texttt{.env} existe y contiene todas las variables requeridas. Revisa los valores según el escenario (desarrollo local vs. Docker).
+\end{itemize}
+
 
 \subsection*{2. Manual de Usuario}
+
+\subsubsection*{2.1 Objetivo}
+
+Este manual explica cómo usar LigaMaster desde el punto de vista del usuario final.
+
+\subsubsection*{2.2 Formas de acceso}
+
+Puedes usar la aplicación de tres formas:
+
+\begin{itemize}
+    \item en local, si la has arrancado en tu equipo;
+    \item en Docker, si estás ejecutando el proyecto con contenedores;
+    \item directamente en la versión desplegada en \texttt{https://tfg-delta-three.vercel.app}.
+\end{itemize}
+
+\subsubsection*{2.3 Acceso inicial}
+
+\paragraph*{Paso 1: Abrir la aplicación}
+
+Entra en la URL correspondiente a tu entorno:
+
+\begin{itemize}
+    \item local: \texttt{http://127.0.0.1:8000/} o \texttt{http://localhost:5173/};
+    \item desplegada: \texttt{https://tfg-delta-three.vercel.app}.
+\end{itemize}
+
+\paragraph*{Paso 2: Registrarse o iniciar sesión}
+
+Si es tu primer acceso:
+
+\begin{enumerate}
+    \item entra en la pantalla de registro;
+    \item completa el formulario con usuario, email y contraseña;
+    \item elige si deseas hacer un tour guiado por la aplicación.
+\end{enumerate}
+
+Si ya tienes cuenta:
+
+\begin{enumerate}
+    \item abre el formulario de login;
+    \item introduce usuario y contraseña;
+    \item accede al panel principal.
+\end{enumerate}
+
+\subsubsection*{2.4 Navegación principal}
+
+Una vez dentro, la aplicación te permite consultar varias áreas:
+
+\begin{itemize}
+    \item \textbf{Menú principal}: resume la jornada actual, partidos de los equipos favoritos y todos los correspondientes a la próxima jornada. Así como una sección de jugadores destacados de acuerdo a los modelos predictivos en la próxima jornada. Pulsando en ellos se accede a la explicación de la predicción y un botón para navegar a la vista del propio jugador.
+    
+    \item \textbf{Clasificación}: muestra la tabla de la liga, con filtros para elegir la jornada deseada.
+    
+    \item \textbf{Equipos}: lista los equipos disponibles y permite abrir su detalle.
+    
+    \item \textbf{Jugadores}: muestra el detalle del jugador, su radar y estadísticas asociadas.
+    
+    \item \textbf{Mi Plantilla}: vista en la cual el usuario puede gestionar su alineación mediante un sistema de drag and drop con cartas para cada jugador.
+    
+    \item \textbf{Búsqueda}: localiza jugadores y equipos por nombre.
+    
+    \item \textbf{Favoritos}: guarda tus equipos preferidos.
+    
+    \item \textbf{Estadísticas}: consulta y compara el rendimiento de jugadores.
+    
+    \item \textbf{Perfil}: actualiza tus datos personales, foto de perfil y preferencias.
+\end{itemize}
+
+\subsubsection*{2.5 Uso paso a paso}
+
+\paragraph*{2.5.1 Consultar la clasificación}
+
+\begin{enumerate}
+    \item Abre la sección de clasificación.
+    \item Selecciona la temporada o jornada que desee consultar.
+    \item Revisa la tabla y el rendimiento de cada equipo.
+\end{enumerate}
+
+\paragraph*{2.5.2 Ver el detalle de un equipo}
+
+\begin{enumerate}
+    \item Entra en la sección de equipos.
+    \item Pulsa sobre el nombre del equipo.
+    \item Consulta su información, jugadores y contexto de temporada.
+\end{enumerate}
+
+\paragraph*{2.5.3 Ver el detalle de un jugador}
+
+\begin{enumerate}
+    \item Abre la sección de jugador (desde la vista de su equipo o el modal de jugadores destacados) o busca al jugador por nombre.
+    \item Entra en su ficha.
+    \item Revisa el radar, partidos recientes y estadísticas.
+\end{enumerate}
+
+\paragraph*{2.5.4 Buscar equipos o jugadores}
+
+\begin{enumerate}
+    \item Usa el buscador de la aplicación.
+    \item Escribe parte del nombre de un equipo o jugador.
+    \item Selecciona el resultado que te interese.
+\end{enumerate}
+
+\paragraph*{2.5.5 Gestionar favoritos}
+
+\textbf{Opción A:}
+\begin{enumerate}
+    \item Entra en la vista de favoritos.
+    \item Pulsa la opción de favorito.
+    \item El equipo quedará guardado en tu perfil.
+\end{enumerate}
+
+\textbf{Opción B:}
+\begin{enumerate}
+    \item Accede al perfil.
+    \item Elimina aquellos equipos que desees en la sección de favoritos.
+\end{enumerate}
+
+\textit{Nota: Si es tu primer inicio, accede a favoritos desde el componente de equipos favoritos.}
+
+\paragraph*{2.5.6 Usar el consejero}
+
+\begin{enumerate}
+    \item Abre la sección de consejero.
+    \item Selecciona el jugador y la acción que quieres analizar.
+    \item Revisa la recomendación generada.
+\end{enumerate}
+
+\paragraph*{2.5.7 Revisar notificaciones}
+
+\begin{enumerate}
+    \item Entra en notificaciones.
+    \item Marca como leídas las que ya hayas visto.
+    \item Elimina las que no necesites conservar.
+\end{enumerate}
+
+\paragraph*{2.5.8 Editar perfil}
+
+\begin{enumerate}
+    \item Abre tu perfil.
+    \item Cambia los datos permitidos.
+    \item Guarda los cambios.
+\end{enumerate}
+
+\subsubsection*{2.6 Recomendaciones de uso}
+
+\begin{itemize}
+    \item Usa siempre la misma cuenta para conservar favoritos y notificaciones.
+    \item Si trabajas en local, asegúrate de que Meilisearch está arrancado.
+    \item Si la app no responde, refresca la sesión y vuelve a iniciar sesión.
+    \item En la versión desplegada, espera unos segundos si una búsqueda tarda más de lo normal.
+\end{itemize}
+
+\subsubsection*{2.7 Resolución de problemas básica}
+
+\begin{itemize}
+    \item \textbf{No aparecen resultados de búsqueda}: revisa que el buscador y Meilisearch estén activos.
+    \item \textbf{No aparecen resultados, equipos ni jugadores}: dado que la BBDD está en Supabase, cada semana, si no tiene tráfico se suspende. Se ha intentado evitar esto mediante GitHub Actions y otras herramientas, pero ha resultado imposible. Se intenta mantener activa manualmente, si en algún caso no estuviese disponible, contactar con el autor del proyecto.
+
+\end{itemize}
+ 
+
+\subsubsection*{2.8 Análisis de calidad con SonarQube}
+
+Este apartado describe cómo ejecutar el análisis estático de calidad del proyecto utilizando SonarQube y el scanner CLI.
+
+\paragraph*{Requisitos previos}
+
+\begin{itemize}
+    \item \textbf{Docker} instalado y en ejecución
+    \item \textbf{Servidor SonarQube} en ejecución en \texttt{http://localhost:9000}
+    \item \textbf{Token de SonarQube} válido con permisos de análisis
+    \item \textbf{coverage.xml} generado mediante Coverage.py
+\end{itemize}
+
+\paragraph*{1. Generar reporte de cobertura}
+
+Antes de ejecutar el análisis, es necesario generar el reporte de cobertura:
+
+\begin{verbatim}
+.venv311\Scripts\Activate.ps1
+coverage run --source=main,config manage.py test
+coverage xml
+\end{verbatim}
+
+Esto generará el archivo \texttt{coverage.xml} en la raíz del proyecto.
+
+\paragraph*{2. Ejecutar análisis de SonarQube}
+
+\textbf{En una PowerShell}
+
+\begin{verbatim}
+docker --% run --rm --network host `
+  -e SONAR_HOST_URL=http://host.docker.internal:9000 `
+  -e SONAR_TOKEN=<tu_token_aqui> `
+  -v c:\Users\<usuario>\Desktop\TFG:/usr/src `
+  sonarsource/sonar-scanner-cli:latest `
+  -Dsonar.sources=main,config `
+  -Dsonar.tests=main/tests `
+  -Dsonar.python.coverage.reportPaths=coverage.xml `
+  -Dsonar.python.xunit.reportPath=xunit-result.xml
+\end{verbatim}
+
+\textbf{Nota:} El flag \texttt{--\%} es obligatorio en PowerShell para evitar problemas de parsing.
+
+\paragraph*{3. Parámetros de configuración}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Parámetro} & \textbf{Valor} & \textbf{Descripción} \\
+\hline
+SONAR\_HOST\_URL & \url{http://host.docker.internal:9000} & URL del servidor SonarQube \\
+\hline
+SONAR\_TOKEN & Token generado & Token de autenticación \\
+\hline
+-v & Ruta local:/usr/src & Vinculación de volumen \\
+\hline
+sonar.sources & main,config & Código fuente \\
+\hline
+sonar.tests & main/tests & Tests \\
+\hline
+sonar.python.coverage.reportPaths & coverage.xml & Reporte de cobertura \\
+\hline
+sonar.python.xunit.reportPath & xunit-result.xml & Reporte de tests \\
+\hline
+\end{tabularx}
+\end{table}
+
+\paragraph*{4. Gestión de tokens}
+
+\textbf{Crear token:}
+
+\begin{enumerate}
+    \item Acceder a \texttt{http://localhost:9000} con las credenciales por defecto (admin/admin)
+    \item Ir a \textbf{My Account} $\rightarrow$ \textbf{Security}
+    \item Generar nuevo token
+    \item Guardarlo (solo visible una vez)
+\end{enumerate}
+
+\textbf{Uso del token:}
+
+\begin{verbatim}
+-e SONAR_TOKEN=squ_xxxxxxxxxxxxxxxxxxxxxxxxx
+\end{verbatim}
+
+\paragraph*{5. Validación de ejecución}
+
+\begin{itemize}
+    \item \textbf{Éxito}: \texttt{EXECUTION SUCCESS}
+    \item \textbf{Error}: mensajes \texttt{ERROR}
+\end{itemize}
+
+Ejemplo esperado:
+
+\begin{verbatim}
+INFO  Sensor Cobertura Sensor for Python coverage
+DEBUG Using pattern 'coverage.xml'
+\end{verbatim}
+
+\paragraph*{6. Revisión de resultados}
+
+Accede a \texttt{http://localhost:9000} y revisa:
+
+\begin{itemize}
+    \item Quality Gate
+    \item Coverage
+    \item Security Hotspots
+    \item Code Smells
+    \item Bugs
+\end{itemize}

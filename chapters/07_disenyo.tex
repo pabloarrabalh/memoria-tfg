@@ -41,36 +41,36 @@ cómo interactúan los componentes del lado del cliente y del servidor. A
 continuación, se presenta una explicación técnica y formal de cada bloque,
 adecuada para la memoria de un TFG.
  
-\subsubsection{Bloque de cliente: frontend}
+\subsubsection{7.1.1 Bloque de cliente: \textit{frontend}}
  
 A diferencia de una arquitectura monolítica tradicional, el cliente actúa como
 un nodo independiente que se ejecuta en el navegador del usuario.
  
-El frontend es la capa de presentación encargada de renderizar la interfaz de
+El \textit{frontend} es la capa de presentación encargada de renderizar la interfaz de
 usuario. Aunque consume recursos de forma dinámica, su función principal es
 capturar las interacciones del usuario y presentar los datos procesados
 (estadísticas, predicciones y gráficos XAI) de manera comprensible. El
 navegador descarga los activos del frontend y establece una conexión de red con
 el servidor a través de protocolos estándar.
  
-\subsubsection{Punto de entrada: Nginx}
+\subsubsection{7.1.2 Punto de entrada: \textit{Nginx}}
  
-Nginx se configura como el punto de entrada principal al servidor, actuando como intermediario
+\textit{Nginx} se configura como el punto de entrada principal al servidor, actuando como intermediario
 entre el cliente y los servicios internos. Su incorporación responde a decisiones de diseño
 centradas tanto en la mejora del rendimiento como en el refuerzo de la seguridad, ya que permite
 gestionar de forma eficiente el flujo de peticiones que llegan desde el frontend.
  
-En este sentido, Nginx funciona como un proxy inverso, recibiendo las solicitudes y
+En este sentido, \textit{Nginx} funciona como un proxy inverso, recibiendo las solicitudes y
 redirigiéndolas al backend correspondiente de manera transparente. Además, aporta una capa
 de aislamiento que protege la infraestructura interna, ocultando la topología de la red y
 centralizando la gestión de políticas de seguridad, como la configuración de HTTPS/SSL,
 en un único punto.
  
-\subsubsection{Núcleo del sistema: backend}
-El backend constituye la capa de aplicación desarrollada en Django y actúa como el núcleo que
+\subsubsection{7.1.3 Núcleo del sistema: \textit{backend}}
+El \textit{backend} constituye la capa de aplicación desarrollada en \textit{Django} y actúa como el núcleo que
 conecta y coordina el resto de servicios del sistema. En él se implementa la lógica de negocio,
 encargándose del procesamiento de las peticiones, la gestión de la autenticación
-y la comunicación con el motor de Machine Learning para la obtención de predicciones y recomendaciones.
+y la comunicación con el motor de \textit{Machine Learning} para la obtención de predicciones y recomendaciones.
  
 Asimismo, desempeña un papel de intermediación, ya que traduce las solicitudes del usuario
 en consultas específicas dirigidas a los distintos sistemas de almacenamiento y búsqueda.
@@ -84,7 +84,7 @@ propiedades clave como la escalabilidad, mantenibilidad y extensibilidad,
 aspectos críticos en sistemas que integran componentes web y modelos de Machine
 Learning.
  
-\subsubsection{7.1.2 Patrones empleados}
+\subsubsection{7.1.4 Patrones empleados}
 Con el objetivo de estructurar el sistema de forma clara, mantenible y
 escalable, se han aplicado diversos patrones de diseño arquitectónicos
 ampliamente utilizados en la ingeniería del software. Estos patrones permiten
@@ -97,7 +97,7 @@ punto de vista técnico.
 \subsubsection{Modelo MVC / MTV}
  
 El sistema adopta el patrón clásico Model-View-Controller (MVC), adaptado al
-framework Django bajo la variante Model-Template-View (MTV). Este patrón
+framework \textit{Django} bajo la variante Model-Template-View (MTV). Este patrón
 establece una separación clara entre la representación de los datos, la lógica
 de control y la presentación.
  
@@ -108,18 +108,18 @@ persistentes y sus relaciones.
 \item \texttt{main/api/*} y \texttt{drf\_views.py}: implementan la capa de
 control, gestionando las peticiones HTTP y exponiendo la API REST.
 \item \texttt{frontend-web/src/*}: constituye la capa de presentación,
-desarrollada en React.
+desarrollada en \textit{React}.
 \end{itemize}
  
 Este patrón permite desacoplar la lógica de negocio de la interfaz de usuario y
 del protocolo HTTP, facilitando la testabilidad, el mantenimiento y la evolución
 del sistema a lo largo del desarrollo del proyecto.
  
-\subsubsection{Patrón cliente-servidor}
+\subsubsection{7.1.5 Patrón cliente-servidor}
  
 El sistema se fundamenta en un modelo de desacoplamiento integral entre la
 interfaz de usuario y la lógica de servidor. Esta separación permite que el
-frontend (desarrollado en React) y el backend (Django) operen como entidades
+\textit{frontend} (desarrollado en \textit{React}) y el \textit{backend} (\textit{Django}) operen como entidades
 independientes.
  
 \textbf{Ventajas:}
@@ -131,7 +131,7 @@ de la API sin afectar al servidor de archivos estáticos).
 futuro (como una aplicación móvil nativa) sin modificaciones estructurales.
 \end{itemize}
  
-\subsubsection{Arquitectura en capas}
+\subsubsection{7.1.6 Arquitectura en capas}
  
 El sistema se estructura siguiendo una arquitectura en capas, donde cada nivel
 tiene una responsabilidad bien definida y se comunica únicamente con capas
@@ -139,8 +139,8 @@ adyacentes.
  
 \textbf{Capas principales:}
 \begin{itemize}
-\item \textbf{Capa de presentación}: frontend-web (React).
-\item \textbf{Capa de servicios/API}: api/views (Django REST Framework).
+\item \textbf{Capa de presentación}: \textit{frontend-web} (\textit{React}).
+\item \textbf{Capa de servicios/\textit{API}}: api/views (\textit{Django REST Framework}).
 \item \textbf{Capa de lógica de negocio}: módulos de dominio y
 entrenamientoModelos (ML).
 \item \textbf{Capa de persistencia}: models.py y base de datos relacional.
@@ -150,7 +150,7 @@ La separación por capas reduce el acoplamiento entre componentes y mejora la
 modularidad del sistema, siendo especialmente relevante en un entorno híbrido
 que combina procesamiento de datos, modelos predictivos y servicios web.
  
-\subsubsection{7.1.3 Patrones de comportamiento}
+\subsubsection{7.1.7 Patrones de comportamiento}
 Además de los patrones arquitectónicos, el sistema incorpora patrones de
 comportamiento que permiten gestionar de forma eficiente la interacción entre
 componentes y la ejecución de procesos complejos. Estos patrones resultan
@@ -160,26 +160,26 @@ En este apartado se detallan los patrones de comportamiento implementados,
 poniendo especial énfasis en su utilidad dentro del sistema y en cómo
 contribuyen a mejorar la extensibilidad y desacoplamiento.
  
-\subsubsection{Observer}
+\subsubsection{7.1.8 Observer}
  
-El patrón Observer define una relación uno-a-muchos donde múltiples objetos
+El patrón \textit{Observer} define una relación uno-a-muchos donde múltiples objetos
 (observadores) son notificados automáticamente ante cambios de estado en un
 objeto sujeto.
  
 \textbf{Aplicación en el sistema:}
  
-Se implementa mediante el sistema de signals de Django (\texttt{signals.py}):
+Se implementa mediante el sistema de \textit{signals} de \textit{Django} (\texttt{signals.py}):
 \begin{itemize}
 \item Creación automática de UserProfile tras la creación de un User.
-\item Indexación de entidades (Jugador, Equipo) en MeiliSearch.
-\item Emisión de notificaciones en tiempo real mediante WebSockets (Django
-Channels), utilizando Redis como backend.
+\item Indexación de entidades (Jugador, Equipo) en \textit{MeiliSearch}.
+\item Emisión de notificaciones en tiempo real mediante \textit{WebSockets} (Django
+Channels), utilizando \textit{Redis} como backend.
 \end{itemize}
  
 Este patrón desacopla la lógica de persistencia de las acciones derivadas
 (indexación y notificaciones), mejorando la posible escalada del sistema.
  
-\subsubsection{Template method}
+\subsubsection{7.1.9 Template method}
  
 Define el esqueleto de un algoritmo en una clase base, delegando ciertos pasos
 en subclases que pueden redefinir comportamientos específicos.
@@ -189,14 +189,14 @@ en subclases que pueden redefinir comportamientos específicos.
 \item \texttt{common\_trainer.py}: define la clase base BaseTrainer con la
 estructura del proceso de entrenamiento.
 \item Scripts como \texttt{entrenar-modelo-*.py} y \texttt{predecir.py}
-extienen dicha clase, sobrescribiendo etapas concretas del pipeline.
+extienen dicha clase, sobrescribiendo etapas concretas del \textit{pipeline}.
 \end{itemize}
  
 Permite centralizar la lógica común del entrenamiento de modelos, reduciendo
 duplicidad de código y asegurando la consistencia en el pipeline de Machine
 Learning.
  
-\subsubsection{Strategy}
+\subsubsection{7.1.10 Strategy}
  
 Permite seleccionar dinámicamente un algoritmo o comportamiento en tiempo de
 ejecución.
@@ -215,13 +215,13 @@ Este patrón facilita la experimentación y comparación entre distintos algorit
 (Random Forest, Ridge, Baseline), permitiendo cambiar la estrategia sin
 modificar el flujo principal de ejecución.
  
-\subsubsection{7.1.4 Patrones en el frontend}
-El diseño del frontend no solo responde a criterios visuales, sino también a
+\subsubsection{7.1.11 Patrones en el \textit{frontend}}
+El diseño del \textit{frontend} no solo responde a criterios visuales, sino también a
 principios estructurales que facilitan la gestión del estado y la reutilización
 de lógica. En este sentido, se han adoptado patrones propios del ecosistema
-React que permiten construir interfaces modernas, escalables y mantenibles.
+\textit{React} que permiten construir interfaces modernas, escalables y mantenibles.
 A continuación, se describen los principales mecanismos utilizados en el
-frontend, centrados en la gestión del estado global y la encapsulación de lógica
+\textit{frontend}, centrados en la gestión del estado global y la encapsulación de lógica
 reutilizable.
  
 \subsubsection{Hooks}
@@ -242,12 +242,12 @@ en cada página, el Custom Hook extrae esa lógica, manteniendo los componentes 
 y centrados exclusivamente en la representación visual.
  
 Esta arquitectura basada en Hooks no solo mejora la legibilidad del código, sino que asegura que el
-frontend sea reactivo y eficiente, alineándose con los estándares actuales de la industria y
+\textit{frontend} sea reactivo y eficiente, alineándose con los estándares actuales de la industria y
 garantizando una experiencia de usuario fluida.
  
-\subsubsection{Context API}
+\subsubsection{7.1.12 Context API}
  
-Context API es un sistema nativo de React diseñado para compartir datos de forma global entre componentes,
+\textit{Context API} es un sistema nativo de \textit{React} diseñado para compartir datos de forma global entre componentes,
 eliminando la necesidad de pasar propiedades manualmente a través de niveles intermedios.
 Este enfoque resuelve eficazmente el prop drilling, práctica ineficiente en la que los datos deben atravesar
 componentes que no los requieren funcionalmente solo para alcanzar a un nodo inferior en la jerarquía.
@@ -260,7 +260,7 @@ componentes que no los requieren funcionalmente solo para alcanzar a un nodo inf
 \end{itemize}
  
 Permite compartir información global entre componentes de forma eficiente,
-mejorando la escalabilidad y mantenibilidad del frontend.
+mejorando la escalabilidad y mantenibilidad del \textit{frontend}.
  
 \subsection{7.2 Modelado predictivo}
 Una vez procesados los datos, el sistema aborda la fase de modelado mediante
@@ -693,7 +693,7 @@ permitiendo implementar las mismas estrategias de indexación y consulta sin
 dependencia de licencias propietarias. Finalmente, esta opción se descartó debido
 a motivos de rendimiento y se sustituyó por MeiliSearch.
  
-\subsection{7.7 Diseño de la interfaz}
+\subsection{7.6 Diseño de la interfaz}
 La interfaz de usuario constituye el punto de interacción entre el sistema y el
 usuario final, por lo que su diseño debe garantizar tanto la usabilidad como la
 claridad en la presentación de la información.
@@ -701,7 +701,7 @@ En esta sección se describe la estructura de navegación, los componentes
 principales y las decisiones de diseño visual adoptadas, con el objetivo de
 ofrecer una experiencia de usuario coherente e intuitiva.
  
-\subsubsection{7.7.1 Nivel de navegación}
+\subsubsection{7.6.1 Nivel de navegación}
  
 El nodo raíz o vista de aterrizaje es el Menú (Home). Desde este punto, o a
 través del Sidebar, el sistema bifurca la navegación hacia los diferentes
@@ -716,7 +716,7 @@ la jornada seleccionada.
 \item \textbf{Equipos}: directorio o listado global de las entidades deportivas.
 \end{itemize}
  
-\subsubsection{7.7.2 Estructura base y componentes persistentes}
+\subsubsection{7.6.2 Estructura base y componentes persistentes}
  
 La interfaz se construye sobre un layout principal que encapsula dos componentes
 de renderizado persistente, garantizando que el usuario nunca pierda el contexto
@@ -732,7 +732,7 @@ la gestión de la cuenta (Perfil), dependiendo de la sesión activa del usuario.
 módulos core del sistema: Menú, Mi Plantilla, Liga, Amigos, Equipos y Estadísticas.
 \end{itemize}
  
-\subsubsection{7.7.3 Flujos de profundización}
+\subsubsection{7.6.3 Flujos de profundización}
  
 La aplicación implementa un sistema de navegación jerárquica donde las vistas
 generales actúan como pasarelas hacia vistas de detalle, pasando los
@@ -759,7 +759,7 @@ navegación específica más allá del navbar y el menú lateral.
 \label{fig:nav-ui}
 \end{figure}
  
-\subsubsection{7.7.4 Diseño de la interfaz}
+\subsubsection{7.6.4 Diseño de la interfaz}
 El diseño de la paleta de colores responde a criterios de simplicidad, contraste y coherencia visual.
 La combinación de verde vibrante (\textit{Primary}) con tonalidades más oscuras busca transmitir una sensación
 de tecnología, modernidad e innovación, valores que se alinean
@@ -792,7 +792,7 @@ con la naturaleza inteligente del sistema y su integración con modelos de Machi
 \item \textbf{Body}: Noto Sans, sans-serif (textos corridos y descripciones)
 \end{itemize}
  
-\subsection{7.8 Diseño de seguridad y autenticación}
+\subsection{7.7 Diseño de seguridad y autenticación}
 El sistema implementa la seguridad utilizando las capacidades nativas de Django,
 lo que incluye autenticación basada en sesiones, protección frente a ataques
 CSRF, gestión segura de cookies y almacenamiento de contraseñas mediante
@@ -801,14 +801,14 @@ framework gran parte de la gestión de la seguridad, reduciendo la complejidad
 del desarrollo y minimizando errores comunes en la implementación manual de
 estos mecanismos.
  
-\subsection{7.9 Diseño del despliegue}
+\subsection{7.8 Diseño del despliegue}
 Para garantizar la portabilidad, escalabilidad y consistencia del sistema entre
 los diferentes entornos de ejecución, se ha adoptado una estrategia de
 containerización basada en Docker y Docker Compose. Esta decisión permite aislar
 las dependencias de cada componente, asegurando que el software se comporte de
 manera idéntica en desarrollo, preproducción y producción.
  
-\subsubsection{7.9.1 Ecosistema de contenedores y responsabilidades}
+\subsubsection{7.8.1 Ecosistema de contenedores y responsabilidades}
  
 Durante el desarrollo, el sistema se descompone en cinco servicios principales orquestados mediante una
 red virtual privada:
@@ -850,7 +850,7 @@ el crédito disponible en poco tiempo.
 \label{fig:despliegue}
 \end{figure}
  
-\subsubsection{7.9.2 Estrategia de construcción}
+\subsubsection{7.8.2 Estrategia de construcción}
  
 Para optimizar el rendimiento y la seguridad, se han diseñado Dockerfiles
 multi-etapa:

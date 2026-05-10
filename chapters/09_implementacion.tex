@@ -3,7 +3,7 @@
  
 \subsection{9.1 Implementación del backend con Django}
  
-Durante la implementación del backend con Django, uno de los principales retos fue
+Durante la implementación del backend con \textit{Django}, uno de los principales retos fue
 organizar la lógica de negocio de forma que el sistema fuese escalable, eficiente y
 capaz de integrar múltiples componentes como el scraping de datos, los modelos de
 Machine Learning, la caché y la comunicación en tiempo real.
@@ -91,7 +91,7 @@ pero refleja más fielmente el proceso iterativo de desarrollo de un proyecto so
  
 \subsubsection{9.1.1 Serializers}
  
-Un serializer en DRF es una clase que define cómo se transforma un objeto de Python
+Un serializer en DRF es una clase que define cómo se transforma un objeto de \textit{Python}
 (en este caso, un modelo Django) en una representación serializable (JSON) y
 viceversa. Además de esta transformación, define explícitamente la estructura de
 los datos que se intercambian entre cliente y servidor, incluyendo sus tipos y
@@ -305,7 +305,7 @@ Se añade además una capa de IA Explicable (XAI) mediante SHAP, permitiendo que
  
 \subsubsection{9.1.2.6 Gestión de alineaciones}
  
-Este módulo gestiona la lógica de juego y el seguimiento en tiempo real. \texttt{plantilla.py} actúa como el motor de construcción de alineaciones,
+\texttt{plantilla.py} actúa como el motor de construcción de alineaciones,
 validando formaciones (ej. 4-3-3, 4-4-2, etc.) y calculando puntos en tiempo real. Se apoya en \texttt{plantilla\_notificaciones.py}, un monitor reactivo
 que detecta eventos en vivo (goles, tarjetas o asistencias) de los jugadores alineados por el usuario.
  
@@ -332,7 +332,7 @@ pocos_minutos_set = {
  
 \subsubsection{9.1.2.7 Orquestación}
  
-Dado que el cálculo de percentiles y rankings estadísticos requiere procesar miles de registros de EstadisticasPartidoJugador,
+Dado que el cálculo de percentiles y rankings estadísticos requiere procesar miles de registros de \texttt{EstadisticasPartidoJugador},
 el coste computacional es elevado. Para mantener tiempos de respuesta óptimos, se implementó un sistema de caché utilizando
 el backend de caché de Redis.
  
@@ -347,7 +347,7 @@ la comunicación bidireccional y garantizar la fluidez de la plataforma bajo car
  
 \subsubsection{9.1.3.1 Automatización mediante Signals}
  
-Para mantener el desacoplamiento del código, se utilizó el patrón Observer mediante los Django Signals. Esto permite que el sistema reaccione a
+Para mantener el desacoplamiento del código, se utilizó el patrón Observer mediante los \texttt{Django Signals}. Esto permite que el sistema reaccione a
 eventos en la base de datos sin necesidad de ensuciar las vistas con lógica adicional. Se implementaron tres flujos críticos:
  
 \begin{itemize}
@@ -461,7 +461,7 @@ la disponibilidad del sistema.
  
 \subsubsection{9.2.3 Algoritmo de reintentos}
  
-Para garantizar la robustez de las descargas en FutbolFantasy, se desarrolló
+Para garantizar la robustez de las descargas en \textit{FutbolFantasy}, se desarrolló
 un algoritmo con reintentos y esperas aleatorias. Esto evita que el servidor
 identifique patrones de automatización y permite recuperarse de errores
 temporales de red.

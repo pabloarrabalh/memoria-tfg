@@ -1,6 +1,5 @@
 % ===========================================================================
 %  CAPÍTULO 12 — CONCLUSIONES
-%  Trabajo de Fin de Grado · Ingeniería del Software
 % ===========================================================================
 
 \section*{12. Conclusiones}
@@ -21,36 +20,49 @@ robusto con Django REST Framework y un \textit{frontend} interactivo y
 desacoplado creado con React. Los objetivos funcionales se han cubierto
 en su totalidad, permitiendo la visualización de estadísticas, la gestión
 de plantillas y la predicción de rendimiento basada en explicabilidad
-(XAI).
+(XAI). Del mismo modo, los requisitos no funcionales de rendimiento
+(RNF1), calidad del dato (RNF3) y seguridad (RNF5) han sido
+verificados mediante la suite de pruebas automatizadas, las métricas de
+cobertura y los análisis estáticos con SonarQube descritos en el
+capítulo anterior.
 
 % ---------------------------------------------------------------------------
 \subsection{12.2. Limitaciones encontradas}
 \label{subsec:limitaciones}
 
 A lo largo del proyecto se han identificado ciertas limitaciones
-inherentes a la obtención y al procesamiento de los datos. Las más
-relevantes se describen a continuación:
+inherentes a la obtención y al procesamiento de los datos, así como a
+las decisiones de diseño adoptadas bajo las restricciones propias de un
+desarrollo individual. Las más relevantes se describen a continuación:
 
 \begin{itemize}
-  \item \textbf{Proceso de \textit{matching} de jugadores.} La
-        disparidad en la nomenclatura de los jugadores entre las
-        distintas fuentes de datos supuso un desafío mayor de lo
-        esperado, requiriendo el diseño de heurísticas específicas de
-        normalización y reconciliación de entidades.
-
   \item \textbf{Ausencia de APIs oficiales para el mercado.} La falta
         de \textit{endpoints} públicos en la API oficial de LaLiga
         Fantasy impidió extraer e integrar los valores económicos
-        dinámicos en tiempo real de forma automatizada. Esto ha
-        limitado la capacidad de desarrollar un módulo puramente
-        financiero en la plataforma, funcionalidad que habría
-        enriquecido considerablemente la propuesta.
+        dinámicos de los jugadores en tiempo real de forma automatizada.
+        Esto ha limitado la capacidad de desarrollar un módulo
+        financiero completo en la plataforma, funcionalidad que habría
+        enriquecido considerablemente la propuesta y habría permitido
+        correlacionar el precio de mercado con la predicción de
+        rendimiento.
 
   \item \textbf{Bloqueos de IP durante el \textit{scraping}.} Debido
         a los mecanismos anti-\textit{scraping} activos en las fuentes
         consultadas, fue necesario descargar manualmente el HTML de
-        todos los partidos, proceso que resultó costoso en tiempo y
-        difícilmente automatizable.
+        todos los partidos históricos, proceso que resultó costoso en
+        tiempo y difícilmente automatizable. Esta restricción implica
+        que la actualización del \textit{dataset} requiere intervención
+        manual periódica, lo que supone un cuello de botella operativo
+        en un entorno de producción continua.
+
+  \item \textbf{Capacidad de carga del sistema.} Las pruebas de
+        rendimiento con Locust evidenciaron que, en su configuración
+        actual, el sistema comienza a degradarse significativamente a
+        partir de los 20--30 usuarios concurrentes, con tasas de error
+        del 14,5\,\% a 100 usuarios. El diagnóstico apunta al agotamiento
+        del número máximo de conexiones simultáneas de PostgreSQL como
+        causa principal, lo que constituye una limitación relevante de
+        cara a un despliegue en producción con tráfico real.
 \end{itemize}
 
 % ---------------------------------------------------------------------------
@@ -58,18 +70,64 @@ relevantes se describen a continuación:
 \label{subsec:trabajo_futuro}
 
 El sistema desarrollado posee una arquitectura escalable que abre la
-puerta a diversas mejoras y nuevas vías de desarrollo capaces de ampliar
-la funcionalidad de la plataforma:
+puerta a diversas mejoras y nuevas vías de desarrollo. A continuación
+se presentan las líneas de trabajo consideradas de mayor impacto, tanto
+a nivel técnico como de producto:
 
 \begin{itemize}
+
+  \item \textbf{Optimización del rendimiento y escalabilidad.}
+        El cuello de botella identificado en las pruebas de carga puede
+        resolverse mediante la incorporación de un \textit{connection
+        pooler} como PgBouncer entre Django y PostgreSQL, lo que
+        permitiría gestionar un número elevado de peticiones concurrentes
+        sin saturar el límite de conexiones de la base de datos.
+        Complementariamente, ampliar el uso de Redis como capa de caché
+        para cubrir los \textit{endpoints} de mayor coste computacional
+        —especialmente los de predicción y clasificación— reduciría la
+        presión directa sobre el gestor relacional. Estas dos mejoras,
+        de bajo coste de implementación, permitirían escalar el sistema
+        a un orden de magnitud superior sin modificar la arquitectura
+        existente.
+
+  \item \textbf{Consolidación y refactorización de la capa API.}
+        Durante el desarrollo del proyecto coexistieron dos capas de
+        acceso a datos: la API principal estructurada en el módulo
+        \texttt{main/api/} y un conjunto de adaptadores de compatibilidad
+        en \texttt{main/drf\_views.py}, introducidos para mantener rutas
+        equivalentes durante una migración interna. Esta situación genera
+        deuda técnica al duplicar puntos de entrada, dificultar el
+        mantenimiento y aumentar la superficie de posibles
+        inconsistencias. Como trabajo futuro prioritario se propone
+        unificar ambas capas bajo una única interfaz coherente,
+        eliminando los adaptadores de compatibilidad y normalizando el
+        contrato de todos los \textit{endpoints} bajo un versionado
+        explícito (\texttt{/api/v1/}).
+
+  \item \textbf{Automatización del \textit{pipeline} de reentrenamiento.}
+        En su estado actual, los modelos de Machine Learning son
+        entrenados de forma manual fuera de línea y serializados como
+        artefactos \texttt{.pkl} estáticos. Este enfoque, adecuado para
+        el alcance del TFG, no es sostenible en producción: el
+        rendimiento de los modelos se degrada con el tiempo a medida
+        que el contexto de la competición evoluciona, y la incorporación
+        de nuevas jornadas requiere intervención manual. Una línea de
+        trabajo natural sería implementar un \textit{pipeline} de
+        reentrenamiento periódico y automatizado —por ejemplo, al cierre
+        de cada jornada— utilizando una cola de tareas asíncronas como
+        Celery. Este enfoque se enmarca dentro de las prácticas de
+        MLOps y garantizaría que los modelos desplegados reflejen
+        siempre el estado más reciente de la competición.
+
   \item \textbf{Predicción de titularidades.} Integrar un modelo
-        secundario que evalúe la probabilidad de que un jugador parta en
-        el once inicial. Mediante el análisis de rotaciones tácticas,
+        secundario que evalúe la probabilidad de que un jugador parta
+        en el once inicial. Mediante el análisis de rotaciones tácticas,
         el histórico de minutos jugados, la acumulación de tarjetas y
         los partes médicos disponibles, se refinaría notablemente la
         precisión de las puntuaciones esperadas por jornada. Actualmente
         el sistema asume la disponibilidad plena del jugador, lo que
-        constituye una simplificación relevante.
+        constituye una simplificación relevante que limita la fiabilidad
+        de las predicciones en jornadas con alta rotación.
 
   \item \textbf{Desarrollo de una aplicación móvil nativa.}
         Aprovechando que el \textit{backend} está completamente
@@ -77,12 +135,14 @@ la funcionalidad de la plataforma:
         siguiente paso natural sería implementar una aplicación nativa
         para dispositivos iOS y Android. Esto mejoraría la experiencia
         de usuario en el entorno donde la mayoría de personas acceden
-        a los juegos de Fantasy Football y permitiría habilitar un
-        sistema de notificaciones en tiempo real.
+        a los juegos de Fantasy Football y permitiría habilitar
+        notificaciones \textit{push} en tiempo real, complementando el
+        sistema de WebSockets ya implementado.
+
 \end{itemize}
 
 % ---------------------------------------------------------------------------
-\subsection{12.3. Valoración personal}
+\subsection{12.4. Valoración personal}
 \label{subsec:valoracion_personal}
 
 La realización de este Trabajo de Fin de Grado ha supuesto un verdadero
@@ -104,3 +164,8 @@ y realista sobre las exigencias actuales en el desarrollo de software y
 en el mundo de la inteligencia artificial. Asimismo, el proyecto ha
 permitido profundizar en el tratamiento de datos a gran escala y en los
 fundamentos prácticos de la ciencia de datos aplicada a un dominio real.
+En conjunto, considero que \textit{LigaMaster} refleja fielmente el
+perfil técnico que una titulación en Ingeniería del Software debe
+desarrollar: no solo la capacidad de construir sistemas funcionales, sino
+de razonar sobre sus limitaciones, documentar sus decisiones y diseñar
+una hoja de ruta que permita su evolución responsable.

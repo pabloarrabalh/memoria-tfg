@@ -14,7 +14,7 @@ autenticados). En concreto, el alcance incluye:
   \item Predicción de puntuación de jugadores para la próxima jornada, incluyendo presentación de un 
   margen de error y explicación de los factores más influyentes (XAI).
   \item Recomendaciones automáticas para apoyar decisiones de mánager: recomendaciones por posición 
-  (``Top 3''), asistente de gestión (mantener/vender/fichar) y panel de análisis del próximo rival.
+  (``Top 3''), asistente de gestión (vender/fichar) y panel de análisis del próximo rival.
   \item Funcionalidades para usuarios registrados: creación de cuenta, autenticación, gestión de perfil y 
   persistencia de una plantilla personalizada con formación, proyección de puntuación y alertas básicas.
   \item Acceso a histórico y simulación/retro-evaluación (backtesting funcional) para comparar predicción 
@@ -174,13 +174,13 @@ necesidad.
 {Asistente de gestión}
 {\textbf{Como:} Usuario registrado\\ \textbf{Quiero:} Recibir consejo sobre decisiones de plantilla\\ \textbf{Para:} Optimizar rendimiento en la liga}
 {\textbf{Actor:} Usuario registrado\\ \textbf{Auth:} Sí\\ \textbf{Prioridad:} Could Have}
-{CA12.1. Permite seleccionar jugador para análisis.\\ CA12.2. Recomienda acción (mantener/vender/fichar).\\ CA12.3. Incluye comparativa y explicación completa.}
+{CA12.1. Permite seleccionar jugador para análisis.\\ CA12.2. Recomienda acción (vender/fichar).\\ CA12.3. Incluye comparativa y explicación completa.}
 
 \RFTable{RF13}
 {Histórico de predicciones}
 {\textbf{Como:} Usuario registrado\\ \textbf{Quiero:} Revisar predicciones pasadas\\ \textbf{Para:} Medir la fiabilidad del sistema}
 {\textbf{Actor:} Usuario registrado\\ \textbf{Auth:} Sí\\ \textbf{Prioridad:} Could Have}
-{CA13.1. Incluye tabla predicho vs real.\\ CA13.2. Muestra métrica agregada de precisión.\\ CA13.3. Explicita control anti \textit{data leakage}.}
+{CA13.1. Incluye tabla predicho vs real.\\}
 
 \RFTable{RF14}
 {Sistema de amistad}
@@ -252,13 +252,13 @@ Los casos de uso se modelan considerando dos perfiles: usuario anónimo y usuari
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{images/cu-anonimo.png}
-\caption{CU Anónimo.}\label{fig:cu-anonimo}
+\caption{Casos de uso para Usuario Anónimo.}\label{fig:cu-anonimo}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{images/cu-registrado.png}
-\caption{CU Registrado.}\label{fig:cu-registrado}
+\caption{CCasos de uso para Usuario Registrado.}\label{fig:cu-registrado}
 \end{figure}
 
 \newcommand{\CUTable}[7]{%
@@ -296,7 +296,7 @@ Los casos de uso se modelan considerando dos perfiles: usuario anónimo y usuari
 {RF1}
 {Se muestra la clasificación.}
 {1. El usuario accede a “Liga”.\\2. El sistema carga la jornada por defecto (actual).\\3. El sistema muestra equipos, posición, puntos, racha, GF, GC…\\4. (Opcional) El usuario cambia la jornada.\\5. El sistema refresca la tabla.}
-{A1. El usuario navega a una jornada en el futuro, en dicho caso, se cargan los partidos de la jornada y el estado de la última jornada completa.}
+{A1. El usuario navega a una jornada en el futuro, en dicho caso, se le informa que no hay clasificación disponible dado que es el futuro.}
 
 \CUTable%
 {CU2 - Consultar ficha de equipo}

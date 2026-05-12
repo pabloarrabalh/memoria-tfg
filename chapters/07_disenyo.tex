@@ -53,14 +53,14 @@ capturar las interacciones del usuario y presentar los datos procesados
 navegador descarga los activos del frontend y establece una conexión de red con
 el servidor a través de protocolos estándar.
  
-\subsubsection{7.1.2 Punto de entrada: \textit{Nginx}}
+\subsubsection{7.1.2 Punto de entrada: \textit{Caddy}}
  
-\textit{Nginx} se configura como el punto de entrada principal al servidor, actuando como intermediario
+\textit{Caddy} se configura como el punto de entrada principal al servidor, actuando como intermediario
 entre el cliente y los servicios internos. Su incorporación responde a decisiones de diseño
 centradas tanto en la mejora del rendimiento como en el refuerzo de la seguridad, ya que permite
 gestionar de forma eficiente el flujo de peticiones que llegan desde el frontend.
  
-En este sentido, \textit{Nginx} funciona como un proxy inverso, recibiendo las solicitudes y
+En este sentido, \textit{Cadyy} funciona como un proxy inverso, recibiendo las solicitudes y
 redirigiéndolas al backend correspondiente de manera transparente. Además, aporta una capa
 de aislamiento que protege la infraestructura interna, ocultando la topología de la red y
 centralizando la gestión de políticas de seguridad, como la configuración de HTTPS/SSL,
@@ -727,8 +727,8 @@ de navegación:
 del estado de autenticación de la sesión. Es visible en todas las rutas de la
 aplicación y renderiza condicionalmente el acceso al inicio de sesión (Login) o
 la gestión de la cuenta (Perfil), dependiendo de la sesión activa del usuario.
-\item \textbf{Sidebar (menú lateral)}: Funciona como el enrutador principal
-(NavHost). Está permanentemente accesible y proporciona saltos directos a los
+\item \textbf{Sidebar (menú lateral)}: Funciona como el enrutador principal.
+ Está permanentemente accesible y proporciona saltos directos a los
 módulos core del sistema: Menú, Mi Plantilla, Liga, Amigos, Equipos y Estadísticas.
 \end{itemize}
  

@@ -55,7 +55,7 @@
 \titleformat{\subsection}{\normalfont\large\bfseries}{}{0pt}{}
 \titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
 
-\title{LigaMaster}
+\title{Caracterización de jugadores a partir de datos de ligas fantasy}
 \author{Pablo Arrabal Hermoso}
 \date{\today}
 
@@ -74,7 +74,7 @@ TRABAJO FIN DE GRADO
 \end{large}
 
 \vspace*{0.1in}
-\textbf{\huge LigaMaster}
+\textbf{\huge Caracterización de jugadores a partir de datos de ligas fantasy}
 
 \vspace*{.2in}
 
@@ -107,7 +107,7 @@ TRABAJO FIN DE GRADO
 \thispagestyle{empty}
 \vspace*{\fill}
 \begin{center}
-\textit{Aquí la dedicatoria del trabajo}
+\textit{A mis padres, a mi hermano y a mi novia, por acompañarme y apoyarme en cada paso de este camino}
 \end{center}
 \vspace*{\fill}
 
@@ -117,46 +117,44 @@ TRABAJO FIN DE GRADO
 
 % Agradecimientos
 \section*{Agradecimientos}
+Quiero agradecer a todos los profesores que me han enseñado a lo largo de la carrera, 
+no solo por los conocimientos técnicos, sino también por todas las experiencias y aprendizajes que me llevo de esta etapa.
+
+A mis amigos de toda la vida, por seguir estando ahí pase lo que pase, las risas y hacerme desconectar cuando más lo necesitaba. También a los compañeros que conocí en primero y que acabaron convirtiéndose en amigos y una parte fundamental de esta etapa.
+ Ahora miro con cariño por todas las horas en clase, las bibliotecas, los trabajos de última hora, los agobios antes de los exámenes
+  y todos los momentos que nos llevamos de estos 4 años.
+
+A mis padres, por darme la oportunidad de estudiar fuera de casa y confiar en mí incluso cuando yo mismo dudaba,
+y por haberme dado la educación y los valores que me han acompañado durante toda mi vida. Gracias por enseñarme a esforzarme, 
+a ser constante y a no rendirme nunca.
+
+A mi hermano, por enseñarme que incluso después de los golpes más duros siempre hay que volver a levantarse y seguir adelante. 
+Y a mi novia, por estar siempre ahí. Por aguantar los momentos difíciles, los agobios, las dudas y acompañarme en todo
+este camino.
+
+En definitiva, gracias a todas las personas que formáis parte de mi vida y que, de una forma u otra, habéis empujado para que hoy esté aquí.
 % Escribe aquí tus agradecimientos
 
 \clearpage
 \section*{Resumen}
-\textit{El presente Trabajo de Fin de Grado describe el diseño e implementación de LigaMaster, una plataforma web orientada al análisis predictivo y la toma de decisiones en el Fantasy Football
-. En un entorno caracterizado por la alta volatilidad de los datos y la opacidad algorítmica de las herramientas actuales
-, este proyecto propone un sistema de apoyo al usuario basado en la Inteligencia Artificial Explicable (XAI)
-.
-Para la construcción de la plataforma se ha adoptado una arquitectura desacoplada, utilizando Django y Django REST Framework para el backend, y React para la interfaz de usuario
-. El pipeline de datos procesa información heterogénea extraída mediante web scraping de diversas fuentes deportivas
-, superando complejos retos técnicos como la normalización y el matching difuso de entidades
-.
-El núcleo predictivo compite entre algoritmos de Machine Learning (Random Forest, XGBoost, Ridge y ElasticNet) entrenados y especializados por posición táctica (porteros, defensas, centrocampistas y delanteros) para pronosticar los puntos de los jugadores
-. Los resultados empíricos revelan que los modelos lineales con regularización generalizan mejor en este dominio
-, cumpliendo satisfactoriamente con los exigentes objetivos de Error Absoluto Medio (MAE) y del coeficiente de correlación de Spearman
-.
-Como principal valor añadido frente a soluciones comerciales, el sistema integra la metodología SHAP para proporcionar predicciones interpretables
-. Este enfoque rompe la "caja negra" de los modelos tradicionales, permitiendo al mánager comprender qué factores estadísticos y de contexto influyen realmente en las recomendaciones
-. En conclusión, el proyecto culmina en una herramienta completa, robusta y transparente que eleva la gestión de plantillas virtuales a un nivel analítico avanzado
-.}
+\textit{El presente Trabajo de Fin de Grado describe el diseño e implementación de LigaMaster, una plataforma web orientada al análisis predictivo y la toma de decisiones en el Fantasy Football. En un entorno caracterizado por la alta volatilidad de los datos y la opacidad algorítmica de las herramientas actuales, este proyecto propone un sistema de apoyo al usuario basado en la Inteligencia Artificial Explicable (XAI).}
+
+\textit{Para la construcción de la plataforma se ha adoptado una arquitectura desacoplada, utilizando Django y Django REST Framework para el backend, y React para la interfaz de usuario. El pipeline de datos procesa información heterogénea extraída mediante web scraping de diversas fuentes deportivas, superando complejos retos técnicos como la normalización y el matching difuso de entidades.}
+
+\textit{El núcleo predictivo compite entre algoritmos de Machine Learning (Random Forest, XGBoost, Ridge y ElasticNet) entrenados y especializados por posición táctica (porteros, defensas, centrocampistas y delanteros) para pronosticar los puntos de los jugadores. Los resultados empíricos revelan que los modelos lineales con regularización generalizan mejor en este dominio, cumpliendo satisfactoriamente con los exigentes objetivos de Error Absoluto Medio (MAE) y del coeficiente de correlación de Spearman.}
+
+\textit{Como principal valor añadido frente a soluciones comerciales, el sistema integra la metodología SHAP para proporcionar predicciones interpretables. Este enfoque rompe la "caja negra" de los modelos tradicionales, permitiendo al mánager comprender qué factores estadísticos y de contexto influyen realmente en las recomendaciones. En conclusión, el proyecto culmina en una herramienta completa, robusta y transparente que eleva la gestión de plantillas virtuales a un nivel analítico avanzado.}
 \clearpage
 
 \vspace{1.2cm}
 \section*{Abstract}
-\textit{This Bachelor's Thesis describes the design and implementation of LigaMaster, a web platform oriented towards predictive analysis and decision-making in Fantasy Football
-. In an environment characterized by high data volatility and the algorithmic opacity of current tools
-, this project proposes a user support system based on Explainable Artificial Intelligence (XAI)
-.
-To build the platform, a decoupled architecture was adopted, using Django and Django REST Framework for the backend, and React for the user interface
-. The data pipeline processes heterogeneous information extracted through web scraping from various sports sources
-, overcoming complex technical challenges such as data normalization and fuzzy entity matching
-.
-The predictive core compares Machine Learning algorithms (Random Forest, XGBoost, Ridge, and ElasticNet) trained and specialized by tactical position (goalkeepers, defenders, midfielders, and forwards) to forecast player points
-. Empirical results reveal that regularized linear models generalize better in this domain
-, satisfactorily meeting the demanding targets for Mean Absolute Error (MAE) and the Spearman correlation coefficient
-.
-As its main added value compared to commercial solutions, the system integrates the SHAP methodology to provide interpretable predictions
-. This approach breaks the "black box" of traditional models, allowing the manager to understand which statistical and contextual factors actually influence the recommendations
-. In conclusion, the project culminates in a comprehensive, robust, and transparent tool that elevates the management of virtual squads to an advanced analytical level
-.}
+\textit{This Bachelor's Thesis describes the design and implementation of LigaMaster, a web platform oriented towards predictive analysis and decision-making in Fantasy Football. In an environment characterized by high data volatility and the algorithmic opacity of current tools, this project proposes a user support system based on Explainable Artificial Intelligence (XAI).}
+
+\textit{To build the platform, a decoupled architecture was adopted, using Django and Django REST Framework for the backend, and React for the user interface. The data pipeline processes heterogeneous information extracted through web scraping from various sports sources, overcoming complex technical challenges such as data normalization and fuzzy entity matching.}
+
+\textit{The predictive core compares Machine Learning algorithms (Random Forest, XGBoost, Ridge, and ElasticNet) trained and specialized by tactical position (goalkeepers, defenders, midfielders, and forwards) to forecast player points. Empirical results reveal that regularized linear models generalize better in this domain, satisfactorily meeting the demanding targets for Mean Absolute Error (MAE) and the Spearman correlation coefficient.}
+
+\textit{As its main added value compared to commercial solutions, the system integrates the SHAP methodology to provide interpretable predictions. This approach breaks the "black box" of traditional models, allowing the manager to understand which statistical and contextual factors actually influence the recommendations. In conclusion, the project culminates in a comprehensive, robust, and transparent tool that elevates the management of virtual squads to an advanced analytical level.}
 
 
 \setcounter{secnumdepth}{0}
